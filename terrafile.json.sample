@@ -1,0 +1,10 @@
+{
+  "xascode-sample": {
+    "source": "https://github.com/xascode-terraform/modules/sample",
+    "version": "1.0.0"
+  },
+  "xascode-sample2": {
+    "source": "https://github.com/xascode/modules/sample",
+    "version": "main"
+  }
+}
