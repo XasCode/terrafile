@@ -1,3 +1,7 @@
-exports.printMsg = function() {
-  console.log("This is a message from the demo package");
-}
+#!/usr/bin/env node
+
+const { printMsg } = require('./include.js');
+
+console.log("Hello World!");
+
+printMsg();
