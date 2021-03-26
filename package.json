@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/xascode/terrafile/issues"
   },
-  "homepage": "https://github.com/xascode/terrafile#readme"
+  "homepage": "https://github.com/xascode/terrafile#readme",
+  "dependencies": {
+    "commander": "^7.2.0"
+  }
 }
