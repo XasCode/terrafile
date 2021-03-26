@@ -2,6 +2,15 @@
 
 const { printMsg } = require('./include.js');
 
-console.log("Hello World!");
+const { Command } = require('commander');
+const program = new Command();
+program
+  .version('0.1.0-alpha.1')
+  .command('run')
+  .description('test run')
+  .action((source, destinatin) => {
+    console.log("Hello World!");
+    printMsg();
+  });
 
-printMsg();
+program.parse(process.argv);
