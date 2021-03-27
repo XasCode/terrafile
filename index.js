@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-const { printMsg } = require('./include.js');
-
 const { Command } = require('commander');
 const program = new Command();
 program
@@ -9,6 +7,8 @@ program
   .command('run')
   .description('test run')
   .action((source, destinatin) => {
+    const backend = `${process.env.terrafile_be_api ? process.env.terrafile_be_api : './include'}`;
+    const { printMsg } = require(backend);
     console.log("Hello World!");
     printMsg();
   });
