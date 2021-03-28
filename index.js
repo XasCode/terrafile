@@ -1,16 +1,21 @@
 #!/usr/bin/env node
 
-const { Command } = require('commander');
+const { Command, Option } = require('commander');
 const program = new Command();
 program
-  .version('0.1.0-alpha.1')
-  .command('run')
-  .description('test run')
-  .action((source, destinatin) => {
+  .version(require('./package.json').version, '-V, --version', 'Show version information for terrafile')
+  .description(`Manage vendored modules using a JSON file.`);
+
+program
+  .command('install')
+  .description('Installs the files in your terrafile.json')
+  .action((options) => {
+    //console.log(`options: ${JSON.stringify(options)}`);
     const backend = `${process.env.terrafile_be_api ? process.env.terrafile_be_api : './include'}`;
-    const { printMsg } = require(backend);
-    console.log("Hello World!");
-    printMsg();
-  });
+    const { install } = require(backend);
+    install();
+  })
+  .addOption(new Option('-d, --directory <string>', 'module directory').default('vendor/modules'))
+  .addOption(new Option('-f, --file <string>', 'config file').default('terrafile.json'));
 
 program.parse(process.argv);
