@@ -13,7 +13,7 @@ program
     //console.log(`options: ${JSON.stringify(options)}`);
     const backend = `${process.env.terrafile_be_api ? process.env.terrafile_be_api : './include'}`;
     const { install } = require(backend);
-    install();
+    install(options);
   })
   .addOption(new Option('-d, --directory <string>', 'module directory').default('vendor/modules'))
   .addOption(new Option('-f, --file <string>', 'config file').default('terrafile.json'));
