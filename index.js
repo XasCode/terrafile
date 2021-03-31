@@ -12,7 +12,7 @@ function main(myargs, be) {
     .command('install')
     .description('Installs the files in your terrafile.json')
     .action((options) => {
-      const backend = be == undefined ? `${process.env.terrafile_be_api ? process.env.terrafile_be_api : './include'}` : be;
+      const backend = be == undefined || be == '' ? `${process.env.terrafile_be_api ? process.env.terrafile_be_api : './include'}` : be;
       const { install } = require(backend);
       install(options);
     })
