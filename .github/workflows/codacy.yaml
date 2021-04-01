@@ -7,7 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     name: codacy-coverage-reporter
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout repository
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test ${{ matrix.test_number }}s
+        run: npm test -- --coverage
+
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@master
         with:
