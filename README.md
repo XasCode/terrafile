@@ -10,3 +10,5 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/aeb900c903f86a5c2200/test_coverage)](https://codeclimate.com/github/XasCode/terrafile/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/aeb900c903f86a5c2200/maintainability)](https://codeclimate.com/github/XasCode/terrafile/maintainability)
 
+[![Known Vulnerabilities](https://snyk.io/test/github/xascode/terrafile/badge.svg)](https://snyk.io/test/github/xascode/terrafile)
+
