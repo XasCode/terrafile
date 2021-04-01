@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "codecov": "^3.8.1",
+    "coveralls": "^3.1.0",
     "jest-simple-dot-reporter": "^1.0.5"
   }
 }
