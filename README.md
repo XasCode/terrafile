@@ -12,3 +12,4 @@
 
 [![Known Vulnerabilities](https://snyk.io/test/github/xascode/terrafile/badge.svg)](https://snyk.io/test/github/xascode/terrafile)
 
+[![Depandabot](https://badgen.net/dependabot/XasCode/terrafile?icon=dependabot)](https://github.com/XasCode/terrafile/network/updates)
