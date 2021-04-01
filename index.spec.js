@@ -202,15 +202,14 @@ describe.each(variations)(`Iterate through test variations.`, async ({backends, 
   });
 
   // sample CLI commands
-  test.each(backends)(`Sample CLI (BE="%s", args="${args}")`, async (backend) => {
-    if (getRandomInt(200) == 0) {
+  if (getRandomInt(200) == 0) {
+    test.each(backends)(`Sample CLI (BE="%s", args="${args}")`, async (backend) => {
       const result = await cli(args.split(' '), '.', backend);
       expect(result.stdout).toBe(`${stdOut}${stdOut.length>0?'\n':''}`);
       expect(result.stderr).toBe(`${stdErr}${stdErr.length>0?'\n':''}`);
       expect(result.code).toBe(code);
-    }
-  });
-
+    });
+  }
 
 });
 

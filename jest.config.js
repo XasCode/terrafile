@@ -3,5 +3,7 @@ module.exports = {
   automock: false,
   reporters: [
     ["jest-simple-dot-reporter", {color: true}]
-  ]
+  ],
+  coverageDirectory: "./coverage/",
+  collectCoverage: true
 };
