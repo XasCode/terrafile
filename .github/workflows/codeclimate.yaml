@@ -3,7 +3,7 @@ name: CodeClimate Coverage
 on: [push, pull_request]
 
 jobs:
-  coverate:
+  coverage:
     strategy:
       matrix:
         platform: [ ubuntu-latest ]
