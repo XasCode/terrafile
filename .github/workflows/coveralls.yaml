@@ -23,8 +23,7 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Test ${{ matrix.test_number }}
-    - name: Run the tests
+    - name: Test ${{ matrix.test_number }}s
       run: npm test -- --coverage
 
     - name: Coveralls Parallel
