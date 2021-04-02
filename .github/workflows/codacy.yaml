@@ -16,7 +16,7 @@ jobs:
         run: sudo npm install -g npm@latest
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Test ${{ matrix.test_number }}s
         run: npm test -- --coverage
