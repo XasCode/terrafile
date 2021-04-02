@@ -24,10 +24,13 @@
     "jest": "^26.6.3"
   },
   "devDependencies": {
-    "@jsdevtools/eslint-config": "^0.1.12",
+    "@jestaubach/eslint-config": "^0.0.1",
     "codecov": "^3.8.1",
     "coveralls": "^3.1.0",
     "eslint": "^6.8.0",
     "jest-simple-dot-reporter": "^1.0.5"
+  },
+  "eslintConfig": {
+    "extends": "@JEStaubach/eslint-config"
   }
 }
