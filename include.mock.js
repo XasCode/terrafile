@@ -1,3 +1,3 @@
-exports.install = function(options) {
+exports.install = function (options) {
   console.log(`${JSON.stringify(options)}`);
-}
+};
