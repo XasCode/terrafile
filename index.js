@@ -17,7 +17,7 @@ function main(myargs, be) {
     .description("Installs the files in your terrafile.json")
     .action((options) => {
       const backend =
-        be === ""
+        be == undefined || be == ""
           ? `${
               process.env.terrafile_be_api
                 ? process.env.terrafile_be_api
@@ -36,11 +36,15 @@ function main(myargs, be) {
       new Option("-f, --file <string>", "config file").default("terrafile.json")
     );
 
-  program.parse(myargs);
+  try {
+    program.parse(myargs);
+  } catch (err) {
+    console.log(JSON.stringify(err));
+  }
 }
 
 if (require.main === module) {
-  main(process.argv, "");
+  main(process.argv);
 }
 
 module.exports.main = main;

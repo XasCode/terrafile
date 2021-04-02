@@ -1,0 +1,14 @@
+{
+  "extends": "@JEStaubach/eslint-config",
+  "overrides": [
+    {
+      "files": [
+        "**/*.spec.js",
+        "**/*.spec.jsx"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
+}
