@@ -12,14 +12,8 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Update npm
-        run: sudo npm install -g npm@latest
-
-      - name: Unset _auth
-        run: npm config delete _auth
-
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Test ${{ matrix.test_number }}s
         run: npm test -- --coverage
