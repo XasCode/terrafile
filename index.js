@@ -10,14 +10,14 @@ function main(myargs, be) {
       "-V, --version",
       "Show version information for terrafile"
     )
-    .description(`Manage vendored modules using a JSON file.`);
+    .description("Manage vendored modules using a JSON file.");
 
   program
     .command("install")
     .description("Installs the files in your terrafile.json")
     .action((options) => {
       const backend =
-        be == undefined || be == ""
+        be === undefined
           ? `${
               process.env.terrafile_be_api
                 ? process.env.terrafile_be_api
@@ -39,12 +39,13 @@ function main(myargs, be) {
   try {
     program.parse(myargs);
   } catch (err) {
-    console.log(JSON.stringify(err));
+    // swallow the error
   }
 }
 
 if (require.main === module) {
+  /* istanbul ignore next */
   main(process.argv);
+} else {
+  module.exports.main = main;
 }
-
-module.exports.main = main;

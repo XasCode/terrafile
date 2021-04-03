@@ -1,13 +1,29 @@
 const path = require("path");
 const exec = require("child_process").exec;
 
+/*
 const testif = async (condition, bes, str, fn) => {
   if (condition) return await test.each(bes)(str, fn);
   return test.skip("skipping", () => {});
 };
+*/
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
+}
+
+function randomizeOrder(incoming) {
+  let workingCopy = [...incoming];
+  const outgoing = [];
+  for (let i = incoming.length; i > 0; i--) {
+    const selected = getRandomInt(i);
+    outgoing.push(workingCopy[selected]);
+    workingCopy = [
+      ...workingCopy.slice(0, selected),
+      ...workingCopy.slice(selected + 1),
+    ];
+  }
+  return outgoing;
 }
 
 const consoleSpyLog = jest.spyOn(console, "log").mockImplementation();
@@ -42,7 +58,7 @@ const unknownCommand = `error: unknown command 'foo'. See 'index --help'.`;
 const unknownOptionShort = `error: unknown option '-b'`;
 const unknownOptionLong = `error: unknown option '--bar'`;
 
-const default_opts = { directory: "vendor/modules", file: "terrafile.json" };
+const defaultOpts = { directory: "vendor/modules", file: "terrafile.json" };
 
 const version = require("./package.json").version;
 
@@ -74,7 +90,7 @@ for (helpCommand of helpCommands) {
               // Specify the options that should be passed to the install command
               function getOptions() {
                 return {
-                  ...default_opts,
+                  ...defaultOpts,
                   ...(directory !== ""
                     ? { directory: directory.split(" ")[1] }
                     : {}), // -d/--directory override default directory
@@ -85,28 +101,42 @@ for (helpCommand of helpCommands) {
               // Specify the return code for the CLI
               function getCode() {
                 // if -V/--version then will print version and return code = 0
-                if (ver !== "") return 0;
+                if (ver !== "") {
+                  return 0;
+                }
                 // if help + valid command, i.e. "help install" return code = 0
-                if (helpCommand !== "" && command == "install") return 0;
+                if (helpCommand !== "" && command === "install") {
+                  return 0;
+                }
                 // if help and no command, return code = 0
-                if (helpCommand !== "" && command == "") return 0;
+                if (helpCommand !== "" && command === "") {
+                  return 0;
+                }
                 // if help and invalid command, i.e. "help foo" return code = 1
-                if (helpCommand !== "") return 1;
+                if (helpCommand !== "") {
+                  return 1;
+                }
                 // "-h/--help" flag return code = 0
-                if (help !== "") return 0;
+                if (help !== "") {
+                  return 0;
+                }
                 // if command not valid (i.e. not install) and no "help...", then return code = 1
-                if (helpCommand == "" && command !== "install") return 1;
+                if (helpCommand === "" && command !== "install") {
+                  return 1;
+                }
                 // if command is valid (i.e. install) and an invalid option flag specified return code = 1
-                if (badOption !== "" && command == "install") return 1;
+                if (badOption !== "" && command === "install") {
+                  return 1;
+                }
                 return 0; // anything else,
               }
               // Determines if the install command will be run
               function getCommand() {
-                return command == "install" &&
-                  helpCommand == "" &&
-                  ver == "" &&
-                  help == "" &&
-                  badOption == ""
+                return command === "install" &&
+                  helpCommand === "" &&
+                  ver === "" &&
+                  help === "" &&
+                  badOption === ""
                   ? "install"
                   : "";
               }
@@ -125,7 +155,7 @@ for (helpCommand of helpCommands) {
                 command: getCommand(), // api command to run or ""
                 options: {
                   // arguments to be passed to the api command
-                  ...default_opts,
+                  ...defaultOpts,
                   ...(directory !== ""
                     ? { directory: directory.split(" ")[1] }
                     : {}),
@@ -133,7 +163,7 @@ for (helpCommand of helpCommands) {
                 },
                 code: getCode(), // the expected cli return code
                 stdOut:
-                  getArgs() == ""
+                  getArgs() === ""
                     ? "" // the expected cli stdout output
                     : ver !== ""
                     ? version // -V/--version
@@ -141,27 +171,27 @@ for (helpCommand of helpCommands) {
                       command !== "" &&
                       helpCommand !== ""
                     ? "" // help foo (error unknown command)
-                    : command !== "install" && command !== "" && help == ""
+                    : command !== "install" && command !== "" && help === ""
                     ? "" // foo (error unknown command)
-                    : command == "install" && helpCommand !== ""
+                    : command === "install" && helpCommand !== ""
                     ? helpInstallContent // help install (show command help)
-                    : command == "install" && help !== ""
+                    : command === "install" && help !== ""
                     ? helpInstallContent // install -h/--help (show command help)
                     : getCommand() !== "install" &&
-                      (helpCommand == "help" || help !== "")
+                      (helpCommand === "help" || help !== "")
                     ? helpContent // install command not run and help/-h/--help (display help usage)
-                    : command == "install" && badOption !== ""
+                    : command === "install" && badOption !== ""
                     ? "" // install -b/--bar (error unknown option)
-                    : getCommand() !== "install" && help == ""
+                    : getCommand() !== "install" && help === ""
                     ? "" // install command not run and not -h/--help (error no command)
-                    : getCommand() == "install" &&
-                      helpCommand == "" &&
-                      help == "" &&
-                      badOption == ""
+                    : getCommand() === "install" &&
+                      helpCommand === "" &&
+                      help === "" &&
+                      badOption === ""
                     ? JSON.stringify(getOptions()) // output from running install!!!
                     : "", // otherwise, no output to stdout
                 stdErr:
-                  getArgs() == ""
+                  getArgs() === ""
                     ? helpContent // the expected cli stderr output
                     : ver !== ""
                     ? "" // -V/--version (not error)
@@ -169,25 +199,25 @@ for (helpCommand of helpCommands) {
                       command !== "" &&
                       helpCommand !== ""
                     ? helpContent // help foo (error display usage)
-                    : command !== "install" && command !== "" && help == ""
+                    : command !== "install" && command !== "" && help === ""
                     ? unknownCommand // foo (error unknown command)
-                    : command == "install" && helpCommand !== ""
+                    : command === "install" && helpCommand !== ""
                     ? "" // help install (not error)
-                    : command == "install" && help !== ""
+                    : command === "install" && help !== ""
                     ? "" // install -h/--help (not error)
                     : getCommand() !== "install" &&
-                      (helpCommand == "help" || help !== "")
+                      (helpCommand === "help" || help !== "")
                     ? "" // install command not run and help/-h/--help (not error)
-                    : command == "install" && badOption !== ""
-                    ? badOption[1] == "-"
+                    : command === "install" && badOption !== ""
+                    ? badOption[1] === "-"
                       ? unknownOptionLong
                       : unknownOptionShort //install -b/--bar (error unknown option)
-                    : getCommand() !== "install" && help == ""
+                    : getCommand() !== "install" && help === ""
                     ? helpContent // install command not run and not -h/--help (error no command)
-                    : getCommand() == "install" &&
-                      helpCommand == "" &&
-                      help == "" &&
-                      badOption == ""
+                    : getCommand() === "install" &&
+                      helpCommand === "" &&
+                      help === "" &&
+                      badOption === ""
                     ? "" // output from running install!!!
                     : "", // otherwise, no output to stderr
               });
@@ -240,10 +270,10 @@ describe.each(variations)(
           path.resolve("./index"),
           ...(args.length > 0 ? args.split(" ") : []),
         ];
-        const result = main(myargs, backend);
+        backend.length > 0 ? main(myargs, backend) : main(myargs);
 
         // if we successfully are running the installl command,
-        if (command == "install") {
+        if (command === "install") {
           // we should see only the expected output to stdout
           expect(console.log).toHaveBeenLastCalledWith(`${stdOut}`);
           // we should see nothing written to stdout or stderr or console.error
@@ -273,11 +303,16 @@ describe.each(variations)(
     );
 
     // sample CLI commands
-    if (getRandomInt(200) == 0) {
+    if (getRandomInt(200) === 0) {
       test.each(backends)(
         `Sample CLI (BE="%s", args="${args}")`,
         async (backend) => {
-          const result = await cli(args.split(" "), ".", backend);
+          const result = await cli(
+            args.split(" "),
+            //randomizeOrder(args.split(" ")),
+            ".",
+            backend
+          );
           expect(result.stdout).toBe(
             `${stdOut}${stdOut.length > 0 ? "\n" : ""}`
           );
@@ -309,7 +344,7 @@ describe(`Test a few CLI commands`, () => {
 
   test.each(testBackends)(`check install`, async (backend) => {
     const result = await cli(`install`.split(" "), ".", backend);
-    expect(result.stdout).toBe(`${JSON.stringify(default_opts)}\n`);
+    expect(result.stdout).toBe(`${JSON.stringify(defaultOpts)}\n`);
     expect(result.stderr).toBe(``);
     expect(result.code).toBe(0);
   });
@@ -334,6 +369,20 @@ describe(`Test a few CLI commands`, () => {
     expect(result.stderr).toBe(`${unknownOptionLong}\n`);
     expect(result.code).toBe(1);
   });
+
+  // test randomization of array order
+  const inputArray = [];
+  for (let arraylen = 0; arraylen < 10; arraylen++) {
+    inputArray.push(arraylen);
+    test(`check random values`, () => {
+      const outputArray = randomizeOrder(inputArray);
+      for (let i = 0; i < outputArray.length; i++) {
+        expect(inputArray.length).toBe(outputArray.length);
+        expect(outputArray.includes(inputArray[i])).toBe(true);
+        expect(inputArray.includes(outputArray[i])).toBe(true);
+      }
+    });
+  }
 });
 
 function cli(args, cwd, api) {
