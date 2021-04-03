@@ -155,7 +155,8 @@ for (helpCommand of helpCommands) {
 
               // Add each test case to variations list
               variations.push({
-                backends: Object.keys(backendVersions), // run tests across a list of api implementations / mocks
+                // run tests across a list of api implementations / mocks
+                backends: Object.keys(backendVersions),
                 args: getArgs(), // the test command
                 command: getCommand(), // api command to run or ""
                 options: {
