@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-const backend = require("./include");
+const { Command, Option } = require("commander");
+
+const backend = require("./backend");
 
 function main(myargs, be) {
-  const { Command, Option } = require("commander");
-
   const program = new Command();
   program
     .version(
-      require("./package.json").version,
+      require("../package.json").version,
       "-V, --version",
       "Show version information for terrafile"
     )
@@ -17,7 +17,8 @@ function main(myargs, be) {
     .command("install")
     .description("Installs the files in your terrafile.json")
     .action((options) => {
-      const { install } = be === undefined ? backend : be;
+      const useBackend = be === undefined ? backend : be;
+      const { install } = useBackend;
       install(options);
     })
     .addOption(

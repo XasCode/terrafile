@@ -1,35 +1,20 @@
 const path = require("path");
-const exec = require("child_process").exec;
+
+const { main } = require("./terrafile");
+const { getRandomInt, cli } = require("./utils");
+const {
+  helpContent,
+  helpInstallContent,
+  unknownCommand,
+  unknownOptionLong,
+  unknownOptionShort,
+} = require("./strings");
+
 const backendVersions = {
-  "": require("./include"),
-  "./include.js": require("./include.js"),
-  "./include.mock.js": require("./include.mock.js"),
+  "": require("./backend"),
+  "./backend.js": require("./backend.js"),
+  "./backend.mock.js": require("./backend.mock.js"),
 };
-
-/*
-const testif = async (condition, bes, str, fn) => {
-  if (condition) return await test.each(bes)(str, fn);
-  return test.skip("skipping", () => {});
-};
-*/
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
-}
-
-function randomizeOrder(incoming) {
-  let workingCopy = [...incoming];
-  const outgoing = [];
-  for (let i = incoming.length; i > 0; i--) {
-    const selected = getRandomInt(i);
-    outgoing.push(workingCopy[selected]);
-    workingCopy = [
-      ...workingCopy.slice(0, selected),
-      ...workingCopy.slice(selected + 1),
-    ];
-  }
-  return outgoing;
-}
 
 const consoleSpyLog = jest.spyOn(console, "log").mockImplementation();
 const stdoutSpy = jest.spyOn(process.stdout, "write").mockImplementation();
@@ -37,37 +22,10 @@ const consoleSpyErr = jest.spyOn(console, "error").mockImplementation();
 const stderrSpy = jest.spyOn(process.stderr, "write").mockImplementation();
 const mockExit = jest.spyOn(process, "exit").mockImplementation(() => {});
 
-const helpContent = `Usage: index [options] [command]
-
-Manage vendored modules using a JSON file.
-
-Options:
-  -V, --version      Show version information for terrafile
-  -h, --help         display help for command
-
-Commands:
-  install [options]  Installs the files in your terrafile.json
-  help [command]     display help for command`;
-
-const helpInstallContent = `Usage: index install [options]
-
-Installs the files in your terrafile.json
-
-Options:
-  -d, --directory <string>  module directory (default: "vendor/modules")
-  -f, --file <string>       config file (default: "terrafile.json")
-  -h, --help                display help for command`;
-
-const unknownCommand = `error: unknown command 'foo'. See 'index --help'.`;
-
-const unknownOptionShort = `error: unknown option '-b'`;
-const unknownOptionLong = `error: unknown option '--bar'`;
-
 const defaultOpts = { directory: "vendor/modules", file: "terrafile.json" };
 
-const version = require("./package.json").version;
+const version = require("../package.json").version;
 
-const testBackends = ["", "./include.js", "./include.mock.js"];
 const helpCommands = ["", "help"];
 const commands = ["", "install", "foo"];
 const helps = ["", "-h", "--help"];
@@ -75,13 +33,6 @@ const versions = ["", "-V", "--version"];
 const directories = ["", "-d bar", "--directory bar"];
 const files = ["", "-f foobar", "--file foobar"];
 const badOptions = ["", "-b", "--bar"];
-
-//const commands = [""];
-//const helps = [""];
-//const versions = [""];
-//const directories = [""];
-//const files = [""];
-//const badOptions = [""];
 
 const variations = [];
 
@@ -270,10 +221,9 @@ describe.each(variations)(
     test.each(backends)(
       `Check CLI as module (BE="%s", args="${args}")`,
       async (backend) => {
-        const { main } = require("./index");
         const myargs = [
           process.argv[0],
-          path.resolve("./index"),
+          path.resolve("./src/terrafile"),
           ...(args.length > 0 ? args.split(" ") : []),
         ];
         backend.length > 0
@@ -282,29 +232,23 @@ describe.each(variations)(
 
         // if we successfully are running the installl command,
         if (command === "install") {
-          // we should see only the expected output to stdout
           expect(console.log).toHaveBeenLastCalledWith(`${stdOut}`);
-          // we should see nothing written to stdout or stderr or console.error
           expect(process.stdout.write).not.toHaveBeenCalled();
           expect(process.stderr.write).not.toHaveBeenCalled();
           expect(console.error).not.toHaveBeenCalled();
-          // it should run to completion without calling process.exit
           expect(process.exit).not.toHaveBeenCalled();
         } else {
           // if the install command is not run
           if (stdOut !== "") {
-            // check expected stdout
             expect(process.stdout.write.mock.calls[0][0]).toBe(
               `${stdOut}${stdOut.length > 0 ? "\n" : ""}`
             );
           }
           if (stdErr !== "") {
-            // check expected stderr
             expect(process.stderr.write.mock.calls[0][0]).toBe(
               `${stdErr}${stdErr.length > 0 ? "\n" : ""}`
             );
           }
-          // process.exit should be called with the appropriate exit code
           expect(process.exit.mock.calls[0][0]).toBe(code);
         }
       }
@@ -326,81 +270,24 @@ describe.each(variations)(
   }
 );
 
-// curated CLI commands
-describe(`Test a few CLI commands`, () => {
-  test(`check help`, async () => {
-    const result = await cli(`help`.split(" "), ".");
-    expect(result.stdout).toBe(`${helpContent}\n`);
-    expect(result.stderr).toBe(``);
-    expect(result.code).toBe(0);
-  });
+// each of these commands will be execed to test cli output
+const curatedCliCommands = {
+  help: [`${helpContent}\n`, "", 0],
+  "--version": [`${version}\n`, "", 0],
+  install: [`${JSON.stringify(defaultOpts)}\n`, "", 0],
+  foo: ["", `${unknownCommand}\n`, 1],
+  "--error": ["", `${helpContent}\n`, 1],
+  "install --bar": ["", `${unknownOptionLong}\n`, 1],
+};
 
-  test(`check --version`, async () => {
-    const result = await cli(`--version`.split(" "), ".");
-    expect(result.stdout).toBe(`${version}\n`);
-    expect(result.stderr).toBe(``);
-    expect(result.code).toBe(0);
-  });
-
-  test(`check install`, async () => {
-    const result = await cli(`install`.split(" "), ".");
-    expect(result.stdout).toBe(`${JSON.stringify(defaultOpts)}\n`);
-    expect(result.stderr).toBe(``);
-    expect(result.code).toBe(0);
-  });
-
-  test(`check foo`, async () => {
-    const result = await cli(`foo`.split(" "), ".");
-    expect(result.stdout).toBe(``);
-    expect(result.stderr).toBe(`${unknownCommand}\n`);
-    expect(result.code).toBe(1);
-  });
-
-  test(`check --error`, async () => {
-    const result = await cli(`--error`.split(" "), ".");
-    expect(result.stdout).toBe(``);
-    expect(result.stderr).toBe(`${helpContent}\n`);
-    expect(result.code).toBe(1);
-  });
-
-  test(`check install --bar`, async () => {
-    const result = await cli(`install --bar`.split(" "), ".");
-    expect(result.stdout).toBe(``);
-    expect(result.stderr).toBe(`${unknownOptionLong}\n`);
-    expect(result.code).toBe(1);
-  });
-
-  // test randomization of array order
-  const inputArray = [];
-  for (let arraylen = 0; arraylen < 10; arraylen++) {
-    inputArray.push(arraylen);
-    test(`check random values`, () => {
-      const outputArray = randomizeOrder(inputArray);
-      for (let i = 0; i < outputArray.length; i++) {
-        expect(inputArray.length).toBe(outputArray.length);
-        expect(outputArray.includes(inputArray[i])).toBe(true);
-        expect(inputArray.includes(outputArray[i])).toBe(true);
-      }
+describe.each(Object.keys(curatedCliCommands))(
+  `should execute 'terrafile' with a set of commands/options and verify the output`,
+  (cliCommand) => {
+    test(`check cli: ${cliCommand}`, async () => {
+      const result = await cli(cliCommand.split(" "), "./src");
+      expect(result.stdout).toBe(curatedCliCommands[cliCommand][0]);
+      expect(result.stderr).toBe(curatedCliCommands[cliCommand][1]);
+      expect(result.code).toBe(curatedCliCommands[cliCommand][2]);
     });
   }
-});
-
-function cli(args, cwd) {
-  return new Promise((resolve) => {
-    exec(
-      `node ${path.resolve("./index")} ${args.join(" ")}`,
-      {
-        env: process.env,
-        cwd,
-      },
-      (error, stdout, stderr) => {
-        resolve({
-          code: error && error.code ? error.code : 0,
-          error,
-          stdout,
-          stderr,
-        });
-      }
-    );
-  });
-}
+);
