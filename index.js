@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const backend = require("./include");
 
 function main(myargs, be) {
   const { Command, Option } = require("commander");
@@ -16,15 +17,7 @@ function main(myargs, be) {
     .command("install")
     .description("Installs the files in your terrafile.json")
     .action((options) => {
-      const backend =
-        be === undefined
-          ? `${
-              process.env.terrafile_be_api
-                ? process.env.terrafile_be_api
-                : "./include"
-            }`
-          : be;
-      const { install } = require(backend);
+      const { install } = be === undefined ? backend : be;
       install(options);
     })
     .addOption(
@@ -43,8 +36,8 @@ function main(myargs, be) {
   }
 }
 
+/* istanbul ignore if */
 if (require.main === module) {
-  /* istanbul ignore next */
   main(process.argv);
 } else {
   module.exports.main = main;

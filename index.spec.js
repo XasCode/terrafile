@@ -1,5 +1,10 @@
 const path = require("path");
 const exec = require("child_process").exec;
+const backendVersions = {
+  "": require("./include"),
+  "./include.js": require("./include.js"),
+  "./include.mock.js": require("./include.mock.js"),
+};
 
 /*
 const testif = async (condition, bes, str, fn) => {
@@ -150,7 +155,7 @@ for (helpCommand of helpCommands) {
 
               // Add each test case to variations list
               variations.push({
-                backends: testBackends, // run tests across a list of api implementations / mocks
+                backends: Object.keys(backendVersions), // run tests across a list of api implementations / mocks
                 args: getArgs(), // the test command
                 command: getCommand(), // api command to run or ""
                 options: {
@@ -246,7 +251,7 @@ describe.each(variations)(
     test.each(backends)(
       `Check BE output (BE="%s", args="${args}")`,
       async (backend) => {
-        const { install } = require(backend.length > 0 ? backend : "./include");
+        const { install } = backendVersions[backend];
         switch (command) {
           case "install": {
             install(options);
@@ -270,7 +275,9 @@ describe.each(variations)(
           path.resolve("./index"),
           ...(args.length > 0 ? args.split(" ") : []),
         ];
-        backend.length > 0 ? main(myargs, backend) : main(myargs);
+        backend.length > 0
+          ? main(myargs, backendVersions[backend])
+          : main(myargs);
 
         // if we successfully are running the installl command,
         if (command === "install") {
@@ -304,67 +311,59 @@ describe.each(variations)(
 
     // sample CLI commands
     if (getRandomInt(200) === 0) {
-      test.each(backends)(
-        `Sample CLI (BE="%s", args="${args}")`,
-        async (backend) => {
-          const result = await cli(
-            args.split(" "),
-            //randomizeOrder(args.split(" ")),
-            ".",
-            backend
-          );
-          expect(result.stdout).toBe(
-            `${stdOut}${stdOut.length > 0 ? "\n" : ""}`
-          );
-          expect(result.stderr).toBe(
-            `${stdErr}${stdErr.length > 0 ? "\n" : ""}`
-          );
-          expect(result.code).toBe(code);
-        }
-      );
+      test(`Sample CLI (BE="%s", args="${args}")`, async () => {
+        const result = await cli(
+          args.split(" "),
+          //randomizeOrder(args.split(" ")),
+          "."
+        );
+        expect(result.stdout).toBe(`${stdOut}${stdOut.length > 0 ? "\n" : ""}`);
+        expect(result.stderr).toBe(`${stdErr}${stdErr.length > 0 ? "\n" : ""}`);
+        expect(result.code).toBe(code);
+      });
     }
   }
 );
 
 // curated CLI commands
 describe(`Test a few CLI commands`, () => {
-  test.each(testBackends)(`check help`, async (backend) => {
-    const result = await cli(`help`.split(" "), ".", backend);
+  test(`check help`, async () => {
+    const result = await cli(`help`.split(" "), ".");
     expect(result.stdout).toBe(`${helpContent}\n`);
     expect(result.stderr).toBe(``);
     expect(result.code).toBe(0);
   });
 
-  test.each(testBackends)(`check --version`, async (backend) => {
-    const result = await cli(`--version`.split(" "), ".", backend);
+  test(`check --version`, async () => {
+    const result = await cli(`--version`.split(" "), ".");
     expect(result.stdout).toBe(`${version}\n`);
     expect(result.stderr).toBe(``);
     expect(result.code).toBe(0);
   });
 
-  test.each(testBackends)(`check install`, async (backend) => {
-    const result = await cli(`install`.split(" "), ".", backend);
+  test(`check install`, async () => {
+    const result = await cli(`install`.split(" "), ".");
     expect(result.stdout).toBe(`${JSON.stringify(defaultOpts)}\n`);
     expect(result.stderr).toBe(``);
     expect(result.code).toBe(0);
   });
 
-  test.each(testBackends)(`check foo`, async (backend) => {
-    const result = await cli(`foo`.split(" "), ".", backend);
+  test(`check foo`, async () => {
+    const result = await cli(`foo`.split(" "), ".");
     expect(result.stdout).toBe(``);
     expect(result.stderr).toBe(`${unknownCommand}\n`);
     expect(result.code).toBe(1);
   });
 
-  test.each(testBackends)(`check --error`, async (backend) => {
-    const result = await cli(`--error`.split(" "), ".", backend);
+  test(`check --error`, async () => {
+    const result = await cli(`--error`.split(" "), ".");
     expect(result.stdout).toBe(``);
     expect(result.stderr).toBe(`${helpContent}\n`);
     expect(result.code).toBe(1);
   });
 
-  test.each(testBackends)(`check install --bar`, async (backend) => {
-    const result = await cli(`install --bar`.split(" "), ".", backend);
+  test(`check install --bar`, async () => {
+    const result = await cli(`install --bar`.split(" "), ".");
     expect(result.stdout).toBe(``);
     expect(result.stderr).toBe(`${unknownOptionLong}\n`);
     expect(result.code).toBe(1);
@@ -385,15 +384,12 @@ describe(`Test a few CLI commands`, () => {
   }
 });
 
-function cli(args, cwd, api) {
+function cli(args, cwd) {
   return new Promise((resolve) => {
     exec(
       `node ${path.resolve("./index")} ${args.join(" ")}`,
       {
-        env:
-          api.length > 0
-            ? { ...process.env, terrafile_be_api: api }
-            : { ...process.env },
+        env: process.env,
         cwd,
       },
       (error, stdout, stderr) => {
