@@ -39,6 +39,24 @@ async function cli(args, cwd) {
   });
 }
 
+// eslint-disable-next-line max-len
+// from: https://stackoverflow.com/questions/15298912/javascript-generating-combinations-from-n-arrays-with-m-elements
+function cartesian(...args) {
+  var r = [],
+    max = args.length - 1;
+  function helper(arr, i) {
+    for (var j = 0, l = args[i].length; j < l; j++) {
+      var a = arr.slice(0); // clone arr
+      a.push(args[i][j]);
+      if (i == max) r.push(a);
+      else helper(a, i + 1);
+    }
+  }
+  helper([], 0);
+  return r;
+}
+
 exports.getRandomInt = getRandomInt;
 exports.randomizeOrder = randomizeOrder;
 exports.cli = cli;
+exports.cartesian = cartesian;
