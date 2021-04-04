@@ -32,6 +32,11 @@ describe("should take arrays and generate combinations of the elements", () => {
     expect(cartesian(...input)).toStrictEqual(output);
   });
 
+  test("edge case when one list withone elment", () => {
+    const input = [[1]];
+    expect(cartesian(...input)).toStrictEqual(input);
+  });
+
   test("when different size lists", () => {
     const input = [
       [1, 2],
