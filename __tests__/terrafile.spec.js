@@ -254,11 +254,7 @@ describe.each(variations)(
     // sample CLI commands
     if (getRandomInt(200) === 0) {
       test(`Sample CLI (BE="%s", args="${args}")`, async () => {
-        const result = await cli(
-          args.split(" "),
-          //randomizeOrder(args.split(" ")),
-          "."
-        );
+        const result = await cli(args.split(" "), ".");
         expect(result.stdout).toBe(`${stdOut}${stdOut.length > 0 ? "\n" : ""}`);
         expect(result.stderr).toBe(`${stdErr}${stdErr.length > 0 ? "\n" : ""}`);
         expect(result.code).toBe(code);
