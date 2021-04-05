@@ -41,8 +41,7 @@ async function cli(args, cwd) {
 
 // eslint-disable-next-line max-len
 // from: https://stackoverflow.com/questions/15298912/javascript-generating-combinations-from-n-arrays-with-m-elements
-function cartesian(...args) {
-  if (args.length === 0) return [];
+function calcCartesian(...args) {
   const r = [],
     max = args.length - 1;
   function helper(arr, i) {
@@ -54,6 +53,10 @@ function cartesian(...args) {
   }
   helper([], 0);
   return r;
+}
+function cartesian(...args) {
+  if (args.length === 0) return [];
+  return calcCartesian(...args);
 }
 
 exports.getRandomInt = getRandomInt;

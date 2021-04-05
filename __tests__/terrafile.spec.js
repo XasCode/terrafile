@@ -63,70 +63,46 @@ function getResults({
   directory,
   file,
 }) {
+  // default retVal
+  const retVal = {
+    code: 0,
+    stdOut: "",
+    stdErr: "",
+  };
   if (ver !== "") {
     // if -V/--version then will print version and return code = 0
-    return {
-      code: 0,
-      stdOut: version,
-      stdErr: "",
-    };
+    retVal.stdOut = version;
   } else if ((helpCommand !== "" || help !== "") && command === "install") {
     // if help + valid command, i.e. "help install" return code = 0
-    return {
-      code: 0,
-      stdOut: helpInstallContent,
-      stdErr: "",
-    };
+    retVal.stdOut = helpInstallContent;
   } else if ((helpCommand !== "" || help !== "") && command === "") {
     // if help and no command, return code = 0
-    return {
-      code: 0,
-      stdOut: helpContent,
-      stdErr: "",
-    };
+    retVal.stdOut = helpContent;
   } else if (helpCommand !== "") {
     // if help command and invalid command
-    return {
-      code: 1,
-      stdOut: "",
-      stdErr: helpContent,
-    };
+    retVal.code = 1;
+    retVal.stdErr = helpContent;
   } else if (help !== "") {
     // if invalid command and help
-    return {
-      code: 0,
-      stdOut: helpContent,
-      stdErr: "",
-    };
+    retVal.stdOut = helpContent;
   } else if (command === "") {
     // no command and no "help..."
-    return {
-      code: 1,
-      stdOut: "",
-      stdErr: helpContent,
-    };
+    retVal.code = 1;
+    retVal.stdErr = helpContent;
   } else if (command !== "install") {
     // if command not valid
-    return {
-      code: 1,
-      stdOut: "",
-      stdErr: unknownCommand,
-    };
+    retVal.code = 1;
+    retVal.stdErr = unknownCommand;
   } else if (badOption !== "" && command === "install") {
     // if command is valid (i.e. install) and invalid option flag
-    return {
-      code: 1,
-      stdOut: "",
-      stdErr: badOption[1] === "-" ? unknownOptionLong : unknownOptionShort,
-    };
+    retVal.code = 1;
+    retVal.stdErr =
+      badOption[1] === "-" ? unknownOptionLong : unknownOptionShort;
   } else {
     // do install,
-    return {
-      code: 0,
-      stdOut: JSON.stringify(getOptions({ directory, file })),
-      stdErr: "",
-    };
+    retVal.stdOut = JSON.stringify(getOptions({ directory, file }));
   }
+  return retVal;
 }
 
 // Determines if the install command will be run
