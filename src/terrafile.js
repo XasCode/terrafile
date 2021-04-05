@@ -3,24 +3,18 @@ const { Command, Option } = require("commander");
 
 const backend = require("./backend");
 
+version = require("../package.json").version;
+
 function main(myargs, be) {
   const program = new Command();
   program
-    .version(
-      require("../package.json").version,
-      "-V, --version",
-      "Show version information for terrafile"
-    )
-    .description("Manage vendored modules using a JSON file.");
-
-  program
+    .version(version, "-V, --version", "Show version information for terrafile")
+    .description("Manage vendored modules using a JSON file.")
     .command("install")
     .description("Installs the files in your terrafile.json")
-    .action((options) => {
-      const useBackend = be === undefined ? backend : be;
-      const { install } = useBackend;
-      install(options);
-    })
+    .action((options) =>
+      be === undefined ? backend.install(options) : be.install(options)
+    )
     .addOption(
       new Option("-d, --directory <string>", "module directory").default(
         "vendor/modules"
