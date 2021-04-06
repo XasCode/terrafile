@@ -230,8 +230,14 @@ describe.each(variations)(
     if (getRandomInt(200) === 0) {
       test(`Sample CLI (BE="%s", args="${args}")`, async () => {
         const result = await cli(args.split(" "), ".");
-        expect(result.stdout).toBe(`${stdOut}${stdOut.length > 0 ? "\n" : ""}`);
-        expect(result.stderr).toBe(`${stdErr}${stdErr.length > 0 ? "\n" : ""}`);
+        [
+          { actual: result.stdout, expected: stdOut },
+          { actual: result.stderr, expected: stdErr },
+        ].map((cur) => {
+          expect(cur.actual).toBe(
+            `${cur.expected}${cur.expected.length > 0 ? "\n" : ""}`
+          );
+        });
         expect(result.code).toBe(code);
       });
     }
