@@ -54,55 +54,55 @@ function getOptions({ directory, file }) {
 }
 
 // Specify the results for the CLI
-function getResults({
-  ver,
-  helpCommand,
-  command,
-  help,
-  badOption,
-  directory,
-  file,
-}) {
-  // default retVal
-  const retVal = {
-    code: 0,
-    stdOut: "",
-    stdErr: "",
-  };
-  if (ver !== "") {
-    // if -V/--version then will print version and return code = 0
-    retVal.stdOut = version;
-  } else if ((helpCommand !== "" || help !== "") && command === "install") {
-    // if help + valid command, i.e. "help install" return code = 0
-    retVal.stdOut = helpInstallContent;
-  } else if ((helpCommand !== "" || help !== "") && command === "") {
-    // if help and no command, return code = 0
-    retVal.stdOut = helpContent;
-  } else if (helpCommand !== "") {
-    // if help command and invalid command
-    retVal.code = 1;
-    retVal.stdErr = helpContent;
-  } else if (help !== "") {
-    // if invalid command and help
-    retVal.stdOut = helpContent;
-  } else if (command === "") {
-    // no command and no "help..."
-    retVal.code = 1;
-    retVal.stdErr = helpContent;
-  } else if (command !== "install") {
-    // if command not valid
-    retVal.code = 1;
-    retVal.stdErr = unknownCommand;
-  } else if (badOption !== "" && command === "install") {
-    // if command is valid (i.e. install) and invalid option flag
-    retVal.code = 1;
-    retVal.stdErr =
-      badOption[1] === "-" ? unknownOptionLong : unknownOptionShort;
-  } else {
-    // do install,
-    retVal.stdOut = JSON.stringify(getOptions({ directory, file }));
-  }
-  return retVal;
+function getResults(args) {
+  return args.ver !== ""
+    ? { code: 0, stdOut: version, stdErr: "" }
+    : noVerCheckHelp(args);
+}
+
+function noVerCheckHelp(args) {
+  return args.helpCommand !== "" || args.help !== ""
+    ? noVerYesHelpCheckCommand(args)
+    : noVerNoHelpCheckCommand(args);
+}
+
+function noVerYesHelpCheckCommand(args) {
+  return args.command === "install"
+    ? { code: 0, stdOut: helpInstallContent, stdErr: "" }
+    : args.command === ""
+    ? { code: 0, stdOut: helpContent, stdErr: "" }
+    : noVerYesHelpInvalidCommand(args);
+}
+
+function noVerYesHelpInvalidCommand(args) {
+  return args.helpCommand !== ""
+    ? { code: 1, stdOut: "", stdErr: helpContent }
+    : { code: 0, stdOut: helpContent, stdErr: "" };
+}
+
+function noVerNoHelpCheckCommand(args) {
+  return args.command === ""
+    ? { code: 1, stdOut: "", stdErr: helpContent }
+    : args.command !== "install"
+    ? { code: 1, stdOut: "", stdErr: unknownCommand }
+    : noVerNoHelpValidCommandCheckOptions(args);
+}
+
+function noVerNoHelpValidCommandCheckOptions(args) {
+  return args.badOption !== ""
+    ? {
+        code: 1,
+        stdOut: "",
+        stdErr:
+          args.badOption[1] === "-" ? unknownOptionLong : unknownOptionShort,
+      }
+    : {
+        code: 0,
+        stdOut: JSON.stringify(
+          getOptions({ directory: args.directory, file: args.file })
+        ),
+        stdErr: "",
+      };
 }
 
 // Determines if the install command will be run
@@ -143,6 +143,8 @@ const variations = combinations.map(
       badOption,
     };
 
+    const results = getResults(allArgs);
+
     // Add each test case to variations list
     return {
       // run tests across a list of api implementations / mocks
@@ -154,7 +156,9 @@ const variations = combinations.map(
         ...(directory !== "" ? { directory: directory.split(" ")[1] } : {}),
         ...(file !== "" ? { file: file.split(" ")[1] } : {}),
       },
-      ...getResults(allArgs),
+      code: results.code,
+      stdOut: results.stdOut,
+      stdErr: results.stdErr,
     };
   }
 );
