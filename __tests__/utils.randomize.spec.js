@@ -7,11 +7,7 @@ describe("should take an array and rearrange the elements randomly", () => {
     inputArray.push(arraylen);
     test("check random values", () => {
       const outputArray = randomizeOrder(inputArray);
-      for (let i = 0; i < outputArray.length; i++) {
-        expect(inputArray.length).toBe(outputArray.length);
-        expect(outputArray.includes(inputArray[i])).toBe(true);
-        expect(inputArray.includes(outputArray[i])).toBe(true);
-      }
+      expectRearranged(inputArray, outputArray);
     });
   }
 
@@ -29,11 +25,7 @@ describe("should take an array and rearrange the elements randomly", () => {
       [2, 1, 1],
     ];
     const output = randomizeOrder(input);
-    for (let i = 0; i < output.length; i++) {
-      expect(input.length).toBe(output.length);
-      expect(output.includes(input[i])).toBe(true);
-      expect(input.includes(output[i])).toBe(true);
-    }
+    expectRearranged(input, output);
     const numberOfMatchingPossibleOutputs = possibleOutputs
       .map(
         (possibleOutput) =>
@@ -43,3 +35,13 @@ describe("should take an array and rearrange the elements randomly", () => {
     expect(numberOfMatchingPossibleOutputs).toBe(1);
   });
 });
+
+/////////// helpers //////////
+
+function expectRearranged(inputArray, outputArray) {
+  outputArray.map((_, i, outArr) => {
+    expect(inputArray.length).toBe(outArr.length);
+    expect(outArr.includes(inputArray[i])).toBe(true);
+    expect(inputArray.includes(outArr[i])).toBe(true);
+  });
+}
