@@ -216,16 +216,15 @@ describe.each(variations)(
           expect(process.exit).not.toHaveBeenCalled();
         } else {
           // if the install command is not run
-          if (stdOut !== "") {
-            expect(process.stdout.write.mock.calls[0][0]).toBe(
-              `${stdOut}${stdOut.length > 0 ? "\n" : ""}`
-            );
-          }
-          if (stdErr !== "") {
-            expect(process.stderr.write.mock.calls[0][0]).toBe(
-              `${stdErr}${stdErr.length > 0 ? "\n" : ""}`
-            );
-          }
+          [stdOut, stdErr].map((cur) => {
+            if (cur != "") {
+              expect(
+                cur === stdOut
+                  ? process.stdout.write.mock.calls[0][0]
+                  : process.stderr.write.mock.calls[0][0]
+              ).toBe(`${cur}${cur.length > 0 ? "\n" : ""}`);
+            }
+          });
           expect(process.exit.mock.calls[0][0]).toBe(code);
         }
       }
