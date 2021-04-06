@@ -1,7 +1,7 @@
 const path = require("path");
 
 const { main } = require("../src/terrafile");
-const { getRandomInt, cli, cartesian } = require("../src/utils");
+const { getRandomInt, cli, cartesian } = require("./utils");
 const {
   helpContent,
   helpInstallContent,
@@ -229,7 +229,7 @@ describe.each(variations)(
     // sample CLI commands
     if (getRandomInt(200) === 0) {
       test(`Sample CLI (BE="%s", args="${args}")`, async () => {
-        const result = await cli(args.split(" "), ".");
+        const result = await cli(args.split(" "));
         [
           { actual: result.stdout, expected: stdOut },
           { actual: result.stderr, expected: stdErr },

@@ -1,4 +1,4 @@
-const { cli } = require("../src/utils");
+const { cli } = require("./utils");
 
 const {
   helpContent,

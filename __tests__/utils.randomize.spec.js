@@ -1,4 +1,4 @@
-const { randomizeOrder } = require("../src/utils");
+const { randomizeOrder } = require("./utils");
 
 // test randomization of array order
 describe("should take an array and rearrange the elements randomly", () => {

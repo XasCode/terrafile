@@ -1,5 +1,5 @@
 const path = require("path");
-const exec = require("child_process").exec;
+const execFile = require("child_process").execFile;
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
@@ -21,10 +21,10 @@ function randomizeOrder(incoming) {
 
 async function cli(args, cwd) {
   return new Promise((resolve) => {
-    exec(
-      `node ${path.resolve("./src/terrafile")} ${args.join(" ")}`,
+    execFile(
+      "node",
+      [`${path.resolve("./src/terrafile")}`, ...args],
       {
-        env: process.env,
         cwd,
       },
       (error, stdout, stderr) => {

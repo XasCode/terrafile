@@ -1,4 +1,4 @@
-const { cartesian } = require("../src/utils");
+const { cartesian } = require("./utils");
 
 describe("should take arrays and generate combinations of the elements", () => {
   test("take and array of arrays and verify outout", () => {
