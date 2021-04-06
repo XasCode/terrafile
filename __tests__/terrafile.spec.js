@@ -151,11 +151,7 @@ const variations = combinations.map(
       backends: Object.keys(backendVersions),
       args: getArgs(allArgs), // the test command
       command: getCommand(allArgs), // api command to run or ""
-      options: {
-        ...defaultOpts,
-        ...(directory !== "" ? { directory: directory.split(" ")[1] } : {}),
-        ...(file !== "" ? { file: file.split(" ")[1] } : {}),
-      },
+      options: getOptions(allArgs),
       code: results.code,
       stdOut: results.stdOut,
       stdErr: results.stdErr,
