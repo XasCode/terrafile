@@ -27,7 +27,7 @@
     "@jestaubach/eslint-config": "^0.0.1",
     "codecov": "^3.8.1",
     "coveralls": "^3.1.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.23.0",
     "jest-simple-dot-reporter": "^1.0.5"
   } 
 }
