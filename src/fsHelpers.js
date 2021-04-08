@@ -8,7 +8,7 @@ exports.checkIfDirExists = function (dir) {
 
 exports.getDirToCreate = function (dir) {
   try {
-    return path.resolve(dir);
+    return path.normalize(path.resolve(dir));
   } catch (err) {
     console.error(
       JSON.stringify(`Error resolving path: ${JSON.stringify(dir)}`)
@@ -18,7 +18,7 @@ exports.getDirToCreate = function (dir) {
 
 exports.createDir = function (dir) {
   try {
-    return mkdirp(dirToCreate);
+    return mkdirp(dir);
   } catch (err) {
     console.error(JSON.stringify(`Error creating dir: ${JSON.stringify(dir)}`));
   }

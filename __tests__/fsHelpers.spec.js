@@ -47,9 +47,16 @@ describe("unit tests of fsHelpers functions", () => {
   });
 
   test("should create a directory relative to current path", () => {
-    fsHelpers.createDir(fsHelpers.getDirToCreate("bar"));
+    fsHelpers.createDir("bar");
     expect(fsHelpers.checkIfDirExists(fsHelpers.getDirToCreate("bar"))).toBe(
       true
+    );
+  });
+
+  test("should raise error when attempting to create a directory with bad path", () => {
+    fsHelpers.createDir("<abc");
+    expect(fsHelpers.checkIfDirExists(fsHelpers.getDirToCreate("<abc"))).toBe(
+      false
     );
   });
 });
