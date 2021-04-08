@@ -22,6 +22,12 @@ const curatedCliCommands = {
   "install --bar": ["", `${unknownOptionLong}\n`, 1],
   "install -b": ["", `${unknownOptionShort}\n`, 1],
   "help install": [`${helpInstallContent}\n`, "", 0],
+  "install -d <abc": [
+    `{"directory":"<abc","file":"terrafile.json"}\n`,
+    // eslint-disable-next-line prettier/prettier
+    `"Error creating directory: \\"<abc\\""\n`,
+    0,
+  ],
 };
 
 describe.each(Object.keys(curatedCliCommands))(
