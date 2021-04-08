@@ -25,9 +25,13 @@ exports.createDir = function (dir) {
 };
 
 exports.abortDirCreation = function (dir) {
-  if (!isNull(dir)) {
+  if (dir !== null) {
     console.error(
-      `Cleaning up due to abort, directories created starting at: ${dir}`
+      `Cleaning up due to abort, directories created starting at: ${JSON.stringify(
+        dir
+      )}`
     );
   }
 };
+
+// TODO: deleteDir

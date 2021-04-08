@@ -59,4 +59,20 @@ describe("unit tests of fsHelpers functions", () => {
       false
     );
   });
+
+  test("should clean up any dirs created", () => {
+    fsHelpers.abortDirCreation(fsHelpers.getDirToCreate("bar"));
+    expect(console.error).toHaveBeenLastCalledWith(
+      `Cleaning up due to abort, directories created starting at: ${JSON.stringify(
+        fsHelpers.getDirToCreate("bar")
+      )}`
+    );
+  });
+
+  test("should do nothing if no dirs to cleanup", () => {
+    fsHelpers.abortDirCreation(
+      fsHelpers.createDir(fsHelpers.getDirToCreate(path.resolve(".")))
+    );
+    expect(console.error).not.toHaveBeenCalled();
+  });
 });
