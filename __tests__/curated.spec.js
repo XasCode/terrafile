@@ -27,7 +27,7 @@ const curatedCliCommands = {
     `{"directory":"<abc","file":"terrafile.json"}\n`,
     `${JSON.stringify(
       `Error creating dir: ${JSON.stringify(
-        fsHelpers.getDirToCreate("src/<abc")
+        fsHelpers.getAbsolutePathOfDir("src/<abc")
       )}`
     )}\n`,
     0,

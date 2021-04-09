@@ -6,7 +6,7 @@ exports.checkIfDirExists = function (dir) {
   return fs.existsSync(dir);
 };
 
-exports.getDirToCreate = function (dir) {
+exports.getAbsolutePathOfDir = function (dir) {
   try {
     return path.normalize(path.resolve(dir));
   } catch (err) {
