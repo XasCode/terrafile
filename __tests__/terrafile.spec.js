@@ -1,5 +1,6 @@
 const path = require("path");
 
+const spy = require("../__tests__/spy");
 const { main } = require("../src/terrafile");
 const { getRandomInt, cli, cartesian } = require("./utils");
 const {
@@ -19,12 +20,6 @@ const backendVersions = {
 const version = require("../package.json").version;
 
 const defaultOpts = { directory: "vendor/modules", file: "terrafile.json" };
-
-const consoleSpyLog = jest.spyOn(console, "log").mockImplementation();
-const stdoutSpy = jest.spyOn(process.stdout, "write").mockImplementation();
-const consoleSpyErr = jest.spyOn(console, "error").mockImplementation();
-const stderrSpy = jest.spyOn(process.stderr, "write").mockImplementation();
-const mockExit = jest.spyOn(process, "exit").mockImplementation(() => {});
 
 const helpCommands = ["", "help"];
 const commands = ["", "install", "foo"];
@@ -165,11 +160,7 @@ describe.each(variations)(
   `Iterate through test variations.`,
   async ({ backends, args, command, options, code, stdOut, stdErr }) => {
     beforeEach(() => {
-      consoleSpyLog.mockClear();
-      consoleSpyErr.mockClear();
-      stdoutSpy.mockClear();
-      stderrSpy.mockClear();
-      mockExit.mockClear();
+      spy.beforeEach();
     });
 
     // test the implementations / mocks (BE)

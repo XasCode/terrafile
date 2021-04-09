@@ -1,20 +1,11 @@
 const fsHelpers = require("../src/fsHelpers");
 const path = require("path");
-
-const consoleSpyLog = jest.spyOn(console, "log").mockImplementation();
-const stdoutSpy = jest.spyOn(process.stdout, "write").mockImplementation();
-const consoleSpyErr = jest.spyOn(console, "error").mockImplementation();
-const stderrSpy = jest.spyOn(process.stderr, "write").mockImplementation();
-const mockExit = jest.spyOn(process, "exit").mockImplementation(() => {});
+const spy = require("../__tests__/spy");
 
 // test randomization of array order
 describe("unit tests of fsHelpers functions", () => {
   beforeEach(() => {
-    consoleSpyLog.mockClear();
-    consoleSpyErr.mockClear();
-    stdoutSpy.mockClear();
-    stderrSpy.mockClear();
-    mockExit.mockClear();
+    spy.beforeEach();
   });
 
   test("should return true if directory exists", () => {
