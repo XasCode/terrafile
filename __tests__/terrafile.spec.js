@@ -13,7 +13,6 @@ const {
 
 const backendVersions = {
   "": require("../src/backend"),
-  "./backend.js": require("../src/backend.js"),
   "./backend.mock.js": require("../__mocks__/backend.mock.js"),
 };
 

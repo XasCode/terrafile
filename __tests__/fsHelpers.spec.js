@@ -1,6 +1,7 @@
 const fsHelpers = require("../src/fsHelpers");
 const path = require("path");
 const spy = require("../__tests__/spy");
+const fs = require("fs");
 
 describe("checkIfDirExists checks for the existence of a directory", () => {
   beforeEach(() => {
@@ -22,7 +23,7 @@ describe("checkIfDirExists checks for the existence of a directory", () => {
   });
 });
 
-describe("getAbsolutePathOfDir returns an absolute path from a provide relative or abs path", () => {
+describe("getAbsolutePathOfDir returns an absolute path from relative or abs path", () => {
   beforeEach(() => {
     spy.beforeEach();
   });
@@ -40,46 +41,122 @@ describe("getAbsolutePathOfDir returns an absolute path from a provide relative 
   });
 
   test("should output error if invalid path", () => {
-    const foo = fsHelpers.getAbsolutePathOfDir(-1);
+    const absPathOfDir = fsHelpers.getAbsolutePathOfDir(-1);
     expect(console.error).toHaveBeenLastCalledWith(
-      JSON.stringify(`Error resolving path: ${JSON.stringify(-1)}`)
+      `Error resolving path: ${-1}`
     );
   });
 });
 
 describe("createDir should create a directory at the provided location", () => {
   beforeEach(() => {
+    fsHelpers.rimrafDir(path.resolve(".", "bar"));
     spy.beforeEach();
   });
 
-  //TODO: Should test with absolute path
+  afterEach(() => {
+    fsHelpers.rimrafDir(path.resolve(".", "bar"));
+  });
 
-  //TODO: Should we make sure that we have a dir and not a file? like an isDir?
-
-  //TODO: Do we want to ensure that we're working with an absolute path?
-  test("should create a directory relative to current path", () => {
-    fsHelpers.createDir("bar");
+  test("should create a directory if provided an absolute path", () => {
+    const createdDirsStartingLocation = fsHelpers.createDir(
+      path.resolve(".", "bar")
+    );
     expect(
       fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePathOfDir("bar"))
     ).toBe(true);
+    expect(createdDirsStartingLocation).toBe(path.resolve(".", "bar"));
+  });
+
+  test("should raise error if provided a path to a file", () => {
+    const createdDirsStartingLocation = fsHelpers.createDir(
+      path.resolve(".", "LICENSE")
+    );
+    expect(createdDirsStartingLocation).toBe(undefined);
+    expect(console.error).toHaveBeenLastCalledWith(
+      `Error creating dir: ${path.resolve(".", "LICENSE")}`
+    );
+    expect(console.log).not.toHaveBeenCalled();
+  });
+
+  test("should raise error if provided a relative path", () => {
+    const createdDirsStartingLocation = fsHelpers.createDir("bar");
+    expect(console.error).toHaveBeenLastCalledWith(
+      `Error creating dir: ${"bar"}`
+    );
+    expect(createdDirsStartingLocation).toBe(undefined);
   });
 
   test("should raise error when attempting to create a directory with bad path", () => {
-    fsHelpers.createDir(-1);
+    const createdDirsStartingLocation = fsHelpers.createDir(-1);
     expect(fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePathOfDir(-1))).toBe(
       false
     );
+    expect(createdDirsStartingLocation).toBe(undefined);
   });
 });
 
-// TODO: review these
-describe("abortDirCreation should delete dirs that were created", () => {
+describe("rimrafDir should delete a dir and its contents", () => {
   beforeEach(() => {
+    fsHelpers.rimrafDir(path.resolve(".", "vendor"));
     spy.beforeEach();
   });
 
+  afterEach(() => {
+    fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+  });
+
+  test("should delete a directory that exists", () => {
+    fsHelpers.createDir(path.resolve(".", "vendor/modules"));
+    const deletedDir = fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+    expect(deletedDir).toBe(path.resolve(".", "vendor"));
+    expect(console.error).not.toHaveBeenCalled();
+    expect(fsHelpers.checkIfDirExists("vendor")).toBe(false);
+  });
+
+  test("should error when attempting to delete a directory that doesn't exist", () => {
+    const deletedDir = fsHelpers.rimrafDir(path.resolve(".", "sOmEtHiNg"));
+    expect(deletedDir).toBe(undefined);
+    expect(console.error).not.toHaveBeenLastCalledWith(
+      `Error deleting dir: ${"sOmEtHiNg"}`
+    );
+    expect(fsHelpers.checkIfDirExists("sOmEtHiNg")).toBe(false);
+  });
+
+  test("should error when attempting to delete a directory with bad path", () => {
+    const deletedDir = fsHelpers.rimrafDir(-1);
+    expect(deletedDir).toBe(undefined);
+    expect(console.error).toHaveBeenLastCalledWith(`Error deleting dir: ${-1}`);
+  });
+
+  test("should error when attempting to delete a directory that is not a dir", () => {
+    const deletedDir = fsHelpers.rimrafDir(path.resolve(".", "LICENSE"));
+    expect(deletedDir).toBe(undefined);
+    expect(console.error).toHaveBeenLastCalledWith(
+      `Error deleting dir: ${path.resolve(".", "LICENSE")}`
+    );
+    expect(
+      fs.existsSync(path.resolve(".", "LICENSE")) &&
+        !fs.lstatSync(path.resolve(".", "LICENSE")).isDirectory()
+    ).toBe(true);
+  });
+});
+
+describe("abortDirCreation should delete dirs that were created", () => {
+  beforeEach(() => {
+    fsHelpers.rimrafDir(path.resolve(".", "bar"));
+    spy.beforeEach();
+  });
+
+  afterEach(() => {
+    fsHelpers.rimrafDir(path.resolve(".", "bar"));
+  });
+
   test("should clean up any dirs created", () => {
-    fsHelpers.abortDirCreation(fsHelpers.getAbsolutePathOfDir("bar"));
+    const dirToDelete = fsHelpers.createDir(
+      fsHelpers.getAbsolutePathOfDir("bar")
+    );
+    fsHelpers.abortDirCreation(dirToDelete);
     expect(console.error).toHaveBeenLastCalledWith(
       `Cleaning up due to abort, directories created starting at: ${JSON.stringify(
         fsHelpers.getAbsolutePathOfDir("bar")
@@ -88,9 +165,9 @@ describe("abortDirCreation should delete dirs that were created", () => {
   });
 
   test("should do nothing if no dirs to cleanup", () => {
-    fsHelpers.abortDirCreation(
-      fsHelpers.createDir(fsHelpers.getAbsolutePathOfDir(path.resolve(".")))
+    fsHelpers.abortDirCreation(null);
+    expect(console.error).toHaveBeenLastCalledWith(
+      `Cleaning up due to abort, no directory to clean up.`
     );
-    expect(console.error).not.toHaveBeenCalled();
   });
 });
