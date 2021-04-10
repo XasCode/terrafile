@@ -1,3 +1,5 @@
+const path = require("path");
+
 const { cli } = require("./utils");
 const fsHelpers = require("../src/fsHelpers");
 
@@ -10,6 +12,7 @@ const {
 } = require("../src/strings");
 
 const version = require("../package.json").version;
+const { beforeEach } = require("./spy");
 
 const defaultOpts = { directory: "vendor/modules", file: "terrafile.json" };
 
@@ -25,7 +28,9 @@ const curatedCliCommands = {
   "help install": [`${helpInstallContent}\n`, "", 0],
   "install -d <abc": [
     `{"directory":"<abc","file":"terrafile.json"}\n`,
-    `Error creating dir: ${fsHelpers.getAbsolutePathOfDir("src/<abc")}\n`,
+    `Error resolving path: <abc\nError creating dir: ${fsHelpers.getAbsolutePathOfDir(
+      "src/<abc"
+    )}\n`,
     0,
   ],
 };
@@ -33,6 +38,14 @@ const curatedCliCommands = {
 describe.each(Object.keys(curatedCliCommands))(
   `should execute 'terrafile' with a set of commands/options and verify the output`,
   (cliCommand) => {
+    beforeEach(() => {
+      fsHelpers.rimrafDir(path.resolve(".", "./src/vendor"));
+    });
+
+    afterEach(() => {
+      fsHelpers.rimrafDir(path.resolve(".", "./src/vendor"));
+    });
+
     test(`check cli: ${cliCommand}`, async () => {
       const result = await cli(cliCommand.split(" "), "./src");
       expect(result.stdout).toBe(curatedCliCommands[cliCommand][0]);

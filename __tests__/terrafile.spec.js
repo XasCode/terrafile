@@ -1,5 +1,6 @@
 const path = require("path");
 
+const fsHelpers = require("../src/fsHelpers");
 const spy = require("../__tests__/spy");
 const { main } = require("../src/terrafile");
 const { getRandomInt, cli, cartesian } = require("./utils");
@@ -159,7 +160,14 @@ describe.each(variations)(
   `Iterate through test variations.`,
   async ({ backends, args, command, options, code, stdOut, stdErr }) => {
     beforeEach(() => {
+      fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+      fsHelpers.rimrafDir(path.resolve(".", "bar"));
       spy.beforeEach();
+    });
+
+    afterEach(() => {
+      fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+      fsHelpers.rimrafDir(path.resolve(".", "bar"));
     });
 
     // test the implementations / mocks (BE)

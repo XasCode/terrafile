@@ -10,6 +10,9 @@ exports.checkIfDirExists = checkIfDirExists;
 
 const getAbsolutePathOfDir = function (dir) {
   try {
+    if (dir.match(/^[a-zA-Z\-_./:\\]+$/g) === null) {
+      throw Error(`Dir contains unsupported characters. Received ${dir}.`);
+    }
     return path.normalize(path.resolve(dir));
   } catch (err) {
     console.error(`Error resolving path: ${dir}`);
@@ -19,7 +22,7 @@ exports.getAbsolutePathOfDir = getAbsolutePathOfDir;
 
 exports.createDir = function (dir) {
   try {
-    if (getAbsolutePathOfDir(dir) !== dir) {
+    if (dir === undefined || getAbsolutePathOfDir(dir) !== dir) {
       throw Error(
         `Function "createDir" expected an absolute path. Recieved "${dir}".`
       );
