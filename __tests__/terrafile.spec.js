@@ -1,7 +1,7 @@
 const path = require("path");
 
 const fsHelpers = require("../src/fsHelpers");
-const spy = require("../__tests__/spy");
+const spy = require("./spy");
 const { main } = require("../src/terrafile");
 const { getRandomInt, cli, cartesian } = require("./utils");
 const {
