@@ -36,14 +36,37 @@ function getSaveLocation(dir) {
   return path.resolve(dir, "..", ".terrafile.save");
 }
 
-exports.doInstall = function (options) {
-  const createdDirsStartingAt = createInstallDirectory(options.directory);
-  if (createdDirsStartingAt === null) {
-    const saveLocation = getSaveLocation(createdDirsStartingAt);
-    cleanUpOldSaveLocation(saveLocation);
-    renameDir(createdDirsStartingAt, saveLocation);
-    createInstallDirectory(options.directory);
+exports.createTargetDirectory = function (options) {
+  const retVals = { success: false, saved: null, created: null };
+  const optionsValid =
+    typeof options === "object" &&
+    options !== null &&
+    Object.keys(options).includes("directory") &&
+    fsHelpers.getAbsolutePathOfDir(options.directory) !== undefined;
+
+  if (optionsValid) {
+    const installDir = fsHelpers.getAbsolutePathOfDir(options.directory);
+    if (fsHelpers.checkIfDirExists(installDir)) {
+      const saveLocation = getSaveLocation(installDir);
+      cleanUpOldSaveLocation(saveLocation);
+      renameDir(installDir, saveLocation);
+      retVals.saved = saveLocation;
+    }
+
+    const createdStartingAt = createInstallDirectory(installDir);
+    retVals.created =
+      createdStartingAt !== undefined ? createdStartingAt : retVals.created;
+
+    //retVals.created = createInstallDirectory(installDir);
+    if (fsHelpers.checkIfDirExists(installDir)) {
+      retVals.success = true;
+    }
   }
+  return retVals;
+};
+
+// options = {file: <path>, ...}
+exports.readFileContents = function (options) {
   const configFileContents = gulpJson(options.file);
   // verify config version
   //   validate file format looks reaonable.
@@ -53,9 +76,7 @@ exports.doInstall = function (options) {
   //      terraform registry
   //      git
   //
-
-  // Cleanup
-  //   if all successful, delete backup location
-  //   if issues, delete locatation, restore backup if already existed
-  //   if issues, delete created dirs, if didn't already exist
 };
+
+// dirs = {saved: <path>|null, created: <path>|null}
+exports.restoreDirectories = function (dirs) {};

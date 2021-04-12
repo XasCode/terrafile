@@ -1,6 +1,7 @@
 const fs = require("fs");
 const mkdirp = require("mkdirp").sync;
 const rimraf = require("rimraf").sync;
+const touch = require("touch").sync;
 const path = require("path");
 
 const checkIfDirExists = function (dir) {
@@ -31,6 +32,10 @@ exports.createDir = function (dir) {
   } catch (err) {
     console.error(`Error creating dir: ${dir}`);
   }
+};
+
+exports.touchFile = function (filePath) {
+  touch(filePath);
 };
 
 const rimrafDir = function (dir) {
