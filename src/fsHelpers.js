@@ -4,12 +4,17 @@ const rimraf = require("rimraf").sync;
 const touch = require("touch").sync;
 const path = require("path");
 
+const checkIfFileExists = function (filePath) {
+  return fs.existsSync(filePath) && fs.lstatSync(filePath).isFile();
+};
+exports.checkIfFileExists = checkIfFileExists;
+
 const checkIfDirExists = function (dir) {
   return fs.existsSync(dir) && fs.lstatSync(dir).isDirectory();
 };
 exports.checkIfDirExists = checkIfDirExists;
 
-const getAbsolutePathOfDir = function (dir) {
+const getAbsolutePath = function (dir) {
   try {
     if (dir.match(/^[a-zA-Z\-_./:\\]+$/g) === null) {
       throw Error(`Dir contains unsupported characters. Received ${dir}.`);
@@ -19,11 +24,11 @@ const getAbsolutePathOfDir = function (dir) {
     console.error(`Error resolving path: ${dir}`);
   }
 };
-exports.getAbsolutePathOfDir = getAbsolutePathOfDir;
+exports.getAbsolutePath = getAbsolutePath;
 
 exports.createDir = function (dir) {
   try {
-    if (dir === undefined || getAbsolutePathOfDir(dir) !== dir) {
+    if (dir === undefined || getAbsolutePath(dir) !== dir) {
       throw Error(
         `Function "createDir" expected an absolute path. Recieved "${dir}".`
       );
@@ -39,7 +44,7 @@ exports.touchFile = function (filePath) {
 };
 
 const rimrafDir = function (dir) {
-  const absPath = getAbsolutePathOfDir(dir);
+  const absPath = getAbsolutePath(dir);
   if (absPath !== undefined && checkIfDirExists(dir)) {
     retval = rimraf(dir);
     return dir;
@@ -59,5 +64,14 @@ exports.abortDirCreation = function (dir) {
     rimrafDir(dir);
   } else {
     console.error(`Cleaning up due to abort, no directory to clean up.`);
+  }
+};
+
+exports.renameDir = function (oldPath, newPath) {
+  try {
+    fs.renameSync(oldPath, newPath);
+    console.log("Successfully renamed the directory.");
+  } catch (err) {
+    console.log(err);
   }
 };

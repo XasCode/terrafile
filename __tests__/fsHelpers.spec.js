@@ -23,25 +23,25 @@ describe("checkIfDirExists checks for the existence of a directory", () => {
   });
 });
 
-describe("getAbsolutePathOfDir returns an absolute path from relative or abs path", () => {
+describe("getAbsolutePath returns an absolute path from relative or abs path", () => {
   beforeEach(() => {
     spy.beforeEach();
   });
 
   test("should return path relative to current direct if valid relative path", () => {
-    expect(fsHelpers.getAbsolutePathOfDir("sOmEtHiNg/UnUsUaL")).toBe(
+    expect(fsHelpers.getAbsolutePath("sOmEtHiNg/UnUsUaL")).toBe(
       path.resolve("./sOmEtHiNg/UnUsUaL")
     );
   });
 
   test("should return path if valid relative path", () => {
     expect(
-      fsHelpers.getAbsolutePathOfDir(path.resolve(".", "sOmEtHiNg/UnUsUaL"))
+      fsHelpers.getAbsolutePath(path.resolve(".", "sOmEtHiNg/UnUsUaL"))
     ).toBe(path.resolve("./sOmEtHiNg/UnUsUaL"));
   });
 
   test("should output error if invalid path", () => {
-    const absPathOfDir = fsHelpers.getAbsolutePathOfDir(-1);
+    const absPathOfDir = fsHelpers.getAbsolutePath(-1);
     expect(console.error).toHaveBeenLastCalledWith(
       `Error resolving path: ${-1}`
     );
@@ -62,9 +62,9 @@ describe("createDir should create a directory at the provided location", () => {
     const createdDirsStartingLocation = fsHelpers.createDir(
       path.resolve(".", "bar")
     );
-    expect(
-      fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePathOfDir("bar"))
-    ).toBe(true);
+    expect(fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePath("bar"))).toBe(
+      true
+    );
     expect(createdDirsStartingLocation).toBe(path.resolve(".", "bar"));
   });
 
@@ -89,7 +89,7 @@ describe("createDir should create a directory at the provided location", () => {
 
   test("should raise error when attempting to create a directory with bad path", () => {
     const createdDirsStartingLocation = fsHelpers.createDir(-1);
-    expect(fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePathOfDir(-1))).toBe(
+    expect(fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePath(-1))).toBe(
       false
     );
     expect(createdDirsStartingLocation).toBe(undefined);
@@ -153,13 +153,11 @@ describe("abortDirCreation should delete dirs that were created", () => {
   });
 
   test("should clean up any dirs created", () => {
-    const dirToDelete = fsHelpers.createDir(
-      fsHelpers.getAbsolutePathOfDir("bar")
-    );
+    const dirToDelete = fsHelpers.createDir(fsHelpers.getAbsolutePath("bar"));
     fsHelpers.abortDirCreation(dirToDelete);
     expect(console.error).toHaveBeenLastCalledWith(
       `Cleaning up due to abort, directories created starting at: ${JSON.stringify(
-        fsHelpers.getAbsolutePathOfDir("bar")
+        fsHelpers.getAbsolutePath("bar")
       )}`
     );
   });

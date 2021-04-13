@@ -28,7 +28,7 @@ const curatedCliCommands = {
   "help install": [`${helpInstallContent}\n`, "", 0],
   "install -d <abc": [
     `{"directory":"<abc","file":"terrafile.json"}\n`,
-    `Error resolving path: <abc\nError creating dir: ${fsHelpers.getAbsolutePathOfDir(
+    `Error resolving path: <abc\nError creating dir: ${fsHelpers.getAbsolutePath(
       "src/<abc"
     )}\n`,
     0,

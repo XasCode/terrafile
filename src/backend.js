@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { config } = require("process");
 //const { pathToFileURL } = require("url");
 const fsHelpers = require("./fsHelpers");
 
@@ -8,8 +9,9 @@ exports.install = function (options) {
   console.log(`${JSON.stringify(options)}`);
 };
 
+// TODO: stop using this, instead use createTargetDirectory
 function createInstallDirectory(dir) {
-  const dirToCreate = fsHelpers.getAbsolutePathOfDir(dir);
+  const dirToCreate = fsHelpers.getAbsolutePath(dir);
   const createdDirsStartingAt = fsHelpers.createDir(dirToCreate);
   const isDirCreated = fsHelpers.checkIfDirExists(dirToCreate);
   return createdDirsStartingAt;
@@ -17,15 +19,6 @@ function createInstallDirectory(dir) {
 
 function gulpJson(file) {
   return JSON.parse(fs.readFileSync(path.resolve(".", file), "utf-8"));
-}
-
-function renameDir(oldPath, newPath) {
-  try {
-    fs.renameSync(oldPath, newPath);
-    console.log("Successfully renamed the directory.");
-  } catch (err) {
-    console.log(err);
-  }
 }
 
 function cleanUpOldSaveLocation(dir) {
@@ -42,18 +35,18 @@ exports.createTargetDirectory = function (options) {
     typeof options === "object" &&
     options !== null &&
     Object.keys(options).includes("directory") &&
-    fsHelpers.getAbsolutePathOfDir(options.directory) !== undefined;
+    fsHelpers.getAbsolutePath(options.directory) !== undefined;
 
   if (optionsValid) {
-    const installDir = fsHelpers.getAbsolutePathOfDir(options.directory);
+    const installDir = fsHelpers.getAbsolutePath(options.directory);
     if (fsHelpers.checkIfDirExists(installDir)) {
       const saveLocation = getSaveLocation(installDir);
       cleanUpOldSaveLocation(saveLocation);
-      renameDir(installDir, saveLocation);
+      fsHelpers.renameDir(installDir, saveLocation);
       retVals.saved = saveLocation;
     }
 
-    const createdStartingAt = createInstallDirectory(installDir);
+    const createdStartingAt = fsHelpers.createDir(installDir);
     retVals.created =
       createdStartingAt !== undefined ? createdStartingAt : retVals.created;
 
@@ -67,7 +60,23 @@ exports.createTargetDirectory = function (options) {
 
 // options = {file: <path>, ...}
 exports.readFileContents = function (options) {
-  const configFileContents = gulpJson(options.file);
+  const retVals = { success: false, contents: null };
+  const optionsValid =
+    typeof options === "object" &&
+    options !== null &&
+    Object.keys(options).includes("file") &&
+    fsHelpers.getAbsolutePath(options.file) !== undefined;
+
+  if (optionsValid) {
+    const absFilePath = fsHelpers.getAbsolutePath(options.file);
+    if (fsHelpers.checkIfFileExists(absFilePath)) {
+      const configFileContents = gulpJson(absFilePath);
+      retVals.contents = configFileContents;
+      retVals.success = true;
+    }
+  }
+  return retVals;
+
   // verify config version
   //   validate file format looks reaonable.
   //   determine source

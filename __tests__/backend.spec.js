@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const { hasUncaughtExceptionCaptureCallback } = require("process");
 
 const backend = require("../src/backend");
 const fsHelpers = require("../src/fsHelpers");
@@ -30,10 +29,10 @@ describe("create the target directory", () => {
       directory: installDir,
     });
     expect(
-      fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePathOfDir(installDir))
+      fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePath(installDir))
     ).toBe(true);
     expect(retVals.success).toBe(true);
-    expect(retVals.created).toBe(fsHelpers.getAbsolutePathOfDir("vendor"));
+    expect(retVals.created).toBe(fsHelpers.getAbsolutePath("vendor"));
     expect(retVals.saved).toBe(null);
   });
 
@@ -50,7 +49,7 @@ describe("create the target directory", () => {
 
   test("should create the target directory and save <path> when directory already exists", () => {
     const installDir = "vendor/modules";
-    const absInstallDir = fsHelpers.getAbsolutePathOfDir(installDir);
+    const absInstallDir = fsHelpers.getAbsolutePath(installDir);
     fsHelpers.createDir(absInstallDir);
     const retVals = backend.createTargetDirectory({
       directory: installDir,
@@ -91,11 +90,74 @@ describe("create the target directory", () => {
 
   test("should error if directory provided is a file", () => {
     const installDir = "vendor/modules";
-    fsHelpers.createDir(fsHelpers.getAbsolutePathOfDir(installDir + "/.."));
-    fsHelpers.touchFile(fsHelpers.getAbsolutePathOfDir(installDir));
+    fsHelpers.createDir(fsHelpers.getAbsolutePath(installDir + "/.."));
+    fsHelpers.touchFile(fsHelpers.getAbsolutePath(installDir));
     const retVals = backend.createTargetDirectory({ directory: installDir });
     expect(retVals.success).toBe(false);
     expect(retVals.created).toBe(null);
     expect(retVals.saved).toBe(null);
+  });
+});
+
+describe("reads specified terrafile", () => {
+  test("should read in the terrafile (JSON) specified in {options: <file>} w/ relative path", () => {
+    const configFile = "terrafile.json.sample";
+    const retVals = backend.readFileContents({ file: configFile });
+    expect(retVals.success).toBe(true);
+    expect(retVals.contents).not.toBe(null);
+  });
+
+  test("should read in the terrafile (JSON) specified in {options: <file>} w/ abs path", () => {
+    const configFile = path.resolve(".", "terrafile.json.sample");
+    const retVals = backend.readFileContents({ file: configFile });
+    expect(retVals.success).toBe(true);
+    expect(retVals.contents).not.toBe(null);
+  });
+
+  test("should err on no options", () => {
+    const retVals = backend.readFileContents();
+    expect(retVals.success).toBe(false);
+    expect(retVals.contents).toBe(null);
+  });
+
+  test("should err on bad file path", () => {
+    const retVals = backend.readFileContents({ file: -1 });
+    expect(retVals.success).toBe(false);
+    expect(retVals.contents).toBe(null);
+  });
+
+  test("should err on empty file path", () => {
+    const retVals = backend.readFileContents({ file: "" });
+    expect(retVals.success).toBe(false);
+    expect(retVals.contents).toBe(null);
+  });
+
+  test("should err on no file path", () => {
+    const retVals = backend.readFileContents({});
+    expect(retVals.success).toBe(false);
+    expect(retVals.contents).toBe(null);
+  });
+
+  test("should err on file is not a file", () => {
+    const configFile = path.resolve(".");
+    const retVals = backend.readFileContents({ file: configFile });
+    expect(retVals.success).toBe(false);
+    expect(retVals.contents).toBe(null);
+  });
+
+  test("should err on file not found", () => {
+    //
+  });
+
+  test("should err on lack read access to file", () => {
+    //
+  });
+
+  test("should err on file is not valid json", () => {
+    //
+  });
+
+  test("should err on json contents not as expected", () => {
+    //
   });
 });
