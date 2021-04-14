@@ -18,7 +18,12 @@ function createInstallDirectory(dir) {
 }
 
 function gulpJson(file) {
-  return JSON.parse(fs.readFileSync(path.resolve(".", file), "utf-8"));
+  try {
+    return JSON.parse(fs.readFileSync(path.resolve(".", file), "utf-8"));
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
 }
 
 function cleanUpOldSaveLocation(dir) {
@@ -69,16 +74,22 @@ exports.readFileContents = function (options) {
 
   if (optionsValid) {
     const absFilePath = fsHelpers.getAbsolutePath(options.file);
+    console.log(absFilePath);
+
     if (fsHelpers.checkIfFileExists(absFilePath)) {
       const configFileContents = gulpJson(absFilePath);
-      retVals.contents = configFileContents;
-      retVals.success = true;
+      if (
+        configFileContents !== null &&
+        validateJsonContents(configFileContents)
+      ) {
+        retVals.success = true;
+        retVals.contents = configFileContents;
+      }
     }
   }
   return retVals;
 
   // verify config version
-  //   validate file format looks reaonable.
   //   determine source
   //   switch(source)
   //      local
@@ -86,6 +97,48 @@ exports.readFileContents = function (options) {
   //      git
   //
 };
+
+function getModuleSourceType(source) {
+  let returnValue = undefined;
+  if (source !== undefined) {
+    if (source.slice(0, 8) === "https://" && source.slice(-4) === ".git") {
+      returnValue = "git-https";
+    } else if (source.slice(0, 4) === "git@" && source.slice(-4) === ".git") {
+      returnValue = "git-ssh";
+    } else if (
+      source.slice(0, 1) === "/" ||
+      source.slice(0, 2) === "./" ||
+      source.slice(0, 3) === "../"
+    ) {
+      returnValue = "local-dir";
+    } else {
+      returnValue = "terraform-registry";
+    }
+  }
+  return returnValue;
+}
+
+function validateJsonContents(contents) {
+  let notFound = false,
+    notValid = false;
+  const acceptable = ["source", "version"];
+  const keys = Object.keys(contents);
+  for (const key of keys) {
+    const moduleDef = contents[key];
+    const sourceType = getModuleSourceType(moduleDef["source"]);
+    if (sourceType === undefined) {
+      notValid = true;
+    } else {
+      const params = Object.keys(moduleDef);
+      for (const param of params) {
+        if (!acceptable.includes(param)) {
+          notFound = true;
+        }
+      }
+    }
+  }
+  return !(notValid || notFound);
+}
 
 // dirs = {saved: <path>|null, created: <path>|null}
 exports.restoreDirectories = function (dirs) {};

@@ -169,3 +169,10 @@ describe("abortDirCreation should delete dirs that were created", () => {
     );
   });
 });
+
+describe("rename", () => {
+  test("should err on invalid dirs", () => {
+    fsHelpers.renameDir(-1, -2);
+    expect(console.error).toHaveBeenLastCalledWith("ERR_INVALID_ARG_TYPE");
+  });
+});

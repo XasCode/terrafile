@@ -100,6 +100,15 @@ describe("create the target directory", () => {
 });
 
 describe("reads specified terrafile", () => {
+  beforeEach(() => {
+    fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+    spy.beforeEach();
+  });
+
+  afterEach(() => {
+    fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+  });
+
   test("should read in the terrafile (JSON) specified in {options: <file>} w/ relative path", () => {
     const configFile = "terrafile.json.sample";
     const retVals = backend.readFileContents({ file: configFile });
@@ -146,18 +155,39 @@ describe("reads specified terrafile", () => {
   });
 
   test("should err on file not found", () => {
-    //
+    const configFile = "does_not_exist";
+    const retVals = backend.readFileContents({ file: configFile });
+    expect(retVals.success).toBe(false);
+    expect(retVals.contents).toBe(null);
   });
 
   test("should err on lack read access to file", () => {
-    //
+    const configFile = "vendor/no_access_file";
+    fsHelpers.createDir(fsHelpers.getAbsolutePath(configFile + "/.."));
+    fsHelpers.touchFile(fsHelpers.getAbsolutePath(configFile), 0o000);
+    const retVals = backend.readFileContents({ file: configFile });
+    expect(retVals.success).toBe(false);
+    expect(retVals.contents).toBe(null);
   });
 
   test("should err on file is not valid json", () => {
-    //
+    const configFile = "./__tests__/invalid.txt";
+    const retVals = backend.readFileContents({ file: configFile });
+    expect(retVals.success).toBe(false);
+    expect(retVals.contents).toBe(null);
   });
 
-  test("should err on json contents not as expected", () => {
-    //
+  test("should err on json contents not as expected - no source", () => {
+    const configFile = "./__tests__/invalid.json";
+    const retVals = backend.readFileContents({ file: configFile });
+    expect(retVals.success).toBe(false);
+    expect(retVals.contents).toBe(null);
+  });
+
+  test("should err on json contents not as expected - bad key", () => {
+    const configFile = "__tests__/invalid2.json";
+    const retVals = backend.readFileContents({ file: configFile });
+    expect(retVals.success).toBe(false);
+    expect(retVals.contents).toBe(null);
   });
 });

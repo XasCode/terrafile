@@ -16,7 +16,7 @@ exports.checkIfDirExists = checkIfDirExists;
 
 const getAbsolutePath = function (dir) {
   try {
-    if (dir.match(/^[a-zA-Z\-_./:\\]+$/g) === null) {
+    if (dir.match(/^[a-zA-Z0-9\-_./:\\]+$/g) === null) {
       throw Error(`Dir contains unsupported characters. Received ${dir}.`);
     }
     return path.normalize(path.resolve(dir));
@@ -39,8 +39,11 @@ exports.createDir = function (dir) {
   }
 };
 
-exports.touchFile = function (filePath) {
+exports.touchFile = function (filePath, perms) {
   touch(filePath);
+  if (perms !== undefined) {
+    fs.chmodSync(filePath, perms);
+  }
 };
 
 const rimrafDir = function (dir) {
@@ -72,6 +75,6 @@ exports.renameDir = function (oldPath, newPath) {
     fs.renameSync(oldPath, newPath);
     console.log("Successfully renamed the directory.");
   } catch (err) {
-    console.log(err);
+    console.error(err.code);
   }
 };

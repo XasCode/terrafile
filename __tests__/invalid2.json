@@ -1,0 +1,7 @@
+{
+  "xascode-sample": {
+    "source": "./__tests__",
+    "version": "1.0.0",
+    "badkey": "abcdefg"
+  }
+}
