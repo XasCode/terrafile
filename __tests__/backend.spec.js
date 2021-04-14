@@ -164,7 +164,7 @@ describe("reads specified terrafile", () => {
   test("should err on lack read access to file", () => {
     const configFile = "vendor/no_access_file";
     fsHelpers.createDir(fsHelpers.getAbsolutePath(configFile + "/.."));
-    fsHelpers.touchFile(fsHelpers.getAbsolutePath(configFile), 0o000);
+    fsHelpers.touchFile(fsHelpers.getAbsolutePath(configFile), 0);
     const retVals = backend.readFileContents({ file: configFile });
     expect(retVals.success).toBe(false);
     expect(retVals.contents).toBe(null);
