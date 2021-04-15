@@ -151,4 +151,4 @@ function validateJsonContents(contents) {
 }
 
 // dirs = {saved: <path>|null, created: <path>|null}
-exports.restoreDirectories = function (dirs) {};
+//exports.restoreDirectories = function (dirs) {};
