@@ -36,56 +36,50 @@ function getSaveLocation(dir) {
   return path.resolve(dir, "..", ".terrafile.save");
 }
 
-exports.createTargetDirectory = function (options) {
-  const retVals = { success: false, saved: null, created: null };
-  const optionsValid =
+function validOptions(options, fileOrFolder) {
+  return (
     typeof options === "object" &&
     options !== null &&
-    Object.keys(options).includes("directory") &&
-    fsHelpers.getAbsolutePath(options.directory) !== undefined;
+    Object.keys(options).includes(fileOrFolder) &&
+    fsHelpers.getAbsolutePath(options[fileOrFolder]) !== undefined
+  );
+}
 
-  if (optionsValid) {
+function renameExistingDir(installDir) {
+  let retVal = null;
+  if (fsHelpers.checkIfDirExists(installDir)) {
+    const saveLocation = getSaveLocation(installDir);
+    cleanUpOldSaveLocation(saveLocation);
+    fsHelpers.renameDir(installDir, saveLocation);
+    retVal = saveLocation;
+  }
+  return retVal;
+}
+
+function createNewDir(installDir) {
+  const createdStartingAt = fsHelpers.createDir(installDir);
+  return createdStartingAt !== undefined ? createdStartingAt : null;
+}
+
+exports.createTargetDirectory = function (options) {
+  let retVals = { success: false, saved: null, created: null };
+  if (validOptions(options, "directory")) {
     const installDir = fsHelpers.getAbsolutePath(options.directory);
-    if (fsHelpers.checkIfDirExists(installDir)) {
-      const saveLocation = getSaveLocation(installDir);
-      cleanUpOldSaveLocation(saveLocation);
-      fsHelpers.renameDir(installDir, saveLocation);
-      retVals.saved = saveLocation;
-    }
-
-    const createdStartingAt = fsHelpers.createDir(installDir);
-    retVals.created =
-      createdStartingAt !== undefined ? createdStartingAt : retVals.created;
-
-    //retVals.created = createInstallDirectory(installDir);
-    if (fsHelpers.checkIfDirExists(installDir)) {
-      retVals.success = true;
-    }
+    retVals.saved = renameExistingDir(installDir);
+    retVals.created = createNewDir(installDir);
+    retVals.success = fsHelpers.checkIfDirExists(installDir);
   }
   return retVals;
 };
 
 // options = {file: <path>, ...}
 exports.readFileContents = function (options) {
-  const retVals = { success: false, contents: null };
-  const optionsValid =
-    typeof options === "object" &&
-    options !== null &&
-    Object.keys(options).includes("file") &&
-    fsHelpers.getAbsolutePath(options.file) !== undefined;
-
-  if (optionsValid) {
+  let retVals = { success: false, contents: null };
+  if (validOptions(options, "file")) {
     const absFilePath = fsHelpers.getAbsolutePath(options.file);
-
     if (fsHelpers.checkIfFileExists(absFilePath)) {
       const configFileContents = gulpJson(absFilePath);
-      if (
-        configFileContents !== null &&
-        validateJsonContents(configFileContents)
-      ) {
-        retVals.success = true;
-        retVals.contents = configFileContents;
-      }
+      retVals = { ...retVals, ...validateJsonContents(configFileContents) };
     }
   }
   return retVals;
@@ -145,12 +139,17 @@ function validateFieldsForEachModuleEntry(moduleDef) {
 
 function validateJsonContents(contents) {
   let notFoundOrNotValid = false;
-  const keys = Object.keys(contents);
-  for (const key of keys) {
-    notFoundOrNotValid =
-      notFoundOrNotValid || validateFieldsForEachModuleEntry(contents[key]);
+  if (contents !== null) {
+    const keys = Object.keys(contents);
+    for (const key of keys) {
+      notFoundOrNotValid =
+        notFoundOrNotValid || validateFieldsForEachModuleEntry(contents[key]);
+    }
   }
-  return !notFoundOrNotValid;
+  return {
+    success: contents !== null ? !notFoundOrNotValid : false,
+    contents: notFoundOrNotValid ? null : contents,
+  };
 }
 
 // dirs = {saved: <path>|null, created: <path>|null}
