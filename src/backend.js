@@ -101,18 +101,19 @@ exports.readFileContents = function (options) {
 function getModuleSourceType(source) {
   let returnValue = undefined;
   if (source !== undefined) {
+    returnValue = "terraform-registry";
     if (source.slice(0, 8) === "https://" && source.slice(-4) === ".git") {
       returnValue = "git-https";
-    } else if (source.slice(0, 4) === "git@" && source.slice(-4) === ".git") {
+    }
+    if (source.slice(0, 4) === "git@" && source.slice(-4) === ".git") {
       returnValue = "git-ssh";
-    } else if (
+    }
+    if (
       source.slice(0, 1) === "/" ||
       source.slice(0, 2) === "./" ||
       source.slice(0, 3) === "../"
     ) {
       returnValue = "local-dir";
-    } else {
-      returnValue = "terraform-registry";
     }
   }
   return returnValue;
