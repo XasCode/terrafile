@@ -15,12 +15,12 @@ const spy = require("./spy");
  */
 describe("create the target directory", () => {
   beforeEach(() => {
-    fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
     spy.beforeEach();
   });
 
   afterEach(() => {
-    fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
   });
 
   test("should create the target directory when provided relative path", () => {
@@ -37,7 +37,7 @@ describe("create the target directory", () => {
   });
 
   test("should create the target directory when provided absolute path", () => {
-    const installDir = path.resolve(".", "vendor/modules");
+    const installDir = fsHelpers.getAbsolutePath("vendor/modules");
     const retVals = backend.createTargetDirectory({
       directory: installDir,
     });
@@ -101,12 +101,12 @@ describe("create the target directory", () => {
 
 describe("reads specified terrafile", () => {
   beforeEach(() => {
-    fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
     spy.beforeEach();
   });
 
   afterEach(() => {
-    fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
   });
 
   test("should read in the terrafile (JSON) specified in {options: <file>} w/ relative path", () => {
@@ -117,7 +117,7 @@ describe("reads specified terrafile", () => {
   });
 
   test("should read in the terrafile (JSON) specified in {options: <file>} w/ abs path", () => {
-    const configFile = path.resolve(".", "terrafile.json.sample");
+    const configFile = fsHelpers.getAbsolutePath("terrafile.json.sample");
     const retVals = backend.readFileContents({ file: configFile });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
@@ -148,7 +148,7 @@ describe("reads specified terrafile", () => {
   });
 
   test("should err on file is not a file", () => {
-    const configFile = path.resolve(".");
+    const configFile = fsHelpers.getAbsolutePath(".");
     const retVals = backend.readFileContents({ file: configFile });
     expect(retVals.success).toBe(false);
     expect(retVals.contents).toBe(null);
@@ -164,7 +164,7 @@ describe("reads specified terrafile", () => {
   test("should err on lack read access to file", () => {
     const configFile = "vendor/no_access_file";
     fsHelpers.createDir(fsHelpers.getAbsolutePath(configFile + "/.."));
-    fsHelpers.touchFile(fsHelpers.getAbsolutePath(configFile), 0);
+    fsHelpers.touchFile(fsHelpers.getAbsolutePath(configFile), 0o0);
     const retVals = backend.readFileContents({ file: configFile });
     expect(retVals.success).toBe(false);
     expect(retVals.contents).toBe(null);

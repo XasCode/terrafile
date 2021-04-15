@@ -50,17 +50,17 @@ describe("getAbsolutePath returns an absolute path from relative or abs path", (
 
 describe("createDir should create a directory at the provided location", () => {
   beforeEach(() => {
-    fsHelpers.rimrafDir(path.resolve(".", "bar"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("bar"));
     spy.beforeEach();
   });
 
   afterEach(() => {
-    fsHelpers.rimrafDir(path.resolve(".", "bar"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("bar"));
   });
 
   test("should create a directory if provided an absolute path", () => {
     const createdDirsStartingLocation = fsHelpers.createDir(
-      path.resolve(".", "bar")
+      fsHelpers.getAbsolutePath("bar")
     );
     expect(fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePath("bar"))).toBe(
       true
@@ -70,11 +70,11 @@ describe("createDir should create a directory at the provided location", () => {
 
   test("should raise error if provided a path to a file", () => {
     const createdDirsStartingLocation = fsHelpers.createDir(
-      path.resolve(".", "LICENSE")
+      fsHelpers.getAbsolutePath("LICENSE")
     );
     expect(createdDirsStartingLocation).toBe(undefined);
     expect(console.error).toHaveBeenLastCalledWith(
-      `Error creating dir: ${path.resolve(".", "LICENSE")}`
+      `Error creating dir: ${fsHelpers.getAbsolutePath("LICENSE")}`
     );
     expect(console.log).not.toHaveBeenCalled();
   });
@@ -98,24 +98,26 @@ describe("createDir should create a directory at the provided location", () => {
 
 describe("rimrafDir should delete a dir and its contents", () => {
   beforeEach(() => {
-    fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
     spy.beforeEach();
   });
 
   afterEach(() => {
-    fsHelpers.rimrafDir(path.resolve(".", "vendor"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
   });
 
   test("should delete a directory that exists", () => {
-    fsHelpers.createDir(path.resolve(".", "vendor/modules"));
-    const deletedDir = fsHelpers.rimrafDir(path.resolve(".", "vendor"));
-    expect(deletedDir).toBe(path.resolve(".", "vendor"));
+    fsHelpers.createDir(fsHelpers.getAbsolutePath("vendor/modules"));
+    const deletedDir = fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
+    expect(deletedDir).toBe(fsHelpers.getAbsolutePath("vendor"));
     expect(console.error).not.toHaveBeenCalled();
     expect(fsHelpers.checkIfDirExists("vendor")).toBe(false);
   });
 
   test("should error when attempting to delete a directory that doesn't exist", () => {
-    const deletedDir = fsHelpers.rimrafDir(path.resolve(".", "sOmEtHiNg"));
+    const deletedDir = fsHelpers.rimrafDir(
+      fsHelpers.getAbsolutePath("sOmEtHiNg")
+    );
     expect(deletedDir).toBe(undefined);
     expect(console.error).not.toHaveBeenLastCalledWith(
       `Error deleting dir: ${"sOmEtHiNg"}`
@@ -130,26 +132,28 @@ describe("rimrafDir should delete a dir and its contents", () => {
   });
 
   test("should error when attempting to delete a directory that is not a dir", () => {
-    const deletedDir = fsHelpers.rimrafDir(path.resolve(".", "LICENSE"));
+    const deletedDir = fsHelpers.rimrafDir(
+      fsHelpers.getAbsolutePath("LICENSE")
+    );
     expect(deletedDir).toBe(undefined);
     expect(console.error).toHaveBeenLastCalledWith(
-      `Error deleting dir: ${path.resolve(".", "LICENSE")}`
+      `Error deleting dir: ${fsHelpers.getAbsolutePath("LICENSE")}`
     );
     expect(
-      fs.existsSync(path.resolve(".", "LICENSE")) &&
-        !fs.lstatSync(path.resolve(".", "LICENSE")).isDirectory()
+      fs.existsSync(fsHelpers.getAbsolutePath("LICENSE")) &&
+        !fs.lstatSync(fsHelpers.getAbsolutePath("LICENSE")).isDirectory()
     ).toBe(true);
   });
 });
 
 describe("abortDirCreation should delete dirs that were created", () => {
   beforeEach(() => {
-    fsHelpers.rimrafDir(path.resolve(".", "bar"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("bar"));
     spy.beforeEach();
   });
 
   afterEach(() => {
-    fsHelpers.rimrafDir(path.resolve(".", "bar"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("bar"));
   });
 
   test("should clean up any dirs created", () => {

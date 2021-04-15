@@ -19,7 +19,9 @@ function createInstallDirectory(dir) {
 
 function gulpJson(file) {
   try {
-    return JSON.parse(fs.readFileSync(path.resolve(".", file), "utf-8"));
+    return JSON.parse(
+      fs.readFileSync(fsHelpers.getAbsolutePath(file), "utf-8")
+    );
   } catch (err) {
     console.error(err);
     return null;
@@ -74,7 +76,6 @@ exports.readFileContents = function (options) {
 
   if (optionsValid) {
     const absFilePath = fsHelpers.getAbsolutePath(options.file);
-    console.log(absFilePath);
 
     if (fsHelpers.checkIfFileExists(absFilePath)) {
       const configFileContents = gulpJson(absFilePath);
