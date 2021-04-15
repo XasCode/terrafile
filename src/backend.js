@@ -118,26 +118,37 @@ function getModuleSourceType(source) {
   return returnValue;
 }
 
-function validateJsonContents(contents) {
-  let notFound = false,
-    notValid = false;
+function validateEachField(moduleDef) {
+  let notFoundOrNotValid = false;
   const acceptable = ["source", "version"];
-  const keys = Object.keys(contents);
-  for (const key of keys) {
-    const moduleDef = contents[key];
-    const sourceType = getModuleSourceType(moduleDef["source"]);
-    if (sourceType === undefined) {
-      notValid = true;
-    } else {
-      const params = Object.keys(moduleDef);
-      for (const param of params) {
-        if (!acceptable.includes(param)) {
-          notFound = true;
-        }
-      }
+  const params = Object.keys(moduleDef);
+  for (const param of params) {
+    if (!acceptable.includes(param)) {
+      notFoundOrNotValid = true;
     }
   }
-  return !(notValid || notFound);
+  return notFoundOrNotValid;
+}
+
+function validateFieldsForEachModuleEntry(moduleDef) {
+  let notFoundOrNotValid = false;
+  const sourceType = getModuleSourceType(moduleDef["source"]);
+  if (sourceType === undefined) {
+    notFoundOrNotValid = true;
+  } else {
+    notFoundOrNotValid = notFoundOrNotValid || validateEachField(moduleDef);
+  }
+  return notFoundOrNotValid;
+}
+
+function validateJsonContents(contents) {
+  let notFoundOrNotValid = false;
+  const keys = Object.keys(contents);
+  for (const key of keys) {
+    notFoundOrNotValid =
+      notFoundOrNotValid || validateFieldsForEachModuleEntry(contents[key]);
+  }
+  return !notFoundOrNotValid;
 }
 
 // dirs = {saved: <path>|null, created: <path>|null}
