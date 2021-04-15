@@ -72,26 +72,12 @@ exports.createTargetDirectory = function (options) {
 
 // options = {file: <path>, ...}
 exports.readFileContents = function (options) {
-  const retVals = { success: false, contents: null };
-  const optionsValid =
-    typeof options === "object" &&
-    options !== null &&
-    Object.keys(options).includes("file") &&
-    fsHelpers.getAbsolutePath(options.file) !== undefined;
-
-  if (optionsValid) {
+  let retVals = { success: false, contents: null };
+  if (validOptions(options, "file")) {
     const absFilePath = fsHelpers.getAbsolutePath(options.file);
-    console.log(absFilePath);
-
     if (fsHelpers.checkIfFileExists(absFilePath)) {
       const configFileContents = gulpJson(absFilePath);
-      if (
-        configFileContents !== null &&
-        validateJsonContents(configFileContents)
-      ) {
-        retVals.success = true;
-        retVals.contents = configFileContents;
-      }
+      retVals = { ...retVals, ...validateJsonContents(configFileContents) };
     }
   }
   return retVals;
@@ -151,12 +137,17 @@ function validateFieldsForEachModuleEntry(moduleDef) {
 
 function validateJsonContents(contents) {
   let notFoundOrNotValid = false;
-  const keys = Object.keys(contents);
-  for (const key of keys) {
-    notFoundOrNotValid =
-      notFoundOrNotValid || validateFieldsForEachModuleEntry(contents[key]);
+  if (contents !== null) {
+    const keys = Object.keys(contents);
+    for (const key of keys) {
+      notFoundOrNotValid =
+        notFoundOrNotValid || validateFieldsForEachModuleEntry(contents[key]);
+    }
   }
-  return !notFoundOrNotValid;
+  return {
+    success: contents !== null ? !notFoundOrNotValid : false,
+    contents: notFoundOrNotValid ? null : contents,
+  };
 }
 
 // dirs = {saved: <path>|null, created: <path>|null}
