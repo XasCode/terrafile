@@ -93,23 +93,44 @@ exports.readFileContents = function (options) {
   //
 };
 
+function startsWith(str, start) {
+  return start === str.slice(0, start.length);
+}
+
+function endsWith(str, end) {
+  return end === str.slice(-1 * end.length);
+}
+
+function isGitHttps(source) {
+  return startsWith(source, "https://") && endsWith(source, ".git");
+}
+
+function isGitSSH(source) {
+  return startsWith(source, "git@") && endsWith(source, ".git");
+}
+
+function isLocalDir(source) {
+  return (
+    startsWith(source, "/") ||
+    startsWith(source, "./") ||
+    startsWith(source, "../")
+  );
+}
+
+function moduleSourceType(source) {
+  return isGitHttps(source)
+    ? "git-https"
+    : isGitSSH(source)
+    ? "git-ssh"
+    : isLocalDir(source)
+    ? "local-dir"
+    : "terraform-registry";
+}
+
 function getModuleSourceType(source) {
   let returnValue = undefined;
   if (source !== undefined) {
-    returnValue = "terraform-registry";
-    if (source.slice(0, 8) === "https://" && source.slice(-4) === ".git") {
-      returnValue = "git-https";
-    }
-    if (source.slice(0, 4) === "git@" && source.slice(-4) === ".git") {
-      returnValue = "git-ssh";
-    }
-    if (
-      source.slice(0, 1) === "/" ||
-      source.slice(0, 2) === "./" ||
-      source.slice(0, 3) === "../"
-    ) {
-      returnValue = "local-dir";
-    }
+    returnValue = moduleSourceType(source);
   }
   return returnValue;
 }
