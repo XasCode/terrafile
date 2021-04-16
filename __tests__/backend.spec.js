@@ -1,3 +1,4 @@
+const { option } = require("commander");
 const fs = require("fs");
 const path = require("path");
 
@@ -67,36 +68,26 @@ describe("create the target directory", () => {
     );
   });
 
-  test("should error if no directory provided", () => {
-    const retVals = backend.createTargetDirectory({});
+  function expectDirIssue(options) {
+    const retVals = backend.createTargetDirectory(options);
     expect(retVals.success).toBe(false);
     expect(retVals.created).toBe(null);
     expect(retVals.saved).toBe(null);
-  });
-
-  test("should error if no directory provided", () => {
-    const retVals = backend.createTargetDirectory();
-    expect(retVals.success).toBe(false);
-    expect(retVals.created).toBe(null);
-    expect(retVals.saved).toBe(null);
-  });
-
-  test("should error if directory provided is empty string", () => {
-    const retVals = backend.createTargetDirectory({ directory: "" });
-    expect(retVals.success).toBe(false);
-    expect(retVals.created).toBe(null);
-    expect(retVals.saved).toBe(null);
-  });
+  }
 
   test("should error if directory provided is a file", () => {
     const installDir = "vendor/modules";
     fsHelpers.createDir(fsHelpers.getAbsolutePath(installDir + "/.."));
     fsHelpers.touchFile(fsHelpers.getAbsolutePath(installDir));
-    const retVals = backend.createTargetDirectory({ directory: installDir });
-    expect(retVals.success).toBe(false);
-    expect(retVals.created).toBe(null);
-    expect(retVals.saved).toBe(null);
+    expectDirIssue({ directory: installDir });
   });
+
+  test.each([undefined, -1, {}, { directory: -1 }, { directory: "" }])(
+    "should error if dir issue %s",
+    (badDirOption) => {
+      expectDirIssue(badDirOption);
+    }
+  );
 });
 
 describe("reads specified terrafile", () => {
@@ -123,71 +114,31 @@ describe("reads specified terrafile", () => {
     expect(retVals.contents).not.toBe(null);
   });
 
-  test("should err on no options", () => {
-    const retVals = backend.readFileContents();
+  function expectFileIssue(options) {
+    const retVals = backend.readFileContents(options);
     expect(retVals.success).toBe(false);
     expect(retVals.contents).toBe(null);
-  });
-
-  test("should err on bad file path", () => {
-    const retVals = backend.readFileContents({ file: -1 });
-    expect(retVals.success).toBe(false);
-    expect(retVals.contents).toBe(null);
-  });
-
-  test("should err on empty file path", () => {
-    const retVals = backend.readFileContents({ file: "" });
-    expect(retVals.success).toBe(false);
-    expect(retVals.contents).toBe(null);
-  });
-
-  test("should err on no file path", () => {
-    const retVals = backend.readFileContents({});
-    expect(retVals.success).toBe(false);
-    expect(retVals.contents).toBe(null);
-  });
-
-  test("should err on file is not a file", () => {
-    const configFile = fsHelpers.getAbsolutePath(".");
-    const retVals = backend.readFileContents({ file: configFile });
-    expect(retVals.success).toBe(false);
-    expect(retVals.contents).toBe(null);
-  });
-
-  test("should err on file not found", () => {
-    const configFile = "does_not_exist";
-    const retVals = backend.readFileContents({ file: configFile });
-    expect(retVals.success).toBe(false);
-    expect(retVals.contents).toBe(null);
-  });
+  }
 
   test("should err on lack read access to file", () => {
     const configFile = "vendor/no_access_file";
     fsHelpers.createDir(fsHelpers.getAbsolutePath(configFile + "/.."));
-    fsHelpers.touchFile(fsHelpers.getAbsolutePath(configFile), 0o0);
-    const retVals = backend.readFileContents({ file: configFile });
-    expect(retVals.success).toBe(false);
-    expect(retVals.contents).toBe(null);
+    fsHelpers.touchFile(fsHelpers.getAbsolutePath(configFile), 0);
+    expectFileIssue({ file: configFile });
   });
 
-  test("should err on file is not valid json", () => {
-    const configFile = "./__tests__/invalid.txt";
-    const retVals = backend.readFileContents({ file: configFile });
-    expect(retVals.success).toBe(false);
-    expect(retVals.contents).toBe(null);
-  });
-
-  test("should err on json contents not as expected - no source", () => {
-    const configFile = "./__tests__/invalid.json";
-    const retVals = backend.readFileContents({ file: configFile });
-    expect(retVals.success).toBe(false);
-    expect(retVals.contents).toBe(null);
-  });
-
-  test("should err on json contents not as expected - bad key", () => {
-    const configFile = "__tests__/invalid2.json";
-    const retVals = backend.readFileContents({ file: configFile });
-    expect(retVals.success).toBe(false);
-    expect(retVals.contents).toBe(null);
+  test.each([
+    undefined,
+    -1,
+    {},
+    { file: -1 },
+    { file: "" },
+    { file: fsHelpers.getAbsolutePath(".") },
+    { file: "does_not_exist" },
+    { file: "./__tests__/invalid.txt" },
+    { file: "./__tests__/invalid.json" },
+    { file: "__tests__/invalid2.json" },
+  ])("should err when bad file provided: %s", (badFileOption) => {
+    expectFileIssue(badFileOption);
   });
 });
