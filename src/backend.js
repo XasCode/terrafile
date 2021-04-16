@@ -13,7 +13,7 @@ exports.install = function (options) {
 function createInstallDirectory(dir) {
   const dirToCreate = fsHelpers.getAbsolutePath(dir);
   const createdDirsStartingAt = fsHelpers.createDir(dirToCreate);
-  const isDirCreated = fsHelpers.checkIfDirExists(dirToCreate);
+  fsHelpers.checkIfDirExists(dirToCreate);
   return createdDirsStartingAt;
 }
 
@@ -102,29 +102,30 @@ function endsWith(str, end) {
 }
 
 function isGitHttps(source) {
-  return startsWith(source, "https://") && endsWith(source, ".git");
+  return startsWith(source, "https://") && endsWith(source, ".git")
+    ? "git-https"
+    : "";
 }
 
 function isGitSSH(source) {
-  return startsWith(source, "git@") && endsWith(source, ".git");
+  return startsWith(source, "git@") && endsWith(source, ".git")
+    ? "git-ssh"
+    : "";
 }
 
 function isLocalDir(source) {
-  return (
-    startsWith(source, "/") ||
+  return startsWith(source, "/") ||
     startsWith(source, "./") ||
     startsWith(source, "../")
-  );
+    ? "local-dir"
+    : "";
 }
 
 function moduleSourceType(source) {
-  return isGitHttps(source)
-    ? "git-https"
-    : isGitSSH(source)
-    ? "git-ssh"
-    : isLocalDir(source)
-    ? "local-dir"
-    : "terraform-registry";
+  return (
+    [isGitHttps(source), isGitSSH(source), isLocalDir(source)].join("") ||
+    "terraform-registry"
+  );
 }
 
 function getModuleSourceType(source) {
