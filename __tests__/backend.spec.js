@@ -14,17 +14,19 @@ const spy = require("./spy");
  *   {success: false, created: <abs path of created>, saved: <abs path of saved>} if error
  *      + if error, created? delete created, saved: delete <path>, restore saved to <path>
  */
-describe("create the target directory", () => {
+describe("createTargetDirectory should create a directory for vendor modules", () => {
   beforeEach(() => {
+    // before each test clean up any dirs created in previous tests
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
     spy.beforeEach();
   });
 
   afterEach(() => {
+    // clean up any dirs created by the test
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
   });
 
-  test("should create the target directory when provided relative path", () => {
+  test("should create the target directory when provided a relative path", () => {
     const installDir = "vendor/modules";
     const retVals = backend.createTargetDirectory({
       directory: installDir,
@@ -37,7 +39,7 @@ describe("create the target directory", () => {
     expect(retVals.saved).toBe(null);
   });
 
-  test("should create the target directory when provided absolute path", () => {
+  test("should create the target directory when provided an absolute path", () => {
     const installDir = fsHelpers.getAbsolutePath("vendor/modules");
     const retVals = backend.createTargetDirectory({
       directory: installDir,
@@ -68,6 +70,7 @@ describe("create the target directory", () => {
     );
   });
 
+  // expected output when bad input provided to createTargetDirectory
   function expectDirIssue(options) {
     const retVals = backend.createTargetDirectory(options);
     expect(retVals.success).toBe(false);
@@ -75,45 +78,49 @@ describe("create the target directory", () => {
     expect(retVals.saved).toBe(null);
   }
 
-  test("should error if directory provided is a file", () => {
+  test("should not create the target directory when path is to a file", () => {
     const installDir = "vendor/modules";
     fsHelpers.createDir(fsHelpers.getAbsolutePath(installDir + "/.."));
     fsHelpers.touchFile(fsHelpers.getAbsolutePath(installDir));
     expectDirIssue({ directory: installDir });
   });
 
+  // try various bad inputs
   test.each([undefined, -1, {}, { directory: -1 }, { directory: "" }])(
-    "should error if dir issue %s",
+    "should not create the target directory when provided a bad path %s",
     (badDirOption) => {
       expectDirIssue(badDirOption);
     }
   );
 });
 
-describe("reads specified terrafile", () => {
+describe("read file contents should read specified json file and validate its contents", () => {
   beforeEach(() => {
+    // cleans up any dirs created from previous tests
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
     spy.beforeEach();
   });
 
   afterEach(() => {
+    // cleans up any dirs create by the test
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
   });
 
-  test("should read in the terrafile (JSON) specified in {options: <file>} w/ relative path", () => {
+  test("should successfully read a valid terrafile when provided a relative path", () => {
     const configFile = "terrafile.json.sample";
     const retVals = backend.readFileContents({ file: configFile });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
   });
 
-  test("should read in the terrafile (JSON) specified in {options: <file>} w/ abs path", () => {
+  test("should successfully read a valid terrafile when provided an absolute path", () => {
     const configFile = fsHelpers.getAbsolutePath("terrafile.json.sample");
     const retVals = backend.readFileContents({ file: configFile });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
   });
 
+  // expected result when provide bad file path
   function expectFileIssue(options) {
     const retVals = backend.readFileContents(options);
     expect(retVals.success).toBe(false);
@@ -127,6 +134,7 @@ describe("reads specified terrafile", () => {
     expectFileIssue({ file: configFile });
   });
 
+  // test various bad paths and files
   test.each([
     undefined,
     -1,
@@ -135,8 +143,8 @@ describe("reads specified terrafile", () => {
     { file: "" },
     { file: fsHelpers.getAbsolutePath(".") },
     { file: "does_not_exist" },
-    { file: "./__tests__/invalid.txt" },
-    { file: "./__tests__/invalid.json" },
+    { file: "__tests__/invalid.txt" },
+    { file: "__tests__/invalid.json" },
     { file: "__tests__/invalid2.json" },
   ])("should err when bad file provided: %s", (badFileOption) => {
     expectFileIssue(badFileOption);
