@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { config } = require("process");
+//const { config } = require("process");
 //const { pathToFileURL } = require("url");
 const fsHelpers = require("./fsHelpers");
 
@@ -15,17 +15,6 @@ function createInstallDirectory(dir) {
   const createdDirsStartingAt = fsHelpers.createDir(dirToCreate);
   fsHelpers.checkIfDirExists(dirToCreate);
   return createdDirsStartingAt;
-}
-
-function gulpJson(file) {
-  try {
-    return JSON.parse(
-      fs.readFileSync(fsHelpers.getAbsolutePath(file), "utf-8")
-    );
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
 }
 
 function cleanUpOldSaveLocation(dir) {
@@ -73,6 +62,7 @@ exports.createTargetDirectory = function (options) {
 };
 
 // options = {file: <path>, ...}
+/*
 exports.readFileContents = function (options) {
   let retVals = { success: false, contents: null };
   if (validOptions(options, "file")) {
@@ -83,14 +73,69 @@ exports.readFileContents = function (options) {
     }
   }
   return retVals;
+};
+*/
+function TerrafileJson(json) {
+  return {
+    contents: json,
+    validateJsonContents: function () {
+      let notValid = false;
+      const keys = Object.keys(this.contents);
+      for (const key of keys) {
+        notValid =
+          notValid || validateFieldsForEachModuleEntry(this.contents[key]);
+      }
+      return {
+        success: !notValid,
+        contents: notValid ? null : this.contents,
+      };
+    },
+  };
+}
 
-  // verify config version
-  //   determine source
-  //   switch(source)
-  //      local
-  //      terraform registry
-  //      git
-  //
+function Json(json) {
+  function isValidJson(contents) {
+    return contents !== null;
+  }
+
+  return isValidJson(json)
+    ? TerrafileJson(json).validateJsonContents()
+    : { success: false, contents: json };
+}
+
+function gulpJson(file) {
+  try {
+    return JSON.parse(
+      fs.readFileSync(fsHelpers.getAbsolutePath(file), "utf-8")
+    );
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+function JsonFile(absFilePath) {
+  return Json(gulpJson(absFilePath));
+}
+
+function File(absFilePath) {
+  function exists(filePath) {
+    return fsHelpers.checkIfFileExists(filePath);
+  }
+
+  return exists(absFilePath)
+    ? JsonFile(absFilePath)
+    : { success: false, contents: null };
+}
+
+function Terrafile(options) {
+  return validOptions(options, "file")
+    ? File(fsHelpers.getAbsolutePath(options.file))
+    : { success: false, contents: null };
+}
+
+exports.readFileContents = function (options) {
+  return Terrafile(options);
 };
 
 function startsWith(str, start) {
@@ -157,21 +202,6 @@ function validateFieldsForEachModuleEntry(moduleDef) {
     notFoundOrNotValid = notFoundOrNotValid || validateEachField(moduleDef);
   }
   return notFoundOrNotValid;
-}
-
-function validateJsonContents(contents) {
-  let notFoundOrNotValid = false;
-  if (contents !== null) {
-    const keys = Object.keys(contents);
-    for (const key of keys) {
-      notFoundOrNotValid =
-        notFoundOrNotValid || validateFieldsForEachModuleEntry(contents[key]);
-    }
-  }
-  return {
-    success: contents !== null ? !notFoundOrNotValid : false,
-    contents: notFoundOrNotValid ? null : contents,
-  };
 }
 
 // dirs = {saved: <path>|null, created: <path>|null}
