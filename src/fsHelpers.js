@@ -49,7 +49,7 @@ exports.touchFile = function (filePath, perms) {
 const rimrafDir = function (dir) {
   const absPath = getAbsolutePath(dir);
   if (absPath !== undefined && checkIfDirExists(dir)) {
-    retval = rimraf(dir);
+    rimraf(dir);
     return dir;
   } else {
     console.error(`Error deleting dir: ${dir}`);

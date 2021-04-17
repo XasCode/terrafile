@@ -41,7 +41,7 @@ describe("getAbsolutePath returns an absolute path from relative or abs path", (
   });
 
   test("should output error if invalid path", () => {
-    const absPathOfDir = fsHelpers.getAbsolutePath(-1);
+    fsHelpers.getAbsolutePath(-1);
     expect(console.error).toHaveBeenLastCalledWith(
       `Error resolving path: ${-1}`
     );

@@ -1,8 +1,7 @@
-const { option } = require("commander");
-const fs = require("fs");
 const path = require("path");
 
-const backend = require("../src/backend");
+const venDir = require("../src/venDir");
+const terraFile = require("../src/processFile");
 const fsHelpers = require("../src/fsHelpers");
 const spy = require("./spy");
 
@@ -28,7 +27,7 @@ describe("createTargetDirectory should create a directory for vendor modules", (
 
   test("should create the target directory when provided a relative path", () => {
     const installDir = "vendor/modules";
-    const retVals = backend.createTargetDirectory({
+    const retVals = venDir.createTargetDirectory({
       directory: installDir,
     });
     expect(
@@ -41,7 +40,7 @@ describe("createTargetDirectory should create a directory for vendor modules", (
 
   test("should create the target directory when provided an absolute path", () => {
     const installDir = fsHelpers.getAbsolutePath("vendor/modules");
-    const retVals = backend.createTargetDirectory({
+    const retVals = venDir.createTargetDirectory({
       directory: installDir,
     });
     expect(fsHelpers.checkIfDirExists(installDir)).toBe(true);
@@ -54,7 +53,7 @@ describe("createTargetDirectory should create a directory for vendor modules", (
     const installDir = "vendor/modules";
     const absInstallDir = fsHelpers.getAbsolutePath(installDir);
     fsHelpers.createDir(absInstallDir);
-    const retVals = backend.createTargetDirectory({
+    const retVals = venDir.createTargetDirectory({
       directory: installDir,
     });
     expect(fsHelpers.checkIfDirExists(absInstallDir)).toBe(true);
@@ -72,7 +71,7 @@ describe("createTargetDirectory should create a directory for vendor modules", (
 
   // expected output when bad input provided to createTargetDirectory
   function expectDirIssue(options) {
-    const retVals = backend.createTargetDirectory(options);
+    const retVals = venDir.createTargetDirectory(options);
     expect(retVals.success).toBe(false);
     expect(retVals.created).toBe(null);
     expect(retVals.saved).toBe(null);
@@ -108,21 +107,21 @@ describe("read file contents should read specified json file and validate its co
 
   test("should successfully read a valid terrafile when provided a relative path", () => {
     const configFile = "terrafile.json.sample";
-    const retVals = backend.readFileContents({ file: configFile });
+    const retVals = terraFile.readFileContents({ file: configFile });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
   });
 
   test("should successfully read a valid terrafile when provided an absolute path", () => {
     const configFile = fsHelpers.getAbsolutePath("terrafile.json.sample");
-    const retVals = backend.readFileContents({ file: configFile });
+    const retVals = terraFile.readFileContents({ file: configFile });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
   });
 
   // expected result when provide bad file path
   function expectFileIssue(options) {
-    const retVals = backend.readFileContents(options);
+    const retVals = terraFile.readFileContents(options);
     expect(retVals.success).toBe(false);
     expect(retVals.contents).toBe(null);
   }
