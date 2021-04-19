@@ -4,33 +4,86 @@ const fsHelpers = require("./fsHelpers");
 const { validOptions } = require("./utils");
 
 exports.readFileContents = function (options) {
-  return Terrafile(options);
+  return Terrafile(options).process();
 };
 
+function copyFromLocalDir(name, params, dest) {
+  console.log(`${name}: local-dir`);
+}
+
+function copyFromTerraformRegistry(name, params, dest) {
+  console.log(`${name}: terraform-registry`);
+}
+
+function copyFromGitHttps(name, params, dest) {
+  console.log(`${name}: git-https`);
+}
+
+function copyFromGitSSH(name, parmas, dest) {
+  console.log(`${name}: git-ssh`);
+}
+
 function Terrafile(options) {
+  function process() {
+    const retVal = { success: this.success, contents: this.contents };
+    if (this.success) {
+      const dest = fsHelpers.getAbsolutePath(options.file);
+      this.contents.map(([key, val]) => {
+        switch (moduleSourceType(val.source)) {
+          case "local-dir": {
+            copyFromLocalDir(key, val, dest);
+            break;
+          }
+          case "terraform-registry": {
+            copyFromTerraformRegistry(key, val, dest);
+            break;
+          }
+          case "git-https": {
+            copyFromGitHttps(key, val, dest);
+            break;
+          }
+          case "git-ssh": {
+            copyFromGitSSH(key, val, dest);
+            break;
+          }
+        }
+      });
+    }
+    return retVal;
+  }
+
   return validOptions(options, "file")
-    ? JsonTerrafile(fsHelpers.getAbsolutePath(options.file)).validateFormat()
-    : { success: false, contents: null };
+    ? {
+        process,
+        ...JsonTerrafile(
+          fsHelpers.getAbsolutePath(options.file)
+        ).validateFormat(),
+      }
+    : { process, success: false, contents: null };
 }
 
 function JsonTerrafile(path) {
+  function parse(contents) {
+    try {
+      return Object.entries(contents);
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function validateFormat() {
+    const moduleEntries = parse(this.contents);
+    const valid = moduleEntries.reduce((acc, [key, val]) => {
+      return acc && !validateFieldsForEachModuleEntry(val);
+    }, this.success);
+    return {
+      success: valid,
+      contents: valid ? parse(this.contents) : null,
+    };
+  }
+
   return {
-    validateFormat: function () {
-      let notValid = false;
-      if (this.success) {
-        const keys = Object.keys(this.contents);
-        for (const key of keys) {
-          notValid =
-            notValid || validateFieldsForEachModuleEntry(this.contents[key]);
-        }
-      } else {
-        notValid = true;
-      }
-      return {
-        success: !notValid,
-        contents: notValid ? null : this.contents,
-      };
-    },
+    validateFormat,
     ...JsonFile(path),
   };
 }
