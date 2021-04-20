@@ -8,7 +8,7 @@
     "version": "main"
   },
   "xascode-sample3": {
-    "source": "./vendor/modules/terraform-modules"
+    "source": "./__tests__/modules/test-module"
   },
   "xascode-sample4": {
     "source": "xascode/terraform-modules",

@@ -1,5 +1,5 @@
 const fs = require("fs-extra");
-
+const path = require("path");
 const fsHelpers = require("./fsHelpers");
 const { validOptions } = require("./utils");
 
@@ -7,8 +7,35 @@ exports.readFileContents = function (options) {
   return Terrafile(options).process();
 };
 
+function copyAbs(src, dest) {
+  const retVal = false;
+  try {
+    fs.copySync(src, dest);
+    retVal.success = true;
+  } catch (err) {
+    console.error(`Error copying from '${src}' to '${dest}'`);
+    retVal.success = false;
+    retVal.contents = null;
+  }
+  return retVal;
+}
+
 function copyFromLocalDir(name, params, dest) {
-  console.log(`${name}: local-dir`);
+  console.log(
+    `${name}: local-dir, ${fsHelpers.getAbsolutePath(params.source)}, ${dest}`
+  );
+  const retVal = {};
+  const src = fsHelpers.getAbsolutePath(params.source);
+  const fullDest = fsHelpers.getAbsolutePath(
+    dest + path.sep + src.split(path.sep).slice(-1).join("")
+  );
+  if (fsHelpers.checkIfDirExists(src)) {
+    return copyAbs(src, fullDest);
+  } else {
+    retVal.success = false;
+    retVal.contents = null;
+  }
+  return retVal;
 }
 
 function copyFromTerraformRegistry(name, params, dest) {
@@ -25,13 +52,13 @@ function copyFromGitSSH(name, parmas, dest) {
 
 function Terrafile(options) {
   function process() {
-    const retVal = { success: this.success, contents: this.contents };
+    let retVal = { success: this.success, contents: this.contents };
     if (this.success) {
-      const dest = fsHelpers.getAbsolutePath(options.file);
+      const dest = fsHelpers.getAbsolutePath(options.directory);
       this.contents.map(([key, val]) => {
         switch (moduleSourceType(val.source)) {
           case "local-dir": {
-            copyFromLocalDir(key, val, dest);
+            retVal = { ...retVal, ...copyFromLocalDir(key, val, dest) };
             break;
           }
           case "terraform-registry": {
@@ -62,7 +89,7 @@ function Terrafile(options) {
     : { process, success: false, contents: null };
 }
 
-function JsonTerrafile(path) {
+function JsonTerrafile(filepath) {
   function parse(contents) {
     try {
       return Object.entries(contents);
@@ -84,7 +111,7 @@ function JsonTerrafile(path) {
 
   return {
     validateFormat,
-    ...JsonFile(path),
+    ...JsonFile(filepath),
   };
 }
 

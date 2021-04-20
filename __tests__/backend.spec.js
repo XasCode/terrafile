@@ -107,14 +107,25 @@ describe("read file contents should read specified json file and validate its co
 
   test("should successfully read a valid terrafile when provided a relative path", () => {
     const configFile = "terrafile.json.sample";
-    const retVals = terraFile.readFileContents({ file: configFile });
+    const retVals = terraFile.readFileContents({
+      directory: "vendor/modules",
+      file: configFile,
+    });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
+    expect(
+      fsHelpers.checkIfFileExists(
+        fsHelpers.getAbsolutePath("vendor/modules/test-module/main.tf")
+      )
+    ).toBe(true);
   });
 
   test("should successfully read a valid terrafile when provided an absolute path", () => {
     const configFile = fsHelpers.getAbsolutePath("terrafile.json.sample");
-    const retVals = terraFile.readFileContents({ file: configFile });
+    const retVals = terraFile.readFileContents({
+      directory: "vendor/modules",
+      file: configFile,
+    });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
   });
