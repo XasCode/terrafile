@@ -2,6 +2,9 @@ const fs = require("fs-extra");
 const path = require("path");
 const fsHelpers = require("./fsHelpers");
 const { validOptions } = require("./utils");
+const axios = require("axios").default;
+
+const registryURL = "https://registry.terraform.io/v1/modules";
 
 exports.readFileContents = function (options) {
   return Terrafile(options).process();
@@ -21,9 +24,9 @@ function copyAbs(src, dest) {
 }
 
 function copyFromLocalDir(name, params, dest) {
-  console.log(
-    `${name}: local-dir, ${fsHelpers.getAbsolutePath(params.source)}, ${dest}`
-  );
+  //console.log(
+  //  `${name}: local-dir, ${fsHelpers.getAbsolutePath(params.source)}, ${dest}`
+  //);
   const retVal = {};
   const src = fsHelpers.getAbsolutePath(params.source);
   const fullDest = fsHelpers.getAbsolutePath(
@@ -40,14 +43,25 @@ function copyFromLocalDir(name, params, dest) {
 
 function copyFromTerraformRegistry(name, params, dest) {
   console.log(`${name}: terraform-registry`);
+  const [ns, modName, provider] = params.source.split("/");
+  const registryDownloadUrl = `${registryURL}/${ns}/${modName}/${provider}/${params.version}/download`;
+  console.log(`${registryDownloadUrl} to ${dest}`);
+  /*
+  axios({
+    method: "get",
+    url: registryDownloadUrl,
+  }).then(function (response) {
+    console.log(response.status_code);
+  });
+  */
 }
 
 function copyFromGitHttps(name, params, dest) {
-  console.log(`${name}: git-https`);
+  //console.log(`${name}: git-https`);
 }
 
 function copyFromGitSSH(name, parmas, dest) {
-  console.log(`${name}: git-ssh`);
+  //console.log(`${name}: git-ssh`);
 }
 
 function Terrafile(options) {

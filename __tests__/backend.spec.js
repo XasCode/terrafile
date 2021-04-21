@@ -118,6 +118,7 @@ describe("read file contents should read specified json file and validate its co
         fsHelpers.getAbsolutePath("vendor/modules/test-module/main.tf")
       )
     ).toBe(true);
+    //expect(console.log).toHaveBeenCalledWith("");
   });
 
   test("should successfully read a valid terrafile when provided an absolute path", () => {

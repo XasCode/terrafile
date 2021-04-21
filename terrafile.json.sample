@@ -11,7 +11,7 @@
     "source": "./__tests__/modules/test-module"
   },
   "xascode-sample4": {
-    "source": "xascode/terraform-modules",
+    "source": "terraform-aws-modules/vpc/aws",
     "version": "1.0.0"
   }
 }
