@@ -97,36 +97,51 @@ describe("read file contents should read specified json file and validate its co
   beforeEach(() => {
     // cleans up any dirs created from previous tests
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor1"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor2"));
     spy.beforeEach();
   });
 
   afterEach(() => {
     // cleans up any dirs create by the test
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor1"));
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor2"));
   });
 
   test("should successfully read a valid terrafile when provided a relative path", async () => {
     const configFile = "terrafile.json.sample";
     const retVals = await terraFile.readFileContents({
-      directory: "vendor/modules",
+      directory: "vendor1/modules",
       file: configFile,
     });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
     expect(
       fsHelpers.checkIfFileExists(
-        fsHelpers.getAbsolutePath("vendor/modules/test-module/main.tf")
+        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample3/main.tf")
       )
     ).toBe(true);
-    expect(console.log).toHaveBeenCalledWith("");
+    expect(
+      fsHelpers.checkIfFileExists(
+        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample4/main.tf")
+      )
+    ).toBe(true);
+    expect(
+      fsHelpers.checkIfFileExists(
+        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample5/main.tf")
+      )
+    ).toBe(true);
+    //expect(console.log).toHaveBeenCalledWith("");
   });
 
   test("should successfully read a valid terrafile when provided an absolute path", async () => {
     const configFile = fsHelpers.getAbsolutePath("terrafile.json.sample");
     const retVals = await terraFile.readFileContents({
-      directory: "vendor/modules",
+      directory: "vendor2/modules",
       file: configFile,
     });
+    //expect(console.log).toHaveBeenCalledWith("");
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
   });

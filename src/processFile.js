@@ -3,9 +3,9 @@ const path = require("path");
 const fsHelpers = require("./fsHelpers");
 const { validOptions } = require("./utils");
 const axios = require("axios").default;
+const execFile = require("child_process").execFile;
 
 const registryURL = "https://registry.terraform.io/v1/modules";
-const downloadRE = /git::https:\/\/github.com\/([^/]+)\/([^/]+)?ref=(.*)/;
 
 exports.readFileContents = async function (options) {
   return await Terrafile(options).process();
@@ -30,9 +30,7 @@ function copyFromLocalDir(name, params, dest) {
   //);
   const retVal = {};
   const src = fsHelpers.getAbsolutePath(params.source);
-  const fullDest = fsHelpers.getAbsolutePath(
-    dest + path.sep + src.split(path.sep).slice(-1).join("")
-  );
+  const fullDest = fsHelpers.getAbsolutePath(`${dest}${path.sep}${name}`);
   if (fsHelpers.checkIfDirExists(src)) {
     return copyAbs(src, fullDest);
   } else {
@@ -42,10 +40,34 @@ function copyFromLocalDir(name, params, dest) {
   return retVal;
 }
 
+async function run(args, cwd) {
+  return new Promise((resolve) => {
+    execFile(
+      "git",
+      [...args],
+      {
+        cwd,
+      },
+      (error, stdout, stderr) => {
+        resolve({
+          code: error?.code || 0,
+          error,
+          stdout,
+          stderr,
+        });
+      }
+    );
+  });
+}
+
 async function copyFromTerraformRegistry(name, params, dest) {
-  console.log(`${name}: terraform-registry`);
+  //console.log(`${name}: terraform-registry`);
+  const retVal = {};
+  const fullDest = fsHelpers.getAbsolutePath(`${dest}${path.sep}${name}`);
   const [ns, modName, provider] = params.source.split("/");
-  const registryDownloadUrl = `${registryURL}/${ns}/${modName}/${provider}/${params.version}/download`;
+  const registryDownloadUrl = `${registryURL}/${ns}/${modName}/${provider}/${
+    params?.version || ""
+  }/download`;
   console.log(`${registryDownloadUrl} to ${dest}`);
 
   const response = await axios({
@@ -55,9 +77,22 @@ async function copyFromTerraformRegistry(name, params, dest) {
   if (response.status === 204) {
     const downloadUrl = response.headers["x-terraform-get"];
     const [url, ver] = downloadUrl.split("git::")[1].split("?ref=");
-    console.log(`${url} ${ver}`);
+    console.log(`git clone --branch=${ver} ${url} ${fullDest}`);
+    const results = await run([
+      `clone`,
+      `--branch=${ver}`,
+      `${url}.git`,
+      fullDest,
+    ]);
+    console.log(results);
+    if (results.code === 0 && results.error === null) {
+      retVal.success = true;
+    } else {
+      retVal.success = false;
+      retVal.contents = null;
+    }
   }
-  console.log(response.headers["x-terraform-get"]);
+  return retVal;
 }
 
 function copyFromGitHttps(name, params, dest) {
@@ -80,7 +115,10 @@ function Terrafile(options) {
             break;
           }
           case "terraform-registry": {
-            await copyFromTerraformRegistry(key, val, dest);
+            retVal = {
+              ...retVal,
+              ...(await copyFromTerraformRegistry(key, val, dest)),
+            };
             break;
           }
           case "git-https": {
