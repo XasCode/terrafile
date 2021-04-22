@@ -105,9 +105,9 @@ describe("read file contents should read specified json file and validate its co
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
   });
 
-  test("should successfully read a valid terrafile when provided a relative path", () => {
+  test("should successfully read a valid terrafile when provided a relative path", async () => {
     const configFile = "terrafile.json.sample";
-    const retVals = terraFile.readFileContents({
+    const retVals = await terraFile.readFileContents({
       directory: "vendor/modules",
       file: configFile,
     });
@@ -121,9 +121,9 @@ describe("read file contents should read specified json file and validate its co
     //expect(console.log).toHaveBeenCalledWith("");
   });
 
-  test("should successfully read a valid terrafile when provided an absolute path", () => {
+  test("should successfully read a valid terrafile when provided an absolute path", async () => {
     const configFile = fsHelpers.getAbsolutePath("terrafile.json.sample");
-    const retVals = terraFile.readFileContents({
+    const retVals = await terraFile.readFileContents({
       directory: "vendor/modules",
       file: configFile,
     });
@@ -132,17 +132,17 @@ describe("read file contents should read specified json file and validate its co
   });
 
   // expected result when provide bad file path
-  function expectFileIssue(options) {
-    const retVals = terraFile.readFileContents(options);
+  async function expectFileIssue(options) {
+    const retVals = await terraFile.readFileContents(options);
     expect(retVals.success).toBe(false);
     expect(retVals.contents).toBe(null);
   }
 
-  test("should err on lack read access to file", () => {
+  test("should err on lack read access to file", async () => {
     const configFile = "vendor/no_access_file";
     fsHelpers.createDir(fsHelpers.getAbsolutePath(configFile + "/.."));
     fsHelpers.touchFile(fsHelpers.getAbsolutePath(configFile), 0);
-    expectFileIssue({ file: configFile });
+    await expectFileIssue({ file: configFile });
   });
 
   // test various bad paths and files
@@ -157,7 +157,7 @@ describe("read file contents should read specified json file and validate its co
     { file: "__tests__/invalid.txt" },
     { file: "__tests__/invalid.json" },
     { file: "__tests__/invalid2.json" },
-  ])("should err when bad file provided: %s", (badFileOption) => {
-    expectFileIssue(badFileOption);
+  ])("should err when bad file provided: %s", async (badFileOption) => {
+    await expectFileIssue(badFileOption);
   });
 });

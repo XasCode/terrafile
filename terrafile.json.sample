@@ -12,6 +12,6 @@
   },
   "xascode-sample4": {
     "source": "terraform-aws-modules/vpc/aws",
-    "version": "1.0.0"
+    "version": "1.11.0"
   }
 }

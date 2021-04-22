@@ -11,4 +11,5 @@ module.exports = {
   ],
   reporters: ["jest-progress-bar-reporter"],
   setupFilesAfterEnv: ["<rootDir>/__tests__/testSetupFile.js"],
+  testEnvironment: "node",
 };

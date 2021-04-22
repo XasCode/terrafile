@@ -5,9 +5,10 @@ const { validOptions } = require("./utils");
 const axios = require("axios").default;
 
 const registryURL = "https://registry.terraform.io/v1/modules";
+const downloadRE = /git::https:\/\/github.com\/([^/]+)\/([^/]+)?ref=(.*)/;
 
-exports.readFileContents = function (options) {
-  return Terrafile(options).process();
+exports.readFileContents = async function (options) {
+  return await Terrafile(options).process();
 };
 
 function copyAbs(src, dest) {
@@ -41,19 +42,22 @@ function copyFromLocalDir(name, params, dest) {
   return retVal;
 }
 
-function copyFromTerraformRegistry(name, params, dest) {
+async function copyFromTerraformRegistry(name, params, dest) {
   console.log(`${name}: terraform-registry`);
   const [ns, modName, provider] = params.source.split("/");
   const registryDownloadUrl = `${registryURL}/${ns}/${modName}/${provider}/${params.version}/download`;
   console.log(`${registryDownloadUrl} to ${dest}`);
-  /*
-  axios({
+
+  const response = await axios({
     method: "get",
     url: registryDownloadUrl,
-  }).then(function (response) {
-    console.log(response.status_code);
   });
-  */
+  if (response.status === 204) {
+    const downloadUrl = response.headers["x-terraform-get"];
+    const [url, ver] = downloadUrl.split("git::")[1].split("?ref=");
+    console.log(`${url} ${ver}`);
+  }
+  console.log(response.headers["x-terraform-get"]);
 }
 
 function copyFromGitHttps(name, params, dest) {
@@ -65,18 +69,18 @@ function copyFromGitSSH(name, parmas, dest) {
 }
 
 function Terrafile(options) {
-  function process() {
+  async function process() {
     let retVal = { success: this.success, contents: this.contents };
     if (this.success) {
       const dest = fsHelpers.getAbsolutePath(options.directory);
-      this.contents.map(([key, val]) => {
+      for (const [key, val] of this.contents) {
         switch (moduleSourceType(val.source)) {
           case "local-dir": {
             retVal = { ...retVal, ...copyFromLocalDir(key, val, dest) };
             break;
           }
           case "terraform-registry": {
-            copyFromTerraformRegistry(key, val, dest);
+            await copyFromTerraformRegistry(key, val, dest);
             break;
           }
           case "git-https": {
@@ -88,7 +92,7 @@ function Terrafile(options) {
             break;
           }
         }
-      });
+      }
     }
     return retVal;
   }
