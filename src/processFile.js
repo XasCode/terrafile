@@ -3,7 +3,7 @@ const path = require("path");
 const fsHelpers = require("./fsHelpers");
 const { validOptions } = require("./utils");
 const axios = require("axios").default;
-const execFile = require("child_process").execFile;
+const { run } = require("./run");
 
 const registryURL = "https://registry.terraform.io/v1/modules";
 
@@ -16,10 +16,11 @@ function copyAbs(src, dest) {
   try {
     fs.copySync(src, dest);
     retVal.success = true;
+    retVal.error = null;
   } catch (err) {
-    console.error(`Error copying from '${src}' to '${dest}'`);
     retVal.success = false;
     retVal.contents = null;
+    retVal.error = `Error copying absolute from '${src}' to '${dest}'`;
   }
   return retVal;
 }
@@ -34,30 +35,12 @@ function copyFromLocalDir(name, params, dest) {
   if (fsHelpers.checkIfDirExists(src)) {
     return copyAbs(src, fullDest);
   } else {
+    console.error();
     retVal.success = false;
     retVal.contents = null;
+    retVal.error = `Error copying from local dir`;
   }
   return retVal;
-}
-
-async function run(args, cwd) {
-  return new Promise((resolve) => {
-    execFile(
-      "git",
-      [...args],
-      {
-        cwd,
-      },
-      (error, stdout, stderr) => {
-        resolve({
-          code: error?.code || 0,
-          error,
-          stdout,
-          stderr,
-        });
-      }
-    );
-  });
 }
 
 async function copyFromTerraformRegistry(name, params, dest) {
@@ -87,10 +70,14 @@ async function copyFromTerraformRegistry(name, params, dest) {
     console.log(results);
     if (results.code === 0 && results.error === null) {
       retVal.success = true;
+      retVal.error = null;
     } else {
       retVal.success = false;
       retVal.contents = null;
+      retVal.error = `Error copying from terraform registry`;
     }
+  } else {
+    console.log("!204");
   }
   return retVal;
 }
@@ -105,7 +92,11 @@ function copyFromGitSSH(name, parmas, dest) {
 
 function Terrafile(options) {
   async function process() {
-    let retVal = { success: this.success, contents: this.contents };
+    let retVal = {
+      success: this.success,
+      contents: this.contents,
+      error: this.error,
+    };
     if (this.success) {
       const dest = fsHelpers.getAbsolutePath(options.directory);
       for (const [key, val] of this.contents) {
@@ -142,7 +133,12 @@ function Terrafile(options) {
           fsHelpers.getAbsolutePath(options.file)
         ).validateFormat(),
       }
-    : { process, success: false, contents: null };
+    : {
+        process,
+        success: false,
+        contents: null,
+        error: `Error: Not valid options`,
+      };
 }
 
 function JsonTerrafile(filepath) {
@@ -162,6 +158,7 @@ function JsonTerrafile(filepath) {
     return {
       success: valid,
       contents: valid ? parse(this.contents) : null,
+      error: valid ? null : `Error: Not valid format`,
     };
   }
 
@@ -185,7 +182,7 @@ function JsonFile(absFilePath) {
 
   return File(absFilePath).success
     ? Json(gulpJson(absFilePath))
-    : { success: false, contents: null };
+    : { success: false, contents: null, error: "Error: not file" };
 }
 
 function File(absFilePath) {
@@ -196,6 +193,7 @@ function File(absFilePath) {
   return {
     success: exists(absFilePath),
     contents: null,
+    error: exists(absFilePath) ? null : `Error: not exists`,
   };
 }
 
@@ -204,7 +202,11 @@ function Json(json) {
     return contents !== null;
   }
 
-  return { success: isValidJson(json), contents: json };
+  return {
+    success: isValidJson(json),
+    contents: json,
+    error: isValidJson(json) ? null : `Error: is not valid json`,
+  };
 }
 
 function startsWith(str, start) {
@@ -252,7 +254,7 @@ function getModuleSourceType(source) {
 
 function validateEachField(moduleDef) {
   let notFoundOrNotValid = false;
-  const acceptable = ["source", "version"];
+  const acceptable = ["comment", "source", "version", "path"];
   const params = Object.keys(moduleDef);
   for (const param of params) {
     if (!acceptable.includes(param)) {

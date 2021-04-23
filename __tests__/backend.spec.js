@@ -4,6 +4,7 @@ const venDir = require("../src/venDir");
 const terraFile = require("../src/processFile");
 const fsHelpers = require("../src/fsHelpers");
 const spy = require("./spy");
+const jestConfig = require("../jest.config");
 
 /* createTargetDirectory({"directory": <path>, ...})
  * Args: Expects an object with the <path> to the "directory" that is needed
@@ -30,6 +31,7 @@ describe("createTargetDirectory should create a directory for vendor modules", (
     const retVals = venDir.createTargetDirectory({
       directory: installDir,
     });
+    //expect(console.error).toHaveBeenCalledWith("");
     expect(
       fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePath(installDir))
     ).toBe(true);
@@ -43,6 +45,7 @@ describe("createTargetDirectory should create a directory for vendor modules", (
     const retVals = venDir.createTargetDirectory({
       directory: installDir,
     });
+    //expect(console.error).toHaveBeenCalledWith("");
     expect(fsHelpers.checkIfDirExists(installDir)).toBe(true);
     expect(retVals.success).toBe(true);
     expect(retVals.created).toBe(path.resolve(installDir, ".."));
@@ -110,33 +113,35 @@ describe("read file contents should read specified json file and validate its co
   });
 
   test("should successfully read a valid terrafile when provided a relative path", async () => {
-    const configFile = "terrafile.json.sample";
+    const configFile = "terrafile.sample.json";
     const retVals = await terraFile.readFileContents({
       directory: "vendor1/modules",
       file: configFile,
     });
+    //expect(console.log).toHaveBeenLastCalledWith("");
+    expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
     expect(
       fsHelpers.checkIfFileExists(
-        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample3/main.tf")
+        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample01/main.tf")
       )
     ).toBe(true);
     expect(
       fsHelpers.checkIfFileExists(
-        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample4/main.tf")
+        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample11/main.tf")
       )
     ).toBe(true);
     expect(
       fsHelpers.checkIfFileExists(
-        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample5/main.tf")
+        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample12/main.tf")
       )
     ).toBe(true);
     //expect(console.log).toHaveBeenCalledWith("");
   });
 
   test("should successfully read a valid terrafile when provided an absolute path", async () => {
-    const configFile = fsHelpers.getAbsolutePath("terrafile.json.sample");
+    const configFile = fsHelpers.getAbsolutePath("terrafile.sample.json");
     const retVals = await terraFile.readFileContents({
       directory: "vendor2/modules",
       file: configFile,
