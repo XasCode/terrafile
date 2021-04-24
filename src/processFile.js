@@ -43,6 +43,25 @@ function copyFromLocalDir(name, params, dest) {
   return retVal;
 }
 
+function determineRef(ref) {
+  const commit = ref;
+  const branchOrTag = ref;
+  return ref.length === 40 ? ["", commit] : [branchOrTag, ""];
+}
+
+function getPartsFromHttp(source) {
+  const [url, rest] = source.split(".git");
+  const repo = `${url}.git`;
+  const [repoDir, ref] = rest.split("?ref=");
+  const [branchOrTag, commit] = determineRef(ref);
+
+  return [repo, repoDir, branchOrTag, commit];
+}
+
+function getRepoUrl(terraformRegistryGitUrl) {
+  return terraformRegistryGitUrl.split("git::")[1];
+}
+
 async function copyFromTerraformRegistry(name, params, dest) {
   //console.log(`${name}: terraform-registry`);
   const retVal = {};
@@ -59,16 +78,31 @@ async function copyFromTerraformRegistry(name, params, dest) {
   });
   if (response.status === 204) {
     const downloadUrl = response.headers["x-terraform-get"];
-    const [url, ver] = downloadUrl.split("git::")[1].split("?ref=");
-    console.log(`git clone --branch=${ver} ${url} ${fullDest}`);
-    const results = await run([
+    const httpUrl = getRepoUrl(downloadUrl);
+    const [repo, repoDir, branchOrTag, commit] = getPartsFromHttp(httpUrl);
+    const cloneCmd = [
       `clone`,
-      `--branch=${ver}`,
-      `${url}.git`,
+      ...(repoDir ? [`--depth`, `1`, `--filter=blob:none`, `--sparse`] : []),
+      ...(branchOrTag ? [`--branch=${branchOrTag}`] : []),
+      `${repo}.git`,
       fullDest,
-    ]);
-    console.log(results);
-    if (results.code === 0 && results.error === null) {
+    ];
+    const sparseCmd = [`sparse-checkout`, `set`, repoDir];
+    const commitCmd = [`checkout`, commit];
+    const results1 = await run(cloneCmd, fullDest);
+    const results2 = await (repoDir
+      ? run(sparseCmd, fullDest)
+      : { code: 0, error: null });
+    const results3 = await (commit ? run(commitCmd) : { code: 0, error: null });
+    console.log(`clone: ${cloneCmd.join(" ")} / ${results1}`);
+    console.log(`sparse: ${repoDir ? sparseCmd.join(" ") : ""} / ${results2}`);
+    console.log(`checkout: ${commit ? commitCmd.join(" ") : ""} / ${results3}`);
+    if (
+      results1.code + results2.code + results3.code === 0 &&
+      results1.error === null &&
+      results2.error === null &&
+      results3.error === null
+    ) {
       retVal.success = true;
       retVal.error = null;
     } else {

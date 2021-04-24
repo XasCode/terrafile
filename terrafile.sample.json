@@ -64,7 +64,7 @@
   },
   "xascode-sample35": {
     "comment": "Git module (SSH + tag) alternate syntax",
-    "source": "git@github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=2.78.0"
+    "source": "git@github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=v2.78.0"
   },
   "xascode-sample36": {
     "comment": "Git module (SSH + branch) alternate syntax",
@@ -134,7 +134,7 @@
   },
   "xascode-sample55": {
     "comment": "Git monorepo module (SSH + tag) alternate syntax",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=2.78.0"
+    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=v2.78.0"
   },
   "xascode-sample56": {
     "comment": "Git monorepo module (SSH + branch) alternate syntax",
