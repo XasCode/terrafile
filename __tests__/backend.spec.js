@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs-extra");
 
 const venDir = require("../src/venDir");
 const terraFile = require("../src/processFile");
@@ -122,22 +123,20 @@ describe("read file contents should read specified json file and validate its co
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
-    expect(
-      fsHelpers.checkIfFileExists(
-        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample01/main.tf")
+    const testJson = JSON.parse(
+      fs.readFileSync(
+        fsHelpers.getAbsolutePath("terrafile.sample.json"),
+        "utf-8"
       )
-    ).toBe(true);
-    expect(
-      fsHelpers.checkIfFileExists(
-        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample11/main.tf")
-      )
-    ).toBe(true);
-    expect(
-      fsHelpers.checkIfFileExists(
-        fsHelpers.getAbsolutePath("vendor1/modules/xascode-sample12/main.tf")
-      )
-    ).toBe(true);
-    //expect(console.log).toHaveBeenCalledWith("");
+    );
+    expect(Object.keys(testJson).length).toBe(31);
+    for (const modName of Object.keys(testJson)) {
+      expect(
+        fsHelpers.checkIfFileExists(
+          fsHelpers.getAbsolutePath(`vendor1/modules/${modName}/main.tf`)
+        )
+      ).toBe(true);
+    }
   });
 
   test("should successfully read a valid terrafile when provided an absolute path", async () => {

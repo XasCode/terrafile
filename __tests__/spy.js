@@ -26,10 +26,11 @@ exports.setup = function () {
       run: jest.fn().mockImplementation((args, cwd) => {
         const fsHelpers = require("../src/fsHelpers");
         const path = require("path");
-        console.log(args);
-        const fullDest = fsHelpers.getAbsolutePath(args[3]);
-        fsHelpers.createDir(fullDest);
-        fsHelpers.touchFile(`${fullDest}${path.sep}main.tf`);
+        const fullDest = fsHelpers.getAbsolutePath(cwd || args.slice(-1)[0]);
+        if (!fsHelpers.checkIfDirExists(fullDest)) {
+          fsHelpers.createDir(fullDest);
+          fsHelpers.touchFile(`${fullDest}${path.sep}main.tf`);
+        }
         return {
           code: 0,
           error: null,

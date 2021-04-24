@@ -31,9 +31,9 @@ function copyFromLocalDir(name, params, dest) {
   //);
   const retVal = {};
   const src = fsHelpers.getAbsolutePath(params.source);
-  const fullDest = fsHelpers.getAbsolutePath(`${dest}${path.sep}${name}`);
+  //const fullDest = fsHelpers.getAbsolutePath(`${dest}${path.sep}${name}`);
   if (fsHelpers.checkIfDirExists(src)) {
-    return copyAbs(src, fullDest);
+    return copyAbs(src, dest);
   } else {
     console.error();
     retVal.success = false;
@@ -46,7 +46,7 @@ function copyFromLocalDir(name, params, dest) {
 function determineRef(ref) {
   const commit = ref;
   const branchOrTag = ref;
-  return ref.length === 40 ? ["", commit] : [branchOrTag, ""];
+  return ref?.length === 40 ? ["", commit] : [branchOrTag, ""];
 }
 
 function getPartsFromHttp(source) {
@@ -62,41 +62,76 @@ function getRepoUrl(terraformRegistryGitUrl) {
   return terraformRegistryGitUrl.split("git::")[1];
 }
 
-async function copyFromTerraformRegistry(name, params, dest) {
-  //console.log(`${name}: terraform-registry`);
-  const retVal = {};
-  const fullDest = fsHelpers.getAbsolutePath(`${dest}${path.sep}${name}`);
-  const [ns, modName, provider] = params.source.split("/");
-  const registryDownloadUrl = `${registryURL}/${ns}/${modName}/${provider}/${
-    params?.version || ""
-  }/download`;
-  console.log(`${registryDownloadUrl} to ${dest}`);
+async function cloneRepo([repo, repoDir, branchOrTag, _commit], fullDest) {
+  const cloneCmd = [
+    `clone`,
+    ...(repoDir ? [`--depth`, `1`, `--filter=blob:none`, `--sparse`] : []),
+    ...(branchOrTag ? [`--branch=${branchOrTag}`] : []),
+    `${repo}.git`,
+    fullDest,
+  ];
+  const results = await run(cloneCmd);
+  console.log(`clone: ${cloneCmd.join(" ")} / ${results}`);
+  return results;
+}
 
+async function scopeRepo([_repo, repoDir, _branchOrTag, _commit], fullDest) {
+  const sparseCmd = [`sparse-checkout`, `set`, repoDir];
+  const results = await (repoDir
+    ? run(sparseCmd, fullDest)
+    : { code: 0, error: null });
+  console.log(
+    `sparse: ${repoDir ? sparseCmd.join(" ") : ""} / ${JSON.stringify(results)}`
+  );
+  return results;
+}
+
+async function checkoutCommit(
+  [_repo, _repoDir, _branchOrTag, commit],
+  fullDest
+) {
+  const commitCmd = [`checkout`, commit];
+  const results = await (commit
+    ? run(commitCmd, fullDest)
+    : { code: 0, error: null });
+  console.log(
+    `checkout: ${commit ? commitCmd.join(" ") : ""} / ${JSON.stringify(
+      results
+    )}`
+  );
+  return results;
+}
+
+async function getRegDownloadPointerUrl(source, version) {
+  const [ns, modName, provider] = source.split("/");
+  const registryDownloadUrl = `${registryURL}/${ns}/${modName}/${provider}/${version}/download`;
+  return registryDownloadUrl;
+}
+
+async function getRegRepoUrl(downloadPointerUrl) {
   const response = await axios({
     method: "get",
-    url: registryDownloadUrl,
+    url: downloadPointerUrl,
   });
   if (response.status === 204) {
     const downloadUrl = response.headers["x-terraform-get"];
-    const httpUrl = getRepoUrl(downloadUrl);
-    const [repo, repoDir, branchOrTag, commit] = getPartsFromHttp(httpUrl);
-    const cloneCmd = [
-      `clone`,
-      ...(repoDir ? [`--depth`, `1`, `--filter=blob:none`, `--sparse`] : []),
-      ...(branchOrTag ? [`--branch=${branchOrTag}`] : []),
-      `${repo}.git`,
-      fullDest,
-    ];
-    const sparseCmd = [`sparse-checkout`, `set`, repoDir];
-    const commitCmd = [`checkout`, commit];
-    const results1 = await run(cloneCmd, fullDest);
-    const results2 = await (repoDir
-      ? run(sparseCmd, fullDest)
-      : { code: 0, error: null });
-    const results3 = await (commit ? run(commitCmd) : { code: 0, error: null });
-    console.log(`clone: ${cloneCmd.join(" ")} / ${results1}`);
-    console.log(`sparse: ${repoDir ? sparseCmd.join(" ") : ""} / ${results2}`);
-    console.log(`checkout: ${commit ? commitCmd.join(" ") : ""} / ${results3}`);
+    return getRepoUrl(downloadUrl);
+  } else {
+    console.log("!204");
+  }
+}
+
+async function cloneRepoToDest(repoUrl, fullDest) {
+  const retVal = {
+    success: false,
+    contents: null,
+    error: `Error copying from terraform registry`,
+  };
+  if (repoUrl !== undefined) {
+    const parts = getPartsFromHttp(repoUrl);
+    const results1 = await cloneRepo(parts, fullDest);
+    const results2 = await scopeRepo(parts, fullDest);
+    const results3 = await checkoutCommit(parts, fullDest);
     if (
       results1.code + results2.code + results3.code === 0 &&
       results1.error === null &&
@@ -105,23 +140,39 @@ async function copyFromTerraformRegistry(name, params, dest) {
     ) {
       retVal.success = true;
       retVal.error = null;
-    } else {
-      retVal.success = false;
-      retVal.contents = null;
-      retVal.error = `Error copying from terraform registry`;
+      delete retVal.contents;
     }
-  } else {
-    console.log("!204");
   }
   return retVal;
 }
 
-function copyFromGitHttps(name, params, dest) {
-  //console.log(`${name}: git-https`);
+async function copyFromTerraformRegistry(name, params, dest) {
+  //console.log(`${name}: terraform-registry`);
+  const downloadPointerUrl = await getRegDownloadPointerUrl(
+    params.source,
+    params?.version || ""
+  );
+  const regRepoUrl = await getRegRepoUrl(downloadPointerUrl);
+  return await cloneRepoToDest(regRepoUrl, dest);
 }
 
-function copyFromGitSSH(name, parmas, dest) {
-  //console.log(`${name}: git-ssh`);
+function replaceUrlVersionIfVersionParam(source, version) {
+  return version ? [source.split("?ref=")[0], version].join("?ref=") : source;
+}
+
+function replacePathIfPathParam(source, repoPath) {
+  const [beforeGit, afterGit] = source.split(".git");
+  const newAfterGit = afterGit
+    ? [afterGit.split("//")[0], repoPath].join("//")
+    : "";
+  return repoPath ? [beforeGit, newAfterGit].join(".git") : source;
+}
+
+async function copyFromGit(name, params, dest) {
+  //console.log(`${name}: git-https`);
+  const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
+  const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
+  return await cloneRepoToDest(regRepoUrl, dest);
 }
 
 function Terrafile(options) {
@@ -132,8 +183,10 @@ function Terrafile(options) {
       error: this.error,
     };
     if (this.success) {
-      const dest = fsHelpers.getAbsolutePath(options.directory);
       for (const [key, val] of this.contents) {
+        const dest = fsHelpers.getAbsolutePath(
+          `${options.directory}${path.sep}${key}`
+        );
         switch (moduleSourceType(val.source)) {
           case "local-dir": {
             retVal = { ...retVal, ...copyFromLocalDir(key, val, dest) };
@@ -146,12 +199,12 @@ function Terrafile(options) {
             };
             break;
           }
-          case "git-https": {
-            copyFromGitHttps(key, val, dest);
-            break;
-          }
+          case "git-https":
           case "git-ssh": {
-            copyFromGitSSH(key, val, dest);
+            retVal = {
+              ...retVal,
+              ...(await copyFromGit(key, val, dest)),
+            };
             break;
           }
         }
