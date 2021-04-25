@@ -1,5 +1,5 @@
 {
-  "xascode-sample01": {
+  "xascode-sample": {
     "comment": "Local directory module",
     "source": "./__tests__/modules/test-module"
   },

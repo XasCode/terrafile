@@ -97,20 +97,28 @@ describe("createTargetDirectory should create a directory for vendor modules", (
   );
 });
 
+const testDirs = [
+  "vendor",
+  "vendor1",
+  "vendor2",
+  "vendor_lerror",
+  "vendor_tfregistry_error",
+];
+const cleanUpTestDirs = () =>
+  testDirs.map((testDir) =>
+    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(testDir))
+  );
+
 describe("read file contents should read specified json file and validate its contents", () => {
   beforeEach(() => {
     // cleans up any dirs created from previous tests
-    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
-    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor1"));
-    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor2"));
+    cleanUpTestDirs();
     spy.beforeEach();
   });
 
   afterEach(() => {
     // cleans up any dirs create by the test
-    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
-    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor1"));
-    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor2"));
+    cleanUpTestDirs();
   });
 
   test("should successfully read a valid terrafile when provided a relative path", async () => {
@@ -178,5 +186,13 @@ describe("read file contents should read specified json file and validate its co
     { file: "__tests__/invalid2.json" },
   ])("should err when bad file provided: %s", async (badFileOption) => {
     await expectFileIssue(badFileOption);
+  });
+
+  test("should err on bad local dir", async () => {
+    const configFile = "__tests__/localError.json";
+    await expectFileIssue({
+      directory: "vendor_lerror/modules",
+      file: configFile,
+    });
   });
 });
