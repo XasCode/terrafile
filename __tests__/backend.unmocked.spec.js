@@ -3,11 +3,11 @@ const fs = require("fs-extra");
 
 //const venDir = require("../src/venDir");
 const terraFile = require("../src/processFile");
-jest.requireActual("../src/run");
+//jest.requireActual("../src/run");
 //const terraFile = jest.requireActual("../src/processFile");
 const fsHelpers = require("../src/fsHelpers");
 const spy = require("./spy");
-//const jestConfig = require("../jest.config");
+//  const jestConfig = require("../jest.config");
 
 const testDirs = [
   "vendor",

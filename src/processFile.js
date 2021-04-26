@@ -109,15 +109,19 @@ async function getRegDownloadPointerUrl(source, version) {
 }
 
 async function getRegRepoUrl(downloadPointerUrl) {
-  const response = await axios({
-    method: "get",
-    url: downloadPointerUrl,
-  });
-  if (response.status === 204) {
-    const downloadUrl = response.headers["x-terraform-get"];
-    return getRepoUrl(downloadUrl);
-  } else {
-    console.log("!204");
+  try {
+    const response = await axios({
+      method: "get",
+      url: downloadPointerUrl,
+    });
+    if (response.status === 204) {
+      const downloadUrl = response.headers["x-terraform-get"];
+      return getRepoUrl(downloadUrl);
+    } else {
+      console.log("!204");
+    }
+  } catch (err) {
+    console.error(`Error fetching download URL from terraform registry.`);
   }
 }
 
@@ -153,7 +157,13 @@ async function copyFromTerraformRegistry(name, params, dest) {
     params?.version || ""
   );
   const regRepoUrl = await getRegRepoUrl(downloadPointerUrl);
-  return await cloneRepoToDest(regRepoUrl, dest);
+  return regRepoUrl
+    ? await cloneRepoToDest(regRepoUrl, dest)
+    : {
+        success: false,
+        contents: null,
+        error: `Repo URL not found in Terraform registry.`,
+      };
 }
 
 function replaceUrlVersionIfVersionParam(source, version) {

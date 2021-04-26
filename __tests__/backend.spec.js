@@ -1,6 +1,41 @@
 const path = require("path");
 const fs = require("fs-extra");
 
+jest.mock("axios", () => ({
+  default: jest.fn((opts) => {
+    //console.log(opts);
+    return {
+      status: 204,
+      headers: {
+        "x-terraform-get":
+          "git::https://github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=2.78.0",
+      },
+    };
+  }),
+}));
+//const axios = require("axios");
+
+jest.mock("../src/run", () => {
+  return {
+    run: jest.fn().mockImplementation((args, cwd) => {
+      const fsHelpersLocal = require("../src/fsHelpers");
+      const pathLocal = require("path");
+      const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);
+      if (!fsHelpersLocal.checkIfDirExists(fullDest)) {
+        fsHelpersLocal.createDir(fullDest);
+        fsHelpersLocal.touchFile(`${fullDest}${pathLocal.sep}main.tf`);
+      }
+      return {
+        code: 0,
+        error: null,
+        stdout: "",
+        stderr: "",
+      };
+    }),
+  };
+});
+//const run = require("../src/run");
+
 const venDir = require("../src/venDir");
 const terraFile = require("../src/processFile");
 const fsHelpers = require("../src/fsHelpers");
