@@ -15,6 +15,7 @@ const testDirs = [
   "vendor2",
   "vendor_lerror",
   "vendor_tfregistry_error",
+  "vendor_empty",
 ];
 const cleanUpTestDirs = () =>
   testDirs.map((testDir) =>
@@ -41,10 +42,20 @@ describe("read file contents should read specified json file and validate its co
   }
 
   test("should err on bad terraform registry", async () => {
-    const configFile = "__tests__/tfregistryError.json";
+    const configFile = "__tests__/tfRegistryError.json";
     await expectFileIssue({
       directory: "vendor_tfregistry_error/modules",
       file: configFile,
     });
   });
+  /* TODO:
+  test("should err on empty source", async () => {
+    const configFile = "__tests__/tfRegistryEmptyError.json";
+    const options = {
+      directory: "vendor_empty/modules",
+      file: configFile,
+    };
+    await expectFileIssue(options);
+  });
+  */
 });

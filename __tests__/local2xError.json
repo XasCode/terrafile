@@ -1,0 +1,6 @@
+{
+  "xascode-sample-err-01": {
+    "comment": "Local directory module",
+    "source": "./__tests__/modules/test-module"
+  }
+}

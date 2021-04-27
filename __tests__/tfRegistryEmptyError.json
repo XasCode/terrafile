@@ -1,0 +1,6 @@
+{
+  "xascode-sample-err-01": {
+    "comment": "Terraform registry empty source error",
+    "source": ""
+  }
+}

@@ -138,11 +138,20 @@ const testDirs = [
   "vendor2",
   "vendor_lerror",
   "vendor_tfregistry_error",
+  "vendor_2x",
+  "vendor_empty",
 ];
 const cleanUpTestDirs = () =>
   testDirs.map((testDir) =>
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(testDir))
   );
+
+// expected result when provide bad file path
+async function expectFileIssue(options) {
+  const retVals = await terraFile.readFileContents(options);
+  expect(retVals.success).toBe(false);
+  expect(retVals.contents).toBe(null);
+}
 
 describe("read file contents should read specified json file and validate its contents", () => {
   beforeEach(() => {
@@ -193,13 +202,6 @@ describe("read file contents should read specified json file and validate its co
     expect(retVals.contents).not.toBe(null);
   });
 
-  // expected result when provide bad file path
-  async function expectFileIssue(options) {
-    const retVals = await terraFile.readFileContents(options);
-    expect(retVals.success).toBe(false);
-    expect(retVals.contents).toBe(null);
-  }
-
   test("should err on lack read access to file", async () => {
     const configFile = "vendor/no_access_file";
     fsHelpers.createDir(fsHelpers.getAbsolutePath(configFile + "/.."));
@@ -229,5 +231,15 @@ describe("read file contents should read specified json file and validate its co
       directory: "vendor_lerror/modules",
       file: configFile,
     });
+  });
+
+  test("should err on copy 2x", async () => {
+    const configFile = "__tests__/local2xError.json";
+    const options = {
+      directory: "vendor_2x/modules",
+      file: configFile,
+    };
+    await terraFile.readFileContents(options);
+    await expectFileIssue(options);
   });
 });

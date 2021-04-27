@@ -12,9 +12,9 @@ exports.readFileContents = async function (options) {
 };
 
 function copyAbs(src, dest) {
-  const retVal = false;
+  const retVal = {};
   try {
-    fs.copySync(src, dest);
+    fs.copySync(src, dest, { overwrite: false, errorOnExist: true });
     retVal.success = true;
     retVal.error = null;
   } catch (err) {
@@ -24,6 +24,7 @@ function copyAbs(src, dest) {
   }
   return retVal;
 }
+//exports.copyAbs = process.env.NODE_ENV === "test" ? copyAbs : undefined;
 
 function copyFromLocalDir(name, params, dest) {
   //console.log(
@@ -102,9 +103,11 @@ async function checkoutCommit(
   return results;
 }
 
-async function getRegDownloadPointerUrl(source, version) {
+function getRegDownloadPointerUrl(source, version) {
   const [ns, modName, provider] = source.split("/");
-  const registryDownloadUrl = `${registryURL}/${ns}/${modName}/${provider}/${version}/download`;
+  const registryDownloadUrl = `${registryURL}/${ns || ""}/${modName || ""}/${
+    provider || ""
+  }/${version}/download`;
   return registryDownloadUrl;
 }
 
@@ -152,7 +155,7 @@ async function cloneRepoToDest(repoUrl, fullDest) {
 
 async function copyFromTerraformRegistry(name, params, dest) {
   //console.log(`${name}: terraform-registry`);
-  const downloadPointerUrl = await getRegDownloadPointerUrl(
+  const downloadPointerUrl = getRegDownloadPointerUrl(
     params.source,
     params?.version || ""
   );
