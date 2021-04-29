@@ -1,0 +1,25 @@
+name: Codacy Coverage Reporter
+
+on: ["push"]
+
+jobs:
+  codacy-coverage-reporter:
+    runs-on: ubuntu-latest
+    name: codacy-coverage-reporter
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test ${{ matrix.test_number }}s
+        run: npm test
+
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@master
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: coverage/lcov.info
