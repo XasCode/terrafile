@@ -16,6 +16,7 @@ const testDirs = [
   "vendor_lerror",
   "vendor_tfregistry_error",
   "vendor_empty",
+  "vendor_live",
 ];
 const cleanUpTestDirs = () =>
   testDirs.map((testDir) =>
@@ -48,7 +49,7 @@ describe("read file contents should read specified json file and validate its co
       file: configFile,
     });
   });
-  /* TODO:
+
   test("should err on empty source", async () => {
     const configFile = "__tests__/tfRegistryEmptyError.json";
     const options = {
@@ -57,5 +58,30 @@ describe("read file contents should read specified json file and validate its co
     };
     await expectFileIssue(options);
   });
-  */
+
+  test("run one live", async () => {
+    const configFile = "__tests__/tfRegistryLive.json";
+    const options = {
+      directory: "vendor_live/modules",
+      file: configFile,
+    };
+    const retVals = await terraFile.readFileContents(options);
+    expect(retVals.error).toBe(null);
+    expect(retVals.success).toBe(true);
+    expect(retVals.contents).not.toBe(null);
+    const testJson = JSON.parse(
+      fs.readFileSync(
+        fsHelpers.getAbsolutePath("__tests__/tfRegistryLive.json"),
+        "utf-8"
+      )
+    );
+    expect(Object.keys(testJson).length).toBe(1);
+    for (const modName of Object.keys(testJson)) {
+      expect(
+        fsHelpers.checkIfFileExists(
+          fsHelpers.getAbsolutePath(`vendor_live/modules/${modName}/main.tf`)
+        )
+      ).toBe(true);
+    }
+  });
 });

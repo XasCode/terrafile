@@ -1,0 +1,6 @@
+{
+  "xascode-sample11": {
+    "comment": "Terraform registry module",
+    "source": "terraform-aws-modules/vpc/aws"
+  }
+}

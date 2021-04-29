@@ -51,11 +51,11 @@ function determineRef(ref) {
 }
 
 function getPartsFromHttp(source) {
-  const [url, rest] = source.split(".git");
-  const repo = `${url}.git`;
-  const [repoDir, ref] = rest.split("?ref=");
+  const [repo, repoDir, ref] = sourceParts(source);
+  //const [url, rest] = source.split(".git");
+  //const repo = source.includes(".git") ? `${url}.git` : "";
+  //const [repoDir, ref] = rest ? rest.split("?ref=") : ["", ""];
   const [branchOrTag, commit] = determineRef(ref);
-
   return [repo, repoDir, branchOrTag, commit];
 }
 
@@ -132,23 +132,21 @@ async function cloneRepoToDest(repoUrl, fullDest) {
   const retVal = {
     success: false,
     contents: null,
-    error: `Error copying from terraform registry`,
+    error: `Error copying from terraform registry ${repoUrl} - ${fullDest}`,
   };
-  if (repoUrl !== undefined) {
-    const parts = getPartsFromHttp(repoUrl);
-    const results1 = await cloneRepo(parts, fullDest);
-    const results2 = await scopeRepo(parts, fullDest);
-    const results3 = await checkoutCommit(parts, fullDest);
-    if (
-      results1.code + results2.code + results3.code === 0 &&
-      results1.error === null &&
-      results2.error === null &&
-      results3.error === null
-    ) {
-      retVal.success = true;
-      retVal.error = null;
-      delete retVal.contents;
-    }
+  const parts = getPartsFromHttp(repoUrl);
+  const results1 = await cloneRepo(parts, fullDest);
+  const results2 = await scopeRepo(parts, fullDest);
+  const results3 = await checkoutCommit(parts, fullDest);
+  if (
+    results1.code + results2.code + results3.code === 0 &&
+    results1.error === null &&
+    results2.error === null &&
+    results3.error === null
+  ) {
+    retVal.success = true;
+    retVal.error = null; //`${repoUrl} - ${parts}`;
+    delete retVal.contents;
   }
   return retVal;
 }
@@ -173,12 +171,37 @@ function replaceUrlVersionIfVersionParam(source, version) {
   return version ? [source.split("?ref=")[0], version].join("?ref=") : source;
 }
 
+function insertGit(source) {
+  const parts = source.split("?ref=");
+  return parts.length < 2
+    ? source
+    : source.includes(".git")
+    ? parts.join("?ref=")
+    : [parts[0], ".git", "?ref=", ...parts.slice(1)].join("");
+}
+
+function sourceParts(source) {
+  const tempSource = insertGit(source);
+  const [beforeGit, afterGit] = tempSource.split(".git");
+  const newSource = `${beforeGit}${source.includes(".git") ? ".git" : ""}`;
+  const newAfterGit = afterGit ? afterGit : "";
+  const [beforeQref, afterQref] = newAfterGit.split("?ref=");
+  const [, afterPathSep] = beforeQref.split("//");
+  const newPathPart = afterPathSep ? `//${afterPathSep}` : "";
+  return [newSource, newPathPart, afterQref];
+}
+
 function replacePathIfPathParam(source, repoPath) {
   const [beforeGit, afterGit] = source.split(".git");
-  const newAfterGit = afterGit
-    ? [afterGit.split("//")[0], repoPath].join("//")
-    : "";
-  return repoPath ? [beforeGit, newAfterGit].join(".git") : source;
+  const newAfterGit = afterGit ? afterGit : "";
+  const [beforeQref, afterQref] = newAfterGit.split("?ref=");
+  const newQrefPart = afterQref ? `?ref=${afterQref}` : "";
+  const [beforePathSep, afterPathSep] = beforeQref.split("//");
+  const newPathPart = afterPathSep ? `//${afterPathSep}` : "";
+  const newPath = repoPath ? `/${repoPath}` : newPathPart;
+  return `${beforeGit}${
+    source.includes(".git") ? ".git" : ""
+  }${beforePathSep}${newPath}${newQrefPart}`;
 }
 
 async function copyFromGit(name, params, dest) {
@@ -374,3 +397,8 @@ function validateFieldsForEachModuleEntry(moduleDef) {
   }
   return notFoundOrNotValid;
 }
+
+exports.testable = {
+  replacePathIfPathParam,
+  replaceUrlVersionIfVersionParam,
+};
