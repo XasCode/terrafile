@@ -59,7 +59,7 @@ describe("read file contents should read specified json file and validate its co
     await expectFileIssue(options);
   });
 
-  test("run one live", async () => {
+  test("run live against teeraform registry", async () => {
     const configFile = "__tests__/tfRegistryLive.json";
     const options = {
       directory: "vendor_live/modules",
