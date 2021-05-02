@@ -53,17 +53,17 @@ const jestConfig = require("../jest.config");
 describe("createTargetDirectory should create a directory for vendor modules", () => {
   beforeEach(() => {
     // before each test clean up any dirs created in previous tests
-    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
+    cleanUpTestDirs();
     spy.beforeEach();
   });
 
   afterEach(() => {
     // clean up any dirs created by the test
-    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath("vendor"));
+    cleanUpTestDirs();
   });
 
   test("should create the target directory when provided a relative path", () => {
-    const installDir = "vendor/modules";
+    const installDir = "ok_vendor_a/modules";
     const retVals = venDir.createTargetDirectory({
       directory: installDir,
     });
@@ -72,12 +72,12 @@ describe("createTargetDirectory should create a directory for vendor modules", (
       fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePath(installDir))
     ).toBe(true);
     expect(retVals.success).toBe(true);
-    expect(retVals.created).toBe(fsHelpers.getAbsolutePath("vendor"));
+    expect(retVals.created).toBe(fsHelpers.getAbsolutePath("ok_vendor_a"));
     expect(retVals.saved).toBe(null);
   });
 
   test("should create the target directory when provided an absolute path", () => {
-    const installDir = fsHelpers.getAbsolutePath("vendor/modules");
+    const installDir = fsHelpers.getAbsolutePath("ok_vendor_b/modules");
     const retVals = venDir.createTargetDirectory({
       directory: installDir,
     });
@@ -89,7 +89,7 @@ describe("createTargetDirectory should create a directory for vendor modules", (
   });
 
   test("should create the target directory and save <path> when directory already exists", () => {
-    const installDir = "vendor/modules";
+    const installDir = "ok_vendor_c/modules";
     const absInstallDir = fsHelpers.getAbsolutePath(installDir);
     fsHelpers.createDir(absInstallDir);
     const retVals = venDir.createTargetDirectory({
@@ -117,7 +117,7 @@ describe("createTargetDirectory should create a directory for vendor modules", (
   }
 
   test("should not create the target directory when path is to a file", () => {
-    const installDir = "vendor/modules";
+    const installDir = "err_vendor/modules";
     fsHelpers.createDir(fsHelpers.getAbsolutePath(installDir + "/.."));
     fsHelpers.touchFile(fsHelpers.getAbsolutePath(installDir));
     expectDirIssue({ directory: installDir });
@@ -133,13 +133,14 @@ describe("createTargetDirectory should create a directory for vendor modules", (
 });
 
 const testDirs = [
-  "vendor",
-  "vendor1",
-  "vendor2",
-  "vendor_lerror",
-  "vendor_tfregistry_error",
-  "vendor_2x",
-  "vendor_empty",
+  "ok_vendor_a",
+  "ok_vendor_b",
+  "ok_vendor_c",
+  "err_vendor1",
+  "err_vendor2",
+  "err_vendor3",
+  "err_vendor_lerror",
+  "err_vendor_2x",
 ];
 const cleanUpTestDirs = () =>
   testDirs.map((testDir) =>
@@ -168,7 +169,7 @@ describe("read file contents should read specified json file and validate its co
   test("should successfully read a valid terrafile when provided a relative path", async () => {
     const configFile = "terrafile.sample.json";
     const retVals = await terraFile.readFileContents({
-      directory: "vendor1/modules",
+      directory: "err_vendor1/modules",
       file: configFile,
     });
     //expect(console.log).toHaveBeenLastCalledWith("");
@@ -185,7 +186,7 @@ describe("read file contents should read specified json file and validate its co
     for (const modName of Object.keys(testJson)) {
       expect(
         fsHelpers.checkIfFileExists(
-          fsHelpers.getAbsolutePath(`vendor1/modules/${modName}/main.tf`)
+          fsHelpers.getAbsolutePath(`err_vendor1/modules/${modName}/main.tf`)
         )
       ).toBe(true);
     }
@@ -194,7 +195,7 @@ describe("read file contents should read specified json file and validate its co
   test("should successfully read a valid terrafile when provided an absolute path", async () => {
     const configFile = fsHelpers.getAbsolutePath("terrafile.sample.json");
     const retVals = await terraFile.readFileContents({
-      directory: "vendor2/modules",
+      directory: "err_vendor2/modules",
       file: configFile,
     });
     //expect(console.log).toHaveBeenCalledWith("");
@@ -203,7 +204,7 @@ describe("read file contents should read specified json file and validate its co
   });
 
   test("should err on lack read access to file", async () => {
-    const configFile = "vendor/no_access_file";
+    const configFile = "err_vendor3/no_access_file";
     fsHelpers.createDir(fsHelpers.getAbsolutePath(configFile + "/.."));
     fsHelpers.touchFile(fsHelpers.getAbsolutePath(configFile), 0);
     await expectFileIssue({ file: configFile });
@@ -228,7 +229,7 @@ describe("read file contents should read specified json file and validate its co
   test("should err on bad local dir", async () => {
     const configFile = "__tests__/localError.json";
     await expectFileIssue({
-      directory: "vendor_lerror/modules",
+      directory: "err_vendor_lerror/modules",
       file: configFile,
     });
   });
@@ -236,7 +237,7 @@ describe("read file contents should read specified json file and validate its co
   test("should err on copy 2x", async () => {
     const configFile = "__tests__/local2xError.json";
     const options = {
-      directory: "vendor_2x/modules",
+      directory: "err_vendor_2x/modules",
       file: configFile,
     };
     await terraFile.readFileContents(options);

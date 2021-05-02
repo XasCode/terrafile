@@ -10,13 +10,9 @@ const spy = require("./spy");
 //  const jestConfig = require("../jest.config");
 
 const testDirs = [
-  "vendor",
-  "vendor1",
-  "vendor2",
-  "vendor_lerror",
-  "vendor_tfregistry_error",
-  "vendor_empty",
-  "vendor_live",
+  "be_vendor_tfregistry_error",
+  "be_vendor_empty",
+  "be_vendor_live",
 ];
 const cleanUpTestDirs = () =>
   testDirs.map((testDir) =>
@@ -45,7 +41,7 @@ describe("read file contents should read specified json file and validate its co
   test("should err on bad terraform registry", async () => {
     const configFile = "__tests__/tfRegistryError.json";
     await expectFileIssue({
-      directory: "vendor_tfregistry_error/modules",
+      directory: "be_vendor_tfregistry_error/modules",
       file: configFile,
     });
   });
@@ -53,7 +49,7 @@ describe("read file contents should read specified json file and validate its co
   test("should err on empty source", async () => {
     const configFile = "__tests__/tfRegistryEmptyError.json";
     const options = {
-      directory: "vendor_empty/modules",
+      directory: "be_vendor_empty/modules",
       file: configFile,
     };
     await expectFileIssue(options);
@@ -62,7 +58,7 @@ describe("read file contents should read specified json file and validate its co
   test("run live against teeraform registry", async () => {
     const configFile = "__tests__/tfRegistryLive.json";
     const options = {
-      directory: "vendor_live/modules",
+      directory: "be_vendor_live/modules",
       file: configFile,
     };
     const retVals = await terraFile.readFileContents(options);
@@ -79,7 +75,7 @@ describe("read file contents should read specified json file and validate its co
     for (const modName of Object.keys(testJson)) {
       expect(
         fsHelpers.checkIfFileExists(
-          fsHelpers.getAbsolutePath(`vendor_live/modules/${modName}/main.tf`)
+          fsHelpers.getAbsolutePath(`${options.directory}/${modName}/main.tf`)
         )
       ).toBe(true);
     }
