@@ -195,7 +195,7 @@ describe.each(variations)(
         const myargs = [
           process.argv[0],
           path.resolve("./src/terrafile"),
-          ...(args.length > 0 ? args.split(" ") : []),
+          ...(args ? args.split(" ") : []),
         ];
         backend.length > 0
           ? main(myargs, backendVersions[backend])
@@ -226,8 +226,9 @@ describe.each(variations)(
 
     // sample CLI commands
     if (getRandomInt(200) === 0) {
+      //if (true) {
       test(`Sample CLI (BE="%s", args="${args}")`, async () => {
-        const result = await cli(args.split(" "));
+        const result = await cli(args ? args.split(" ") : []);
         [
           { actual: result.stdout, expected: stdOut },
           { actual: result.stderr, expected: stdErr },

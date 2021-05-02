@@ -32,15 +32,8 @@ const fsHelpers = require("../src/fsHelpers");
 const spy = require("./spy");
 const jestConfig = require("../jest.config");
 
-const testDirs = [
-  "vendor",
-  "vendor1",
-  "vendor2",
-  "vendor_lerror",
-  "vendor_tfregistry_error",
-  "vendor_2x",
-  "vendor_empty",
-];
+const testDirs = ["vendor_tfregistry_error"];
+
 const cleanUpTestDirs = () =>
   testDirs.map((testDir) =>
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(testDir))
