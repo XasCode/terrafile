@@ -10,6 +10,7 @@ function cleanUpOldSaveLocation(dir) {
 function getSaveLocation(dir) {
   return path.resolve(dir, "..", ".terrafile.save");
 }
+exports.getSaveLocation = getSaveLocation;
 
 function renameExistingDir(installDir) {
   let retVal = null;
@@ -37,6 +38,3 @@ exports.createTargetDirectory = function (options) {
   }
   return retVals;
 };
-
-// dirs = {saved: <path>|null, created: <path>|null}
-//exports.restoreDirectories = function (dirs) {};
