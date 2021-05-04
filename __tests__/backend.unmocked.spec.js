@@ -1,13 +1,8 @@
-//const path = require("path");
 const fs = require("fs-extra");
 
-//const venDir = require("../src/venDir");
-const terraFile = require("../src/processFile");
-//jest.requireActual("../src/run");
-//const terraFile = jest.requireActual("../src/processFile");
-const fsHelpers = require("../src/fsHelpers");
+const terraFile = require("../dist/processFile");
+const fsHelpers = require("../dist/fsHelpers");
 const spy = require("./spy");
-//  const jestConfig = require("../jest.config");
 
 const testDirs = [
   "be_vendor_tfregistry_error",
@@ -21,13 +16,11 @@ const cleanUpTestDirs = () =>
 
 describe("read file contents should read specified json file and validate its contents", () => {
   beforeEach(() => {
-    // cleans up any dirs created from previous tests
     cleanUpTestDirs();
     spy.beforeEach();
   });
 
   afterEach(() => {
-    // cleans up any dirs create by the test
     cleanUpTestDirs();
   });
 

@@ -1,8 +1,8 @@
 const path = require("path");
 
-const fsHelpers = require("../src/fsHelpers");
+const fsHelpers = require("../dist/fsHelpers");
 const spy = require("./spy");
-const { main } = require("../src/terrafile");
+const { main } = require("../dist/terrafile");
 const { getRandomInt, cli, cartesian } = require("./utils");
 const {
   helpContent,
@@ -10,10 +10,10 @@ const {
   unknownCommand,
   unknownOptionLong,
   unknownOptionShort,
-} = require("../src/strings");
+} = require("../dist/strings");
 
 const backendVersions = {
-  "": require("../src/backend"),
+  "": require("../dist/backend"),
   "./backend.mock.js": require("../__mocks__/backend.mock.js"),
 };
 
@@ -194,7 +194,7 @@ describe.each(variations)(
       async (backend) => {
         const myargs = [
           process.argv[0],
-          path.resolve("./src/terrafile"),
+          path.resolve("./dist/terrafile"),
           ...(args ? args.split(" ") : []),
         ];
         backend.length > 0

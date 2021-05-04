@@ -15,10 +15,10 @@ jest.mock("axios", () => ({
 }));
 //const axios = require("axios");
 
-jest.mock("../src/run", () => {
+jest.mock("../dist/run", () => {
   return {
     run: jest.fn().mockImplementation((args, cwd) => {
-      const fsHelpersLocal = require("../src/fsHelpers");
+      const fsHelpersLocal = require("../dist/fsHelpers");
       const pathLocal = require("path");
       const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);
       if (!fsHelpersLocal.checkIfDirExists(fullDest)) {
@@ -34,11 +34,10 @@ jest.mock("../src/run", () => {
     }),
   };
 });
-//const run = require("../src/run");
 
-const venDir = require("../src/venDir");
-const terraFile = require("../src/processFile");
-const fsHelpers = require("../src/fsHelpers");
+const venDir = require("../dist/venDir");
+const terraFile = require("../dist/processFile");
+const fsHelpers = require("../dist/fsHelpers");
 const spy = require("./spy");
 const jestConfig = require("../jest.config");
 

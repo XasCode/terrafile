@@ -1,6 +1,6 @@
-const fsHelpers = require("../src/fsHelpers");
-const restore = require("../src/restore");
-const venDir = require("../src/venDir");
+const fsHelpers = require("../dist/fsHelpers");
+const restore = require("../dist/restore");
+const venDir = require("../dist/venDir");
 
 const testDirs = ["restore", "restore2"];
 

@@ -1,7 +1,7 @@
 const path = require("path");
 
 const { cli } = require("./utils");
-const fsHelpers = require("../src/fsHelpers");
+const fsHelpers = require("../dist/fsHelpers");
 
 const {
   helpContent,
@@ -9,7 +9,7 @@ const {
   unknownCommand,
   unknownOptionLong,
   unknownOptionShort,
-} = require("../src/strings");
+} = require("../dist/strings");
 
 const version = require("../package.json").version;
 const { beforeEach } = require("./spy");
@@ -39,15 +39,15 @@ describe.each(Object.keys(curatedCliCommands))(
   `should execute 'terrafile' with a set of commands/options and verify the output`,
   (cliCommand) => {
     beforeEach(() => {
-      fsHelpers.rimrafDir(path.resolve(".", "./src/vendor"));
+      fsHelpers.rimrafDir(path.resolve(".", "./dist/vendor"));
     });
 
     afterEach(() => {
-      fsHelpers.rimrafDir(path.resolve(".", "./src/vendor"));
+      fsHelpers.rimrafDir(path.resolve(".", "./dist/vendor"));
     });
 
     test(`check cli: ${cliCommand}`, async () => {
-      const result = await cli(cliCommand.split(" "), "./src");
+      const result = await cli(cliCommand.split(" "), "./dist");
       expect(result.stdout).toBe(curatedCliCommands[cliCommand][0]);
       expect(result.stderr).toBe(curatedCliCommands[cliCommand][1]);
       expect(result.code).toBe(curatedCliCommands[cliCommand][2]);

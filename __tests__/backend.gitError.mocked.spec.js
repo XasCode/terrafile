@@ -13,7 +13,7 @@ jest.mock("axios", () => ({
   }),
 }));
 
-jest.mock("../src/run", () => {
+jest.mock("../dist/run", () => {
   return {
     run: jest.fn().mockImplementation((_args, _cwd) => {
       return {
@@ -26,9 +26,9 @@ jest.mock("../src/run", () => {
   };
 });
 
-const venDir = require("../src/venDir");
-const terraFile = require("../src/processFile");
-const fsHelpers = require("../src/fsHelpers");
+const venDir = require("../dist/venDir");
+const terraFile = require("../dist/processFile");
+const fsHelpers = require("../dist/fsHelpers");
 const spy = require("./spy");
 const jestConfig = require("../jest.config");
 

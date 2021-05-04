@@ -1,4 +1,5 @@
 const fsHelpers = require("./fsHelpers");
+//import * as fsHelpers from "./fsHelpers";
 const { getSaveLocation } = require("./venDir");
 
 function restoreExistingDir(installDir) {

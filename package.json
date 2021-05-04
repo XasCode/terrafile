@@ -4,10 +4,13 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "terrafile": "./src/terrafile.js"
+    "terrafile": "./dist/terrafile.js"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc",
+    "install": "npm run build",
+    "format": "prettier-standard '**/*.ts'"
   },
   "repository": {
     "type": "git",
@@ -27,12 +30,29 @@
     "jest-progress-bar-reporter": "^1.0.20",
     "mkdirp": "^1.0.4",
     "rimraf": "^3.0.2",
-    "touch": "^3.1.0"
+    "touch": "^3.1.0",
+    "tsc": "^1.20150623.0"
   },
   "devDependencies": {
     "@jestaubach/eslint-config": "^0.0.1",
     "codecov": "^3.8.1",
     "coveralls": "^3.1.0",
-    "eslint": "^7.23.0"
+    "eslint": "^7.23.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^9.4.3",
+    "prettier-standard": "^16.4.1"
+  },
+  "lint-staged": {
+    "linters": {
+      "**/*.ts": [
+        "prettier-standard",
+        "git add"
+      ]
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

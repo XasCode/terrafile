@@ -1,6 +1,6 @@
 const {
   replaceUrlVersionIfVersionParam,
-} = require("../../src/processFile").testable;
+} = require("../../dist/processFile").testable;
 
 test.each([
   {

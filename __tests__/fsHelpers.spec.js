@@ -1,4 +1,4 @@
-const fsHelpers = require("../src/fsHelpers");
+const fsHelpers = require("../dist/fsHelpers");
 const path = require("path");
 const spy = require("../__tests__/spy");
 const fs = require("fs");
