@@ -1,6 +1,7 @@
-const execFile = require("child_process").execFile;
+import { execFile } from "child_process";
+import { ExecResult, Path } from "./types";
 
-async function run(args, cwd) {
+async function run(args: string[], cwd: Path): Promise<ExecResult> {
   return new Promise((resolve) => {
     execFile(
       "git",
@@ -20,4 +21,4 @@ async function run(args, cwd) {
   });
 }
 
-exports.run = run;
+export { run };

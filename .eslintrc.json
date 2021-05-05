@@ -1,5 +1,17 @@
 {
-  "extends": "@JEStaubach/eslint-config",
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "@JEStaubach/eslint-config",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "overrides": [
     {
       "files": [
@@ -10,8 +22,5 @@
         "jest": true
       }
     }
-  ],
-  "parserOptions": {
-    "ecmaVersion": 2020
-  }
+  ]
 }

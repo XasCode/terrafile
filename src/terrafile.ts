@@ -1,47 +1,42 @@
 #!/usr/bin/env node
-(function () {
-  const { Command, Option } = require("commander");
+import { Command, Option } from "commander";
+import * as backend from "./backend";
+import { version } from "../package.json";
+import { CliOptions } from "./types";
 
-  const backend = require("./backend");
+type Backend = {
+  install(c: CliOptions): void;
+};
 
-  const version = require("../package.json").version;
-
-  function main(myargs, be) {
-    const program = new Command();
-    program
-      .version(
-        version,
-        "-V, --version",
-        "Show version information for terrafile"
+function main(myargs: string[], be: Backend): void {
+  const program = new Command();
+  program
+    .version(version, "-V, --version", "Show version information for terrafile")
+    .description("Manage vendored modules using a JSON file.")
+    .command("install")
+    .description("Installs the files in your terrafile.json")
+    .action((options) =>
+      be === undefined ? backend.install(options) : be.install(options)
+    )
+    .addOption(
+      new Option("-d, --directory <string>", "module directory").default(
+        "vendor/modules"
       )
-      .description("Manage vendored modules using a JSON file.")
-      .command("install")
-      .description("Installs the files in your terrafile.json")
-      .action((options) =>
-        be === undefined ? backend.install(options) : be.install(options)
-      )
-      .addOption(
-        new Option("-d, --directory <string>", "module directory").default(
-          "vendor/modules"
-        )
-      )
-      .addOption(
-        new Option("-f, --file <string>", "config file").default(
-          "terrafile.json"
-        )
-      );
+    )
+    .addOption(
+      new Option("-f, --file <string>", "config file").default("terrafile.json")
+    );
 
-    try {
-      program.parse(myargs);
-    } catch (err) {
-      // swallow the error
-    }
+  try {
+    program.parse(myargs);
+  } catch (err) {
+    // swallow the error
   }
+}
 
-  /* istanbul ignore if */
-  if (require.main === module) {
-    main(process.argv, undefined);
-  } else {
-    module.exports.main = main;
-  }
-})();
+/* istanbul ignore if */
+if (require.main === module) {
+  main(process.argv, undefined);
+} else {
+  module.exports.main = main;
+}

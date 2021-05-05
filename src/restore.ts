@@ -1,8 +1,8 @@
-const fsHelpers = require("./fsHelpers");
-//import * as fsHelpers from "./fsHelpers";
-const { getSaveLocation } = require("./venDir");
+import * as fsHelpers from "./fsHelpers";
+import { getSaveLocation } from "./venDir";
+import { Path, Status } from "./types";
 
-function restoreExistingDir(installDir) {
+function restoreExistingDir(installDir: Path): Path {
   let retVal = null;
   const saveLocation = getSaveLocation(installDir);
   if (fsHelpers.checkIfDirExists(saveLocation)) {
@@ -13,8 +13,8 @@ function restoreExistingDir(installDir) {
   return retVal;
 }
 
-exports.restoreDirectory = function (installDir) {
-  const retVals = { success: false };
+exports.restoreDirectory = function (installDir: Path): Status {
+  const retVals = { success: false, saved: null, created: null } as Status;
   const absInstallDir = fsHelpers.getAbsolutePath(installDir);
   const restored = restoreExistingDir(absInstallDir);
   if (restored !== null) {

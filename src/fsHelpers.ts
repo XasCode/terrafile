@@ -1,20 +1,19 @@
-const fs = require("fs");
-const mkdirp = require("mkdirp").sync;
-const rimraf = require("rimraf").sync;
-const touch = require("touch").sync;
-const path = require("path");
+import * as fs from "fs";
+import { sync as mkdirp } from "mkdirp";
+import { sync as rimraf } from "rimraf";
+import { sync as touch } from "touch";
+import * as path from "path";
+import { Path } from "./types";
 
-const checkIfFileExists = function (filePath) {
+function checkIfFileExists(filePath: Path): boolean {
   return fs.existsSync(filePath) && fs.lstatSync(filePath).isFile();
-};
-exports.checkIfFileExists = checkIfFileExists;
+}
 
-const checkIfDirExists = function (dir) {
+function checkIfDirExists(dir: Path): boolean {
   return fs.existsSync(dir) && fs.lstatSync(dir).isDirectory();
-};
-exports.checkIfDirExists = checkIfDirExists;
+}
 
-const getAbsolutePath = function (dir) {
+function getAbsolutePath(dir: Path): Path {
   try {
     if (dir.match(/^[a-zA-Z0-9\-_./:\\]+$/g) === null) {
       throw Error(`Dir contains unsupported characters. Received ${dir}.`);
@@ -23,10 +22,9 @@ const getAbsolutePath = function (dir) {
   } catch (err) {
     console.error(`Error resolving path: ${dir}`);
   }
-};
-exports.getAbsolutePath = getAbsolutePath;
+}
 
-exports.createDir = function (dir) {
+function createDir(dir: Path): Path {
   try {
     if (dir === undefined || getAbsolutePath(dir) !== dir) {
       throw Error(
@@ -37,16 +35,16 @@ exports.createDir = function (dir) {
   } catch (err) {
     console.error(`Error creating dir: ${dir}`);
   }
-};
+}
 
-exports.touchFile = function (filePath, perms) {
+function touchFile(filePath: Path, perms: number): void {
   touch(filePath);
   if (perms !== undefined) {
     fs.chmodSync(filePath, perms);
   }
-};
+}
 
-const rimrafDir = function (dir) {
+function rimrafDir(dir: Path): Path {
   const absPath = getAbsolutePath(dir);
   if (absPath !== undefined && checkIfDirExists(dir)) {
     rimraf(dir, { maxBusyTries: 3000 });
@@ -54,10 +52,9 @@ const rimrafDir = function (dir) {
   } else {
     console.error(`Error deleting dir: ${dir}`);
   }
-};
-exports.rimrafDir = rimrafDir;
+}
 
-exports.abortDirCreation = function (dir) {
+function abortDirCreation(dir: Path): void {
   if (dir !== null && checkIfDirExists(dir)) {
     console.error(
       `Cleaning up due to abort, directories created starting at: ${JSON.stringify(
@@ -68,13 +65,24 @@ exports.abortDirCreation = function (dir) {
   } else {
     console.error(`Cleaning up due to abort, no directory to clean up.`);
   }
-};
+}
 
-exports.renameDir = function (oldPath, newPath) {
+function renameDir(oldPath: Path, newPath: Path): void {
   try {
     fs.renameSync(oldPath, newPath);
     console.log("Successfully renamed the directory.");
   } catch (err) {
     console.error(err.code);
   }
+}
+
+export {
+  checkIfFileExists,
+  checkIfDirExists,
+  getAbsolutePath,
+  createDir,
+  touchFile,
+  rimrafDir,
+  abortDirCreation,
+  renameDir,
 };
