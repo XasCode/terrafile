@@ -19,7 +19,9 @@ type Status = {
   saved?: Path;
   created?: Path;
   error?: string | null;
-  contents?: string;
+  contents?: [string, Record<string, string>][];
+  process?: () => Promise<Status>;
+  validateFormat?: () => Status;
 };
 
 enum Option {
@@ -29,6 +31,21 @@ enum Option {
 
 type Entry = {
   source?: string;
+  version?: string;
+  path?: string;
 };
 
-export { CliOptions, Entry, ExecResult, Option, Path, Status };
+type RepoLocation = [Path, Path, string, string];
+
+type SourceParts = string[];
+
+export {
+  CliOptions,
+  Entry,
+  ExecResult,
+  Option,
+  Path,
+  RepoLocation,
+  SourceParts,
+  Status,
+};

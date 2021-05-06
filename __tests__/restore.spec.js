@@ -1,3 +1,9 @@
+//const fsHelpers = require("../dist/fsHelpers");
+//const restore = require("../dist/restore");
+//const venDir = require("../dist/venDir");
+//import * as fsHelpers from "../dist/fsHelpers";
+//import * as restore from "../dist/restore";
+//import * as venDir from "../dist/venDir";
 const fsHelpers = require("../dist/fsHelpers");
 const restore = require("../dist/restore");
 const venDir = require("../dist/venDir");

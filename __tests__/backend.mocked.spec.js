@@ -39,7 +39,7 @@ const venDir = require("../dist/venDir");
 const terraFile = require("../dist/processFile");
 const fsHelpers = require("../dist/fsHelpers");
 const spy = require("./spy");
-const jestConfig = require("../jest.config");
+//const jestConfig = require("../jest.config");
 
 /* createTargetDirectory({"directory": <path>, ...})
  * Args: Expects an object with the <path> to the "directory" that is needed

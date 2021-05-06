@@ -26,11 +26,11 @@ jest.mock("../dist/run", () => {
   };
 });
 
-const venDir = require("../dist/venDir");
+//const venDir = require("../dist/venDir");
 const terraFile = require("../dist/processFile");
 const fsHelpers = require("../dist/fsHelpers");
 const spy = require("./spy");
-const jestConfig = require("../jest.config");
+//const jestConfig = require("../jest.config");
 
 const testDirs = ["vendor_tfregistry_error"];
 

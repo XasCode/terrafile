@@ -4,7 +4,16 @@ import * as fsHelpers from "./fsHelpers";
 import { validOptions } from "./utils";
 import axios from "axios";
 import { run } from "./run";
-import { CliOptions, Entry, Path, Status } from "./types";
+import {
+  CliOptions,
+  Entry,
+  ExecResult,
+  Option,
+  Path,
+  RepoLocation,
+  SourceParts,
+  Status,
+} from "./types";
 
 const registryURL = "https://registry.terraform.io/v1/modules";
 
@@ -44,17 +53,20 @@ function determineRef(ref: string): string[] {
   return ref?.length === 40 ? ["", commit] : [branchOrTag, ""];
 }
 
-function getPartsFromHttp(source: Path): string[] {
+function getPartsFromHttp(source: Path): RepoLocation {
   const [repo, repoDir, ref] = sourceParts(source);
   const [branchOrTag, commit] = determineRef(ref);
   return [repo, repoDir, branchOrTag, commit];
 }
 
-function getRepoUrl(terraformRegistryGitUrl) {
+function getRepoUrl(terraformRegistryGitUrl: Path) {
   return terraformRegistryGitUrl.split("git::")[1];
 }
 
-async function cloneRepo([repo, repoDir, branchOrTag, _commit], fullDest) {
+async function cloneRepo(
+  [repo, repoDir, branchOrTag]: RepoLocation,
+  fullDest: Path
+): Promise<ExecResult> {
   const cloneCmd = [
     `clone`,
     ...(repoDir ? [`--depth`, `1`, `--filter=blob:none`, `--sparse`] : []),
@@ -62,16 +74,19 @@ async function cloneRepo([repo, repoDir, branchOrTag, _commit], fullDest) {
     `${repo}.git`,
     fullDest,
   ];
-  const results = await run(cloneCmd);
+  const results = await run(cloneCmd, undefined);
   console.log(`clone: ${cloneCmd.join(" ")} / ${results}`);
   return results;
 }
 
-async function scopeRepo([_repo, repoDir, _branchOrTag, _commit], fullDest) {
+async function scopeRepo(
+  [, repoDir]: RepoLocation,
+  fullDest: Path
+): Promise<ExecResult> {
   const sparseCmd = [`sparse-checkout`, `set`, repoDir];
   const results = await (repoDir
     ? run(sparseCmd, fullDest)
-    : { code: 0, error: null });
+    : ({ code: 0, error: null } as ExecResult));
   console.log(
     `sparse: ${repoDir ? sparseCmd.join(" ") : ""} / ${JSON.stringify(results)}`
   );
@@ -79,13 +94,13 @@ async function scopeRepo([_repo, repoDir, _branchOrTag, _commit], fullDest) {
 }
 
 async function checkoutCommit(
-  [_repo, _repoDir, _branchOrTag, commit],
-  fullDest
-) {
+  [, , , commit]: RepoLocation,
+  fullDest: Path
+): Promise<ExecResult> {
   const commitCmd = [`checkout`, commit];
   const results = await (commit
     ? run(commitCmd, fullDest)
-    : { code: 0, error: null });
+    : ({ code: 0, error: null } as ExecResult));
   console.log(
     `checkout: ${commit ? commitCmd.join(" ") : ""} / ${JSON.stringify(
       results
@@ -94,7 +109,7 @@ async function checkoutCommit(
   return results;
 }
 
-function getRegDownloadPointerUrl(source, version) {
+function getRegDownloadPointerUrl(source: Path, version: string): Path {
   const [ns, modName, provider] = source.split("/");
   const registryDownloadUrl = `${registryURL}/${ns || ""}/${modName || ""}/${
     provider || ""
@@ -102,7 +117,7 @@ function getRegDownloadPointerUrl(source, version) {
   return registryDownloadUrl;
 }
 
-async function getRegRepoUrl(downloadPointerUrl) {
+async function getRegRepoUrl(downloadPointerUrl: Path): Promise<Path> {
   try {
     const response = await axios({
       method: "get",
@@ -119,13 +134,13 @@ async function getRegRepoUrl(downloadPointerUrl) {
   }
 }
 
-async function cloneRepoToDest(repoUrl, fullDest) {
+async function cloneRepoToDest(repoUrl: Path, fullDest: Path): Promise<Status> {
   const retVal = {
     success: false,
     contents: null,
     error: `Error copying from terraform registry ${repoUrl} - ${fullDest}`,
-  };
-  const [a, b, c, d] = getPartsFromHttp(repoUrl);
+  } as Status;
+  const [a, b, c, d]: RepoLocation = getPartsFromHttp(repoUrl);
   const results1 = await cloneRepo([a, b, c, d], fullDest);
   const results2 = await scopeRepo([a, b, c, d], fullDest);
   const results3 = await checkoutCommit([a, b, c, d], fullDest);
@@ -142,7 +157,10 @@ async function cloneRepoToDest(repoUrl, fullDest) {
   return retVal;
 }
 
-async function copyFromTerraformRegistry(name, params, dest) {
+async function copyFromTerraformRegistry(
+  params: Entry,
+  dest: Path
+): Promise<Status> {
   const downloadPointerUrl = getRegDownloadPointerUrl(
     params.source,
     params?.version || ""
@@ -157,11 +175,11 @@ async function copyFromTerraformRegistry(name, params, dest) {
       };
 }
 
-function replaceUrlVersionIfVersionParam(source, version) {
+function replaceUrlVersionIfVersionParam(source: Path, version: string): Path {
   return version ? [source.split("?ref=")[0], version].join("?ref=") : source;
 }
 
-function insertGit(source) {
+function insertGit(source: Path): Path {
   const parts = source.split("?ref=");
   return parts.length < 2
     ? source
@@ -170,7 +188,7 @@ function insertGit(source) {
     : [parts[0], ".git", "?ref=", ...parts.slice(1)].join("");
 }
 
-function sourceParts(source) {
+function sourceParts(source: Path): SourceParts {
   const tempSource = insertGit(source);
   const [beforeGit, afterGit] = tempSource.split(".git");
   const newSource = `${beforeGit}${source.includes(".git") ? ".git" : ""}`;
@@ -181,7 +199,7 @@ function sourceParts(source) {
   return [newSource, newPathPart, afterQref];
 }
 
-function replacePathIfPathParam(source, repoPath) {
+function replacePathIfPathParam(source: Path, repoPath: Path): Path {
   const [beforeGit, afterGit] = source.split(".git");
   const newAfterGit = afterGit ? afterGit : "";
   const [beforeQref, afterQref] = newAfterGit.split("?ref=");
@@ -194,14 +212,14 @@ function replacePathIfPathParam(source, repoPath) {
   }${beforePathSep}${newPath}${newQrefPart}`;
 }
 
-async function copyFromGit(name, params, dest) {
+async function copyFromGit(params: Entry, dest: Path): Promise<Status> {
   const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
   const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
   return await cloneRepoToDest(regRepoUrl, dest);
 }
 
-function Terrafile(options) {
-  async function process() {
+function Terrafile(options: CliOptions): Status {
+  async function process(): Promise<Status> {
     let retVal = {
       success: this.success,
       contents: this.contents,
@@ -220,7 +238,7 @@ function Terrafile(options) {
           case "terraform-registry": {
             retVal = {
               ...retVal,
-              ...(await copyFromTerraformRegistry(key, val, dest)),
+              ...(await copyFromTerraformRegistry(val, dest)),
             };
             break;
           }
@@ -228,7 +246,7 @@ function Terrafile(options) {
           case "git-ssh": {
             retVal = {
               ...retVal,
-              ...(await copyFromGit(key, val, dest)),
+              ...(await copyFromGit(val, dest)),
             };
             break;
           }
@@ -238,7 +256,7 @@ function Terrafile(options) {
     return retVal;
   }
 
-  return validOptions(options, "file")
+  return validOptions(options, "file" as Option)
     ? {
         process,
         ...JsonTerrafile(
@@ -253,8 +271,10 @@ function Terrafile(options) {
       };
 }
 
-function JsonTerrafile(filepath) {
-  function parse(contents) {
+function JsonTerrafile(filepath: Path): Status {
+  function parse(
+    contents: Record<string, Record<string, string>>
+  ): [string, Record<string, string>][] {
     try {
       return Object.entries(contents);
     } catch (err) {
@@ -262,9 +282,9 @@ function JsonTerrafile(filepath) {
     }
   }
 
-  function validateFormat() {
+  function validateFormat(): Status {
     const moduleEntries = parse(this.contents);
-    const valid = moduleEntries.reduce((acc, [key, val]) => {
+    const valid = moduleEntries.reduce((acc, [, val]) => {
       return acc && !validateFieldsForEachModuleEntry(val);
     }, this.success);
     return {
@@ -280,8 +300,8 @@ function JsonTerrafile(filepath) {
   };
 }
 
-function JsonFile(absFilePath) {
-  function gulpJson(file) {
+function JsonFile(absFilePath: Path): Status {
+  function gulpJson(file: Path): [string, Record<string, string>][] | null {
     try {
       return JSON.parse(
         fs.readFileSync(fsHelpers.getAbsolutePath(file), "utf-8")
@@ -297,8 +317,8 @@ function JsonFile(absFilePath) {
     : { success: false, contents: null, error: "Error: not file" };
 }
 
-function File(absFilePath) {
-  function exists(filePath) {
+function File(absFilePath: Path): Status {
+  function exists(filePath: Path): boolean {
     return fsHelpers.checkIfFileExists(filePath);
   }
 
@@ -309,8 +329,10 @@ function File(absFilePath) {
   };
 }
 
-function Json(json) {
-  function isValidJson(contents) {
+function Json(json: [string, Record<string, string>][] | null): Status {
+  function isValidJson(
+    contents: [string, Record<string, string>][] | null
+  ): boolean {
     return contents !== null;
   }
 
@@ -321,27 +343,27 @@ function Json(json) {
   };
 }
 
-function startsWith(str, start) {
+function startsWith(str: string, start: string): boolean {
   return start === str.slice(0, start.length);
 }
 
-function endsWith(str, end) {
+function endsWith(str: string, end: string): boolean {
   return end === str.slice(-1 * end.length);
 }
 
-function isGitHttps(source) {
+function isGitHttps(source: Path): string {
   return startsWith(source, "https://") && endsWith(source, ".git")
     ? "git-https"
     : "";
 }
 
-function isGitSSH(source) {
+function isGitSSH(source: Path): string {
   return startsWith(source, "git@") && endsWith(source, ".git")
     ? "git-ssh"
     : "";
 }
 
-function isLocalDir(source) {
+function isLocalDir(source: Path): string {
   return startsWith(source, "/") ||
     startsWith(source, "./") ||
     startsWith(source, "../")
@@ -349,14 +371,14 @@ function isLocalDir(source) {
     : "";
 }
 
-function moduleSourceType(source) {
+function moduleSourceType(source: Path): string {
   return (
     [isGitHttps(source), isGitSSH(source), isLocalDir(source)].join("") ||
     "terraform-registry"
   );
 }
 
-function getModuleSourceType(source) {
+function getModuleSourceType(source: Path): string {
   let returnValue = undefined;
   if (source !== undefined) {
     returnValue = moduleSourceType(source);
@@ -364,7 +386,7 @@ function getModuleSourceType(source) {
   return returnValue;
 }
 
-function validateEachField(moduleDef) {
+function validateEachField(moduleDef: Record<string, string>): boolean {
   let notFoundOrNotValid = false;
   const acceptable = ["comment", "source", "version", "path"];
   const params = Object.keys(moduleDef);
@@ -376,7 +398,9 @@ function validateEachField(moduleDef) {
   return notFoundOrNotValid;
 }
 
-function validateFieldsForEachModuleEntry(moduleDef) {
+function validateFieldsForEachModuleEntry(
+  moduleDef: Record<string, string>
+): boolean {
   let notFoundOrNotValid = false;
   const sourceType = getModuleSourceType(moduleDef["source"]);
   if (sourceType === undefined) {
