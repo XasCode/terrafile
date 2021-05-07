@@ -1,12 +1,12 @@
-//const fsHelpers = require("../dist/fsHelpers");
-//const restore = require("../dist/restore");
-//const venDir = require("../dist/venDir");
-//import * as fsHelpers from "../dist/fsHelpers";
-//import * as restore from "../dist/restore";
-//import * as venDir from "../dist/venDir";
-const fsHelpers = require("../dist/fsHelpers");
-const restore = require("../dist/restore");
-const venDir = require("../dist/venDir");
+//import fsHelpers = require("../dist/fsHelpers");
+//import restore = require("../dist/restore");
+//import venDir = require("../dist/venDir");
+//import * as fsHelpers from "../dist/src/fsHelpers";
+//import * as restore from "../dist/src/restore";
+//import * as venDir from "../dist/src/venDir";
+const fsHelpers = require("../dist/src/fsHelpers");
+const restore = require("../dist/src/restore");
+const venDir = require("../dist/src/venDir");
 
 const testDirs = ["restore", "restore2"];
 

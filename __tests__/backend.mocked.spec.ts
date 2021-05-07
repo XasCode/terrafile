@@ -1,8 +1,8 @@
-const path = require("path");
-const fs = require("fs-extra");
+import { resolve } from "path";
+import { readFileSync } from "fs-extra";
 
 jest.mock("axios", () => ({
-  default: jest.fn((opts) => {
+  default: jest.fn(() => {
     //console.log(opts);
     return {
       status: 204,
@@ -15,10 +15,12 @@ jest.mock("axios", () => ({
 }));
 //const axios = require("axios");
 
-jest.mock("../dist/run", () => {
+jest.mock("../../src/run", () => {
   return {
     run: jest.fn().mockImplementation((args, cwd) => {
-      const fsHelpersLocal = require("../dist/fsHelpers");
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const fsHelpersLocal = require("../../src/fsHelpers");
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const pathLocal = require("path");
       const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);
       if (!fsHelpersLocal.checkIfDirExists(fullDest)) {
@@ -35,11 +37,18 @@ jest.mock("../dist/run", () => {
   };
 });
 
-const venDir = require("../dist/venDir");
-const terraFile = require("../dist/processFile");
-const fsHelpers = require("../dist/fsHelpers");
-const spy = require("./spy");
-//const jestConfig = require("../jest.config");
+import { createTargetDirectory } from "../../src/venDir";
+import { readFileContents } from "../../src/processFile";
+import {
+  checkIfDirExists,
+  getAbsolutePath,
+  createDir,
+  touchFile,
+  rimrafDir,
+  checkIfFileExists,
+} from "../src/fsHelpers";
+import { beforeEach as _beforeEach } from "./spy";
+import { CliOptions } from "../src/types";
 
 /* createTargetDirectory({"directory": <path>, ...})
  * Args: Expects an object with the <path> to the "directory" that is needed
@@ -53,7 +62,7 @@ describe("createTargetDirectory should create a directory for vendor modules", (
   beforeEach(() => {
     // before each test clean up any dirs created in previous tests
     cleanUpTestDirs();
-    spy.beforeEach();
+    _beforeEach();
   });
 
   afterEach(() => {
@@ -63,53 +72,47 @@ describe("createTargetDirectory should create a directory for vendor modules", (
 
   test("should create the target directory when provided a relative path", () => {
     const installDir = "ok_vendor_a/modules";
-    const retVals = venDir.createTargetDirectory({
+    const retVals = createTargetDirectory({
       directory: installDir,
     });
     //expect(console.error).toHaveBeenCalledWith("");
-    expect(
-      fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePath(installDir))
-    ).toBe(true);
+    expect(checkIfDirExists(getAbsolutePath(installDir))).toBe(true);
     expect(retVals.success).toBe(true);
-    expect(retVals.created).toBe(fsHelpers.getAbsolutePath("ok_vendor_a"));
+    expect(retVals.created).toBe(getAbsolutePath("ok_vendor_a"));
     expect(retVals.saved).toBe(null);
   });
 
   test("should create the target directory when provided an absolute path", () => {
-    const installDir = fsHelpers.getAbsolutePath("ok_vendor_b/modules");
-    const retVals = venDir.createTargetDirectory({
+    const installDir = getAbsolutePath("ok_vendor_b/modules");
+    const retVals = createTargetDirectory({
       directory: installDir,
     });
     //expect(console.error).toHaveBeenCalledWith("");
-    expect(fsHelpers.checkIfDirExists(installDir)).toBe(true);
+    expect(checkIfDirExists(installDir)).toBe(true);
     expect(retVals.success).toBe(true);
-    expect(retVals.created).toBe(path.resolve(installDir, ".."));
+    expect(retVals.created).toBe(resolve(installDir, ".."));
     expect(retVals.saved).toBe(null);
   });
 
   test("should create the target directory and save <path> when directory already exists", () => {
     const installDir = "ok_vendor_c/modules";
-    const absInstallDir = fsHelpers.getAbsolutePath(installDir);
-    fsHelpers.createDir(absInstallDir);
-    const retVals = venDir.createTargetDirectory({
+    const absInstallDir = getAbsolutePath(installDir);
+    createDir(absInstallDir);
+    const retVals = createTargetDirectory({
       directory: installDir,
     });
-    expect(fsHelpers.checkIfDirExists(absInstallDir)).toBe(true);
+    expect(checkIfDirExists(absInstallDir)).toBe(true);
     expect(
-      fsHelpers.checkIfDirExists(
-        path.resolve(absInstallDir, "..", ".terrafile.save")
-      )
+      checkIfDirExists(resolve(absInstallDir, "..", ".terrafile.save"))
     ).toBe(true);
     expect(retVals.success).toBe(true);
     expect(retVals.created).toBe(absInstallDir);
-    expect(retVals.saved).toBe(
-      path.resolve(absInstallDir, "..", ".terrafile.save")
-    );
+    expect(retVals.saved).toBe(resolve(absInstallDir, "..", ".terrafile.save"));
   });
 
   // expected output when bad input provided to createTargetDirectory
-  function expectDirIssue(options) {
-    const retVals = venDir.createTargetDirectory(options);
+  function expectDirIssue(options: CliOptions): void {
+    const retVals = createTargetDirectory(options);
     expect(retVals.success).toBe(false);
     expect(retVals.created).toBe(null);
     expect(retVals.saved).toBe(null);
@@ -117,13 +120,13 @@ describe("createTargetDirectory should create a directory for vendor modules", (
 
   test("should not create the target directory when path is to a file", () => {
     const installDir = "err_vendor/modules";
-    fsHelpers.createDir(fsHelpers.getAbsolutePath(installDir + "/.."));
-    fsHelpers.touchFile(fsHelpers.getAbsolutePath(installDir));
+    createDir(getAbsolutePath(installDir + "/.."));
+    touchFile(getAbsolutePath(installDir), undefined);
     expectDirIssue({ directory: installDir });
   });
 
   // try various bad inputs
-  test.each([undefined, -1, {}, { directory: -1 }, { directory: "" }])(
+  test.each([undefined, {}, { directory: "" }])(
     "should not create the target directory when provided a bad path %s",
     (badDirOption) => {
       expectDirIssue(badDirOption);
@@ -142,13 +145,11 @@ const testDirs = [
   "err_vendor_2x",
 ];
 const cleanUpTestDirs = () =>
-  testDirs.map((testDir) =>
-    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(testDir))
-  );
+  testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir)));
 
 // expected result when provide bad file path
-async function expectFileIssue(options) {
-  const retVals = await terraFile.readFileContents(options);
+async function expectFileIssue(options: CliOptions): Promise<void> {
+  const retVals = await readFileContents(options);
   expect(retVals.success).toBe(false);
   expect(retVals.contents).toBe(null);
 }
@@ -157,7 +158,7 @@ describe("read file contents should read specified json file and validate its co
   beforeEach(() => {
     // cleans up any dirs created from previous tests
     cleanUpTestDirs();
-    spy.beforeEach();
+    _beforeEach();
   });
 
   afterEach(() => {
@@ -167,7 +168,7 @@ describe("read file contents should read specified json file and validate its co
 
   test("should successfully read a valid terrafile when provided a relative path", async () => {
     const configFile = "terrafile.sample.json";
-    const retVals = await terraFile.readFileContents({
+    const retVals = await readFileContents({
       directory: "err_vendor1/modules",
       file: configFile,
     });
@@ -176,24 +177,21 @@ describe("read file contents should read specified json file and validate its co
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
     const testJson = JSON.parse(
-      fs.readFileSync(
-        fsHelpers.getAbsolutePath("terrafile.sample.json"),
-        "utf-8"
-      )
+      readFileSync(getAbsolutePath("terrafile.sample.json"), "utf-8")
     );
     expect(Object.keys(testJson).length).toBe(31);
     for (const modName of Object.keys(testJson)) {
       expect(
-        fsHelpers.checkIfFileExists(
-          fsHelpers.getAbsolutePath(`err_vendor1/modules/${modName}/main.tf`)
+        checkIfFileExists(
+          getAbsolutePath(`err_vendor1/modules/${modName}/main.tf`)
         )
       ).toBe(true);
     }
   });
 
   test("should successfully read a valid terrafile when provided an absolute path", async () => {
-    const configFile = fsHelpers.getAbsolutePath("terrafile.sample.json");
-    const retVals = await terraFile.readFileContents({
+    const configFile = getAbsolutePath("terrafile.sample.json");
+    const retVals = await readFileContents({
       directory: "err_vendor2/modules",
       file: configFile,
     });
@@ -204,19 +202,19 @@ describe("read file contents should read specified json file and validate its co
 
   test("should err on lack read access to file", async () => {
     const configFile = "err_vendor3/no_access_file";
-    fsHelpers.createDir(fsHelpers.getAbsolutePath(configFile + "/.."));
-    fsHelpers.touchFile(fsHelpers.getAbsolutePath(configFile), 0);
+    createDir(getAbsolutePath(configFile + "/.."));
+    touchFile(getAbsolutePath(configFile), 0);
     await expectFileIssue({ file: configFile });
   });
 
   // test various bad paths and files
   test.each([
     undefined,
-    -1,
+    //-1,
     {},
-    { file: -1 },
+    //{ file: -1 },
     { file: "" },
-    { file: fsHelpers.getAbsolutePath(".") },
+    { file: getAbsolutePath(".") },
     { file: "does_not_exist" },
     { file: "__tests__/invalid.txt" },
     { file: "__tests__/invalid.json" },
@@ -239,7 +237,9 @@ describe("read file contents should read specified json file and validate its co
       directory: "err_vendor_2x/modules",
       file: configFile,
     };
-    await terraFile.readFileContents(options);
+    await readFileContents(options);
     await expectFileIssue(options);
   });
 });
+
+export {};

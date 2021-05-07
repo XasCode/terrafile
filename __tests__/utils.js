@@ -23,7 +23,7 @@ async function cli(args, cwd) {
   return new Promise((resolve) => {
     execFile(
       "node",
-      [`${path.resolve("./dist/terrafile")}`, ...args],
+      [`${path.resolve("./dist/src/terrafile")}`, ...args],
       {
         cwd,
       },

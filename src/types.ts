@@ -10,8 +10,8 @@ type ExecResult = {
 };
 
 type CliOptions = {
-  directory: Path | undefined;
-  file: Path | undefined;
+  directory?: Path;
+  file?: Path;
 };
 
 type Status = {

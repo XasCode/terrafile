@@ -1,7 +1,7 @@
 const {
   replacePathIfPathParam,
   replaceUrlVersionIfVersionParam,
-} = require("../../dist/processFile").testable;
+} = require("../../dist/src/processFile").testable;
 
 test.each([
   {

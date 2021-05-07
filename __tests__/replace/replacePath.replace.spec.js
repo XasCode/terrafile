@@ -1,4 +1,6 @@
-const { replacePathIfPathParam } = require("../../dist/processFile").testable;
+const {
+  replacePathIfPathParam,
+} = require("../../dist/src/processFile").testable;
 
 test.each([
   {

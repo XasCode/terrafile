@@ -50,7 +50,7 @@ function rimrafDir(dir: Path): Path {
     rimraf(dir, { maxBusyTries: 3000 });
     return dir;
   } else {
-    console.error(`Error deleting dir: ${dir}`);
+    //console.error(`Error deleting dir: ${dir}`);
   }
 }
 

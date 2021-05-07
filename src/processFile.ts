@@ -18,6 +18,7 @@ import {
 const registryURL = "https://registry.terraform.io/v1/modules";
 
 async function readFileContents(options: CliOptions): Promise<Status> {
+  console.log(`readFileContents: ${JSON.stringify(options)}`);
   return await Terrafile(options).process();
 }
 
@@ -75,7 +76,7 @@ async function cloneRepo(
     fullDest,
   ];
   const results = await run(cloneCmd, undefined);
-  console.log(`clone: ${cloneCmd.join(" ")} / ${results}`);
+  //console.log(`clone: ${cloneCmd.join(" ")} / ${results}`);
   return results;
 }
 
@@ -87,9 +88,9 @@ async function scopeRepo(
   const results = await (repoDir
     ? run(sparseCmd, fullDest)
     : ({ code: 0, error: null } as ExecResult));
-  console.log(
-    `sparse: ${repoDir ? sparseCmd.join(" ") : ""} / ${JSON.stringify(results)}`
-  );
+  //console.log(
+  //  `sparse: ${repoDir ? sparseCmd.join(" ") : ""} / ${JSON.stringify(results)}`
+  //);
   return results;
 }
 
@@ -101,11 +102,11 @@ async function checkoutCommit(
   const results = await (commit
     ? run(commitCmd, fullDest)
     : ({ code: 0, error: null } as ExecResult));
-  console.log(
-    `checkout: ${commit ? commitCmd.join(" ") : ""} / ${JSON.stringify(
-      results
-    )}`
-  );
+  //console.log(
+  //  `checkout: ${commit ? commitCmd.join(" ") : ""} / ${JSON.stringify(
+  //    results
+  //  )}`
+  //);
   return results;
 }
 
@@ -171,7 +172,12 @@ async function copyFromTerraformRegistry(
     : {
         success: false,
         contents: null,
-        error: `Repo URL not found in Terraform registry.`,
+        // eslint-disable-next-line max-len
+        error: `Repo URL not found in Terraform registry. ${dest}, ${JSON.stringify(
+          params
+        )}, ${downloadPointerUrl}, ${regRepoUrl}, ${isGitHttps(
+          params.source
+        )}, ${isGitSSH(params.source)}, ${isLocalDir(params.source)}`,
       };
 }
 
@@ -347,20 +353,16 @@ function startsWith(str: string, start: string): boolean {
   return start === str.slice(0, start.length);
 }
 
-function endsWith(str: string, end: string): boolean {
-  return end === str.slice(-1 * end.length);
-}
+//function endsWith(str: string, end: string): boolean {
+//  return end === str.slice(-1 * end.length);
+//}
 
 function isGitHttps(source: Path): string {
-  return startsWith(source, "https://") && endsWith(source, ".git")
-    ? "git-https"
-    : "";
+  return startsWith(source, "https://") ? "git-https" : "";
 }
 
 function isGitSSH(source: Path): string {
-  return startsWith(source, "git@") && endsWith(source, ".git")
-    ? "git-ssh"
-    : "";
+  return startsWith(source, "git@") ? "git-ssh" : "";
 }
 
 function isLocalDir(source: Path): string {

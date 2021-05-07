@@ -1,7 +1,7 @@
 const path = require("path");
 
 const { cli } = require("./utils");
-const fsHelpers = require("../dist/fsHelpers");
+const fsHelpers = require("../dist/src/fsHelpers");
 
 const {
   helpContent,
@@ -9,7 +9,7 @@ const {
   unknownCommand,
   unknownOptionLong,
   unknownOptionShort,
-} = require("../dist/strings");
+} = require("../dist/src/strings");
 
 const version = require("../package.json").version;
 const { beforeEach } = require("./spy");

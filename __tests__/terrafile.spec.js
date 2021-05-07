@@ -1,8 +1,8 @@
 const path = require("path");
 
-const fsHelpers = require("../dist/fsHelpers");
+const fsHelpers = require("../dist/src/fsHelpers");
 const spy = require("./spy");
-const { main } = require("../dist/terrafile");
+const { main } = require("../dist/src/terrafile");
 const { getRandomInt, cli, cartesian } = require("./utils");
 const {
   helpContent,
@@ -10,10 +10,10 @@ const {
   unknownCommand,
   unknownOptionLong,
   unknownOptionShort,
-} = require("../dist/strings");
+} = require("../dist/src/strings");
 
 const backendVersions = {
-  "": require("../dist/backend"),
+  "": require("../dist/src/backend"),
   "./backend.mock.js": require("../__mocks__/backend.mock.js"),
 };
 

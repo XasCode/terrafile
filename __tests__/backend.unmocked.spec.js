@@ -1,7 +1,7 @@
 const fs = require("fs-extra");
 
-const terraFile = require("../dist/processFile");
-const fsHelpers = require("../dist/fsHelpers");
+const terraFile = require("../dist/src/processFile");
+const fsHelpers = require("../dist/src/fsHelpers");
 const spy = require("./spy");
 
 const testDirs = [

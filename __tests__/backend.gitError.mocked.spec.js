@@ -1,8 +1,8 @@
-const path = require("path");
-const fs = require("fs-extra");
+//const path = require("path");
+//const fs = require("fs-extra");
 
 jest.mock("axios", () => ({
-  default: jest.fn((opts) => {
+  default: jest.fn(() => {
     return {
       status: 204,
       headers: {
@@ -13,9 +13,9 @@ jest.mock("axios", () => ({
   }),
 }));
 
-jest.mock("../dist/run", () => {
+jest.mock("../src/run", () => {
   return {
-    run: jest.fn().mockImplementation((_args, _cwd) => {
+    run: jest.fn().mockImplementation(() => {
       return {
         code: -1,
         error: "oops!",
@@ -26,11 +26,9 @@ jest.mock("../dist/run", () => {
   };
 });
 
-//const venDir = require("../dist/venDir");
-const terraFile = require("../dist/processFile");
-const fsHelpers = require("../dist/fsHelpers");
+const terraFile = require("../src/processFile");
+const fsHelpers = require("../src/fsHelpers");
 const spy = require("./spy");
-//const jestConfig = require("../jest.config");
 
 const testDirs = ["vendor_tfregistry_error"];
 
