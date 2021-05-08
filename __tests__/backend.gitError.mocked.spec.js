@@ -1,6 +1,3 @@
-//const path = require("path");
-//const fs = require("fs-extra");
-
 jest.mock("axios", () => ({
   default: jest.fn(() => {
     return {
@@ -26,20 +23,18 @@ jest.mock("../src/run", () => {
   };
 });
 
-const terraFile = require("../src/processFile");
-const fsHelpers = require("../src/fsHelpers");
-const spy = require("./spy");
+import { readFileContents } from "../src/processFile";
+import { rimrafDir, getAbsolutePath } from "../src/fsHelpers";
+import { beforeEach as _beforeEach } from "./spy";
 
 const testDirs = ["vendor_tfregistry_error"];
 
 const cleanUpTestDirs = () =>
-  testDirs.map((testDir) =>
-    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(testDir))
-  );
+  testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir)));
 
 // expected result when provide bad file path
 async function expectFileIssue(options) {
-  const retVals = await terraFile.readFileContents(options);
+  const retVals = await readFileContents(options);
   expect(retVals.success).toBe(false);
   expect(retVals.contents).toBe(null);
 }
@@ -48,7 +43,7 @@ describe("read file contents should read specified json file and validate its co
   beforeEach(() => {
     // cleans up any dirs created from previous tests
     cleanUpTestDirs();
-    spy.beforeEach();
+    _beforeEach();
   });
 
   afterEach(() => {
@@ -64,3 +59,5 @@ describe("read file contents should read specified json file and validate its co
     });
   });
 });
+
+export {};

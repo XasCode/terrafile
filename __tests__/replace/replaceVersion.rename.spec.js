@@ -1,6 +1,5 @@
-const {
-  replaceUrlVersionIfVersionParam,
-} = require("../../dist/src/processFile").testable;
+import { testable } from "../../dist/src/processFile";
+const { replaceUrlVersionIfVersionParam } = testable;
 
 test.each([
   {
@@ -37,3 +36,5 @@ test.each([
     expect(replaceUrlVersionIfVersionParam(source, version)).toBe(rewritten);
   }
 );
+
+export {};

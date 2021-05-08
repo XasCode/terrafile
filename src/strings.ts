@@ -29,3 +29,11 @@ exports.helpInstallContent = helpInstallContent;
 exports.unknownCommand = unknownCommand;
 exports.unknownOptionLong = unknownOptionLong;
 exports.unknownOptionShort = unknownOptionShort;
+
+export {
+  helpContent,
+  helpInstallContent,
+  unknownCommand,
+  unknownOptionLong,
+  unknownOptionShort,
+};

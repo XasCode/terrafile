@@ -4,9 +4,29 @@ type Path = string | null;
 
 type ExecResult = {
   code: number;
-  error: ExecFileException;
-  stdout: string;
-  stderr: string;
+  error?: ExecFileException;
+  stdout?: string;
+  stderr?: string;
+};
+
+type CliArgs = {
+  command?: string;
+  helpCommand?: string;
+  ver?: string;
+  help?: string;
+  badOption?: string;
+  directory?: Path;
+  file?: Path;
+};
+
+type TestDefinition = {
+  backends: string[];
+  args: string;
+  command: string;
+  options: CliOptions;
+  code: number;
+  stdOut: string;
+  stdErr: string;
 };
 
 type CliOptions = {
@@ -40,6 +60,7 @@ type RepoLocation = [Path, Path, string, string];
 type SourceParts = string[];
 
 export {
+  CliArgs,
   CliOptions,
   Entry,
   ExecResult,
@@ -48,4 +69,5 @@ export {
   RepoLocation,
   SourceParts,
   Status,
+  TestDefinition,
 };

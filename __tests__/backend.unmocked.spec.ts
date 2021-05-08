@@ -1,8 +1,13 @@
-const fs = require("fs-extra");
+import { readFileSync } from "fs-extra";
 
-const terraFile = require("../dist/src/processFile");
-const fsHelpers = require("../dist/src/fsHelpers");
-const spy = require("./spy");
+import { readFileContents } from "../src/processFile";
+import {
+  rimrafDir,
+  getAbsolutePath,
+  checkIfFileExists,
+} from "../src/fsHelpers";
+import { beforeEach as _beforeEach } from "./spy";
+import { CliOptions } from "../src/types";
 
 const testDirs = [
   "be_vendor_tfregistry_error",
@@ -10,14 +15,12 @@ const testDirs = [
   "be_vendor_live",
 ];
 const cleanUpTestDirs = () =>
-  testDirs.map((testDir) =>
-    fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(testDir))
-  );
+  testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir)));
 
 describe("read file contents should read specified json file and validate its contents", () => {
   beforeEach(() => {
     cleanUpTestDirs();
-    spy.beforeEach();
+    _beforeEach();
   });
 
   afterEach(() => {
@@ -25,8 +28,8 @@ describe("read file contents should read specified json file and validate its co
   });
 
   // expected result when provide bad file path
-  async function expectFileIssue(options) {
-    const retVals = await terraFile.readFileContents(options);
+  async function expectFileIssue(options: CliOptions): Promise<void> {
+    const retVals = await readFileContents(options);
     expect(retVals.success).toBe(false);
     expect(retVals.contents).toBe(null);
   }
@@ -54,23 +57,22 @@ describe("read file contents should read specified json file and validate its co
       directory: "be_vendor_live/modules",
       file: configFile,
     };
-    const retVals = await terraFile.readFileContents(options);
+    const retVals = await readFileContents(options);
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
     const testJson = JSON.parse(
-      fs.readFileSync(
-        fsHelpers.getAbsolutePath("__tests__/tfRegistryLive.json"),
-        "utf-8"
-      )
+      readFileSync(getAbsolutePath("__tests__/tfRegistryLive.json"), "utf-8")
     );
     expect(Object.keys(testJson).length).toBe(1);
     for (const modName of Object.keys(testJson)) {
       expect(
-        fsHelpers.checkIfFileExists(
-          fsHelpers.getAbsolutePath(`${options.directory}/${modName}/main.tf`)
+        checkIfFileExists(
+          getAbsolutePath(`${options.directory}/${modName}/main.tf`)
         )
       ).toBe(true);
     }
   });
 });
+
+export {};

@@ -1,6 +1,5 @@
-const {
-  replacePathIfPathParam,
-} = require("../../dist/src/processFile").testable;
+import { testable } from "../../dist/src/processFile";
+const { replacePathIfPathParam } = testable;
 
 test.each([
   {
@@ -27,3 +26,5 @@ test.each([
 ])("", ({ source, path, rewritten }) => {
   expect(replacePathIfPathParam(source, path)).toBe(rewritten);
 });
+
+export {};

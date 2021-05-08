@@ -9,7 +9,11 @@ function setup(): void {
   globalAny.stderrSpy = jest
     .spyOn(process.stderr, "write")
     .mockImplementation();
-  globalAny.mockExit = jest.spyOn(process, "exit").mockImplementation(() => {});
+  globalAny.mockExit = jest
+    .spyOn(process, "exit")
+    .mockImplementation((): never => {
+      throw new Error("exit");
+    });
 }
 
 function beforeEach(): void {

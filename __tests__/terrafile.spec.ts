@@ -1,23 +1,25 @@
-const path = require("path");
+import { resolve } from "path";
 
-const fsHelpers = require("../dist/src/fsHelpers");
-const spy = require("./spy");
-const { main } = require("../dist/src/terrafile");
-const { getRandomInt, cli, cartesian } = require("./utils");
-const {
+import { rimrafDir } from "../src/fsHelpers";
+import { beforeEach as _beforeEach } from "./spy";
+import { main } from "../src/terrafile";
+import { getRandomInt, cli, cartesian } from "./utils";
+import {
   helpContent,
   helpInstallContent,
   unknownCommand,
   unknownOptionLong,
   unknownOptionShort,
-} = require("../dist/src/strings");
+} from "../dist/src/strings";
 
-const backendVersions = {
-  "": require("../dist/src/backend"),
-  "./backend.mock.js": require("../__mocks__/backend.mock.js"),
+import { CliArgs, CliOptions, ExecResult, TestDefinition } from "../src/types";
+
+const backendVersions: Record<string, any> = {
+  "": require("../src/backend"),
+  "./backend.mock.ts": require("../__mocks__/backend.mock.ts"),
 };
 
-const version = require("../package.json").version;
+import { version } from "../package.json";
 
 const defaultOpts = { directory: "vendor/modules", file: "terrafile.json" };
 
@@ -40,7 +42,7 @@ const combinations = cartesian(
 );
 
 // Specify the options that should be passed to the install command
-function getOptions({ directory, file }) {
+function getOptions({ directory, file }: CliOptions): CliOptions {
   return {
     ...defaultOpts,
     ...(directory !== "" ? { directory: directory.split(" ")[1] } : {}),
@@ -49,59 +51,65 @@ function getOptions({ directory, file }) {
 }
 
 // Specify the results for the CLI
-function getResults(args) {
+function getResults(args: CliArgs): ExecResult {
   return args.ver !== ""
-    ? { code: 0, stdOut: version, stdErr: "" }
+    ? { code: 0, stdout: version, stderr: "" }
     : noVerCheckHelp(args);
 }
 
-function noVerCheckHelp(args) {
+function noVerCheckHelp(args: CliArgs): ExecResult {
   return args.helpCommand !== "" || args.help !== ""
     ? noVerYesHelpCheckCommand(args)
     : noVerNoHelpCheckCommand(args);
 }
 
-function noVerYesHelpCheckCommand(args) {
+function noVerYesHelpCheckCommand(args: CliArgs): ExecResult {
   return args.command === "install"
-    ? { code: 0, stdOut: helpInstallContent, stdErr: "" }
+    ? { code: 0, stdout: helpInstallContent, stderr: "" }
     : args.command === ""
-    ? { code: 0, stdOut: helpContent, stdErr: "" }
+    ? { code: 0, stdout: helpContent, stderr: "" }
     : noVerYesHelpInvalidCommand(args);
 }
 
-function noVerYesHelpInvalidCommand(args) {
+function noVerYesHelpInvalidCommand(args: CliArgs): ExecResult {
   return args.helpCommand !== ""
-    ? { code: 1, stdOut: "", stdErr: helpContent }
-    : { code: 0, stdOut: helpContent, stdErr: "" };
+    ? { code: 1, stdout: "", stderr: helpContent }
+    : { code: 0, stdout: helpContent, stderr: "" };
 }
 
-function noVerNoHelpCheckCommand(args) {
+function noVerNoHelpCheckCommand(args: CliArgs): ExecResult {
   return args.command === ""
-    ? { code: 1, stdOut: "", stdErr: helpContent }
+    ? { code: 1, stdout: "", stderr: helpContent }
     : args.command !== "install"
-    ? { code: 1, stdOut: "", stdErr: unknownCommand }
+    ? { code: 1, stdout: "", stderr: unknownCommand }
     : noVerNoHelpValidCommandCheckOptions(args);
 }
 
-function noVerNoHelpValidCommandCheckOptions(args) {
+function noVerNoHelpValidCommandCheckOptions(args: CliArgs): ExecResult {
   return args.badOption !== ""
     ? {
         code: 1,
-        stdOut: "",
-        stdErr:
+        stdout: "",
+        stderr:
           args.badOption[1] === "-" ? unknownOptionLong : unknownOptionShort,
       }
     : {
         code: 0,
-        stdOut: JSON.stringify(
+        stdout: JSON.stringify(
           getOptions({ directory: args.directory, file: args.file })
         ),
-        stdErr: "",
+        stderr: "",
       };
 }
 
 // Determines if the install command will be run
-function getCommand({ command, helpCommand, ver, help, badOption }) {
+function getCommand({
+  command,
+  helpCommand,
+  ver,
+  help,
+  badOption,
+}: CliArgs): string {
   return command === "install" &&
     helpCommand === "" &&
     ver === "" &&
@@ -120,14 +128,23 @@ function getArgs({
   directory,
   file,
   badOption,
-}) {
+}: CliArgs): string {
   return `${helpCommand} ${command} ${help} ${ver} ${directory} ${file} ${badOption}`
     .split(" ")
     .filter((cur) => cur.length > 0)
     .join(" ");
 }
+
 const variations = combinations.map(
-  ([helpCommand, command, help, ver, directory, file, badOption]) => {
+  ([
+    helpCommand,
+    command,
+    help,
+    ver,
+    directory,
+    file,
+    badOption,
+  ]: string[]): TestDefinition => {
     const allArgs = {
       helpCommand,
       command,
@@ -148,8 +165,8 @@ const variations = combinations.map(
       command: getCommand(allArgs), // api command to run or ""
       options: getOptions(allArgs),
       code: results.code,
-      stdOut: results.stdOut,
-      stdErr: results.stdErr,
+      stdOut: results.stdout,
+      stdErr: results.stderr,
     };
   }
 );
@@ -158,16 +175,24 @@ const variations = combinations.map(
 // and the results of running via the CLI with each implementaiton / mock
 describe.each(variations)(
   `Iterate through test variations.`,
-  async ({ backends, args, command, options, code, stdOut, stdErr }) => {
+  async ({
+    backends,
+    args,
+    command,
+    options,
+    code,
+    stdOut,
+    stdErr,
+  }: TestDefinition) => {
     beforeEach(() => {
-      fsHelpers.rimrafDir(path.resolve(".", "vendor"));
-      fsHelpers.rimrafDir(path.resolve(".", "bar"));
-      spy.beforeEach();
+      rimrafDir(resolve(".", "vendor"));
+      rimrafDir(resolve(".", "bar"));
+      _beforeEach();
     });
 
     afterEach(() => {
-      fsHelpers.rimrafDir(path.resolve(".", "vendor"));
-      fsHelpers.rimrafDir(path.resolve(".", "bar"));
+      rimrafDir(resolve(".", "vendor"));
+      rimrafDir(resolve(".", "bar"));
     });
 
     // test the implementations / mocks (BE)
@@ -194,7 +219,7 @@ describe.each(variations)(
       async (backend) => {
         const myargs = [
           process.argv[0],
-          path.resolve("./dist/terrafile"),
+          resolve("./dist/terrafile"),
           ...(args ? args.split(" ") : []),
         ];
         backend.length > 0
@@ -242,3 +267,5 @@ describe.each(variations)(
     }
   }
 );
+
+export {};

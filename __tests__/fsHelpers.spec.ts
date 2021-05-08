@@ -1,7 +1,7 @@
-const fsHelpers = require("../dist/src/fsHelpers");
-const path = require("path");
-const spy = require("../__tests__/spy");
-const fs = require("fs");
+import * as fsHelpers from "../src/fsHelpers";
+import * as path from "path";
+import * as spy from "./spy";
+import * as fs from "fs-extra";
 
 describe("checkIfDirExists checks for the existence of a directory", () => {
   beforeEach(() => {
@@ -18,9 +18,11 @@ describe("checkIfDirExists checks for the existence of a directory", () => {
     ).toBe(false);
   });
 
+  /* validated by type
   test("should return false if not a valid path", () => {
     expect(fsHelpers.checkIfDirExists(-1)).toBe(false);
   });
+  */
 });
 
 describe("getAbsolutePath returns an absolute path from relative or abs path", () => {
@@ -40,12 +42,14 @@ describe("getAbsolutePath returns an absolute path from relative or abs path", (
     ).toBe(path.resolve("./sOmEtHiNg/UnUsUaL"));
   });
 
+  /* validated by type
   test("should output error if invalid path", () => {
     fsHelpers.getAbsolutePath(-1);
     expect(console.error).toHaveBeenLastCalledWith(
       `Error resolving path: ${-1}`
     );
   });
+  */
 });
 
 describe("createDir should create a directory at the provided location", () => {
@@ -87,6 +91,7 @@ describe("createDir should create a directory at the provided location", () => {
     expect(createdDirsStartingLocation).toBe(undefined);
   });
 
+  /* validated by type
   test("should raise error when attempting to create a directory with bad path", () => {
     const createdDirsStartingLocation = fsHelpers.createDir(-1);
     expect(fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePath(-1))).toBe(
@@ -94,6 +99,7 @@ describe("createDir should create a directory at the provided location", () => {
     );
     expect(createdDirsStartingLocation).toBe(undefined);
   });
+  */
 });
 
 describe("rimrafDir should delete a dir and its contents", () => {
@@ -125,11 +131,13 @@ describe("rimrafDir should delete a dir and its contents", () => {
     expect(fsHelpers.checkIfDirExists("sOmEtHiNg")).toBe(false);
   });
 
+  /* validated by type
   test("should error when attempting to delete a directory with bad path", () => {
     const deletedDir = fsHelpers.rimrafDir(-1);
     expect(deletedDir).toBe(undefined);
     expect(console.error).toHaveBeenLastCalledWith(`Error deleting dir: ${-1}`);
   });
+  */
 
   test("should error when attempting to delete a directory that is not a dir", () => {
     const deletedDir = fsHelpers.rimrafDir(
@@ -174,9 +182,13 @@ describe("abortDirCreation should delete dirs that were created", () => {
   });
 });
 
+/* validated by type
 describe("rename", () => {
   test("should err on invalid dirs", () => {
     fsHelpers.renameDir(-1, -2);
     expect(console.error).toHaveBeenLastCalledWith("ERR_INVALID_ARG_TYPE");
   });
 });
+*/
+
+export {};

@@ -8,7 +8,7 @@ type Backend = {
   install(c: CliOptions): void;
 };
 
-function main(myargs: string[], be: Backend): void {
+function main(myargs: string[], be?: Backend): void {
   const program = new Command();
   program
     .version(version, "-V, --version", "Show version information for terrafile")
@@ -36,7 +36,9 @@ function main(myargs: string[], be: Backend): void {
 
 /* istanbul ignore if */
 if (require.main === module) {
-  main(process.argv, undefined);
+  main(process.argv);
 } else {
-  module.exports.main = main;
+  //module.exports.main = main;
 }
+
+export { main };

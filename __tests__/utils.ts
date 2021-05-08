@@ -1,7 +1,8 @@
-const path = require("path");
-const execFile = require("child_process").execFile;
+import { resolve as _resolve } from "path";
+import { execFile } from "child_process";
+import { ExecResult, Path } from "../src/types";
 
-function getRandomInt(max) {
+function getRandomInt(max: number): number {
   return Math.floor(Math.random() * max);
 }
 
@@ -19,11 +20,11 @@ function randomizeOrder(incoming) {
   return outgoing;
 }
 
-async function cli(args, cwd) {
+async function cli(args: string[], cwd: Path): Promise<ExecResult> {
   return new Promise((resolve) => {
     execFile(
       "node",
-      [`${path.resolve("./dist/src/terrafile")}`, ...args],
+      [`${_resolve("../src/terrafile")}`, ...args],
       {
         cwd,
       },
@@ -59,7 +60,4 @@ function cartesian(...args) {
   return calcCartesian(...args);
 }
 
-exports.getRandomInt = getRandomInt;
-exports.randomizeOrder = randomizeOrder;
-exports.cli = cli;
-exports.cartesian = cartesian;
+export { getRandomInt, randomizeOrder, cli, cartesian };

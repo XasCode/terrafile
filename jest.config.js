@@ -10,7 +10,7 @@ module.exports = {
     "./__tests__/spy.js",
   ],
   //reporters: ["jest-progress-bar-reporter"],
-  setupFilesAfterEnv: ["<rootDir>/__tests__/testSetupFile.js"],
+  setupFilesAfterEnv: ["<rootDir>/__tests__/testSetupFile.ts"],
   testEnvironment: "node",
   transform: {
     "^.+\\.(ts|tsx)$": "ts-jest",

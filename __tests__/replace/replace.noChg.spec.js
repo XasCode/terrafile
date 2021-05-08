@@ -1,7 +1,5 @@
-const {
-  replacePathIfPathParam,
-  replaceUrlVersionIfVersionParam,
-} = require("../../dist/src/processFile").testable;
+import { testable } from "../../dist/src/processFile";
+const { replacePathIfPathParam, replaceUrlVersionIfVersionParam } = testable;
 
 test.each([
   {
@@ -41,3 +39,5 @@ test.each([
   expect(replacePathIfPathParam(source, path)).toBe(source);
   expect(replaceUrlVersionIfVersionParam(source, version)).toBe(source);
 });
+
+export {};

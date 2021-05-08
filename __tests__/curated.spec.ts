@@ -1,23 +1,23 @@
-const path = require("path");
+import { resolve } from "path";
 
-const { cli } = require("./utils");
-const fsHelpers = require("../dist/src/fsHelpers");
+import { cli } from "./utils";
+import { getAbsolutePath, rimrafDir } from "../src/fsHelpers";
 
-const {
+import {
   helpContent,
   helpInstallContent,
   unknownCommand,
   unknownOptionLong,
   unknownOptionShort,
-} = require("../dist/src/strings");
+} from "../src/strings";
 
-const version = require("../package.json").version;
-const { beforeEach } = require("./spy");
+import { version } from "../package.json";
+//import { beforeEach as _beforeEach } from "./spy";
 
 const defaultOpts = { directory: "vendor/modules", file: "terrafile.json" };
 
 // each of these commands will be execed to test cli output
-const curatedCliCommands = {
+const curatedCliCommands: Record<string, [string, string, number]> = {
   help: [`${helpContent}\n`, "", 0],
   "--version": [`${version}\n`, "", 0],
   install: [`${JSON.stringify(defaultOpts)}\n`, "", 0],
@@ -28,7 +28,7 @@ const curatedCliCommands = {
   "help install": [`${helpInstallContent}\n`, "", 0],
   "install -d <abc": [
     `{"directory":"<abc","file":"terrafile.json"}\n`,
-    `Error resolving path: <abc\nError creating dir: ${fsHelpers.getAbsolutePath(
+    `Error resolving path: <abc\nError creating dir: ${getAbsolutePath(
       "src/<abc"
     )}\n`,
     0,
@@ -39,11 +39,11 @@ describe.each(Object.keys(curatedCliCommands))(
   `should execute 'terrafile' with a set of commands/options and verify the output`,
   (cliCommand) => {
     beforeEach(() => {
-      fsHelpers.rimrafDir(path.resolve(".", "./dist/vendor"));
+      rimrafDir(resolve(".", "./dist/vendor"));
     });
 
     afterEach(() => {
-      fsHelpers.rimrafDir(path.resolve(".", "./dist/vendor"));
+      rimrafDir(resolve(".", "./dist/vendor"));
     });
 
     test(`check cli: ${cliCommand}`, async () => {
@@ -54,3 +54,5 @@ describe.each(Object.keys(curatedCliCommands))(
     });
   }
 );
+
+export {};
