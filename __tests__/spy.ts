@@ -9,9 +9,7 @@ function setup(): void {
   globalAny.stderrSpy = jest
     .spyOn(process.stderr, "write")
     .mockImplementation();
-  globalAny.mockExit = jest
-    .spyOn(process, "exit")
-    .mockImplementation((code?: number): never => {});
+  globalAny.mockExit = jest.spyOn(process, "exit").mockImplementation(() => {});
 }
 
 function beforeEach(): void {

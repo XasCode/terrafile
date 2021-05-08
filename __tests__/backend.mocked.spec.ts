@@ -37,8 +37,8 @@ jest.mock("../../src/run", () => {
   };
 });
 
-import { createTargetDirectory } from "../../src/venDir";
-import { readFileContents } from "../../src/processFile";
+import { createTargetDirectory } from "../src/venDir";
+import { readFileContents } from "../src/processFile";
 import {
   checkIfDirExists,
   getAbsolutePath,
