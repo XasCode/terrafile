@@ -239,12 +239,14 @@ describe.each(variations)(
             if (cur != "") {
               expect(
                 cur === stdOut
-                  ? process.stdout.write.mock.calls[0][0]
-                  : process.stderr.write.mock.calls[0][0]
+                  ? (process.stdout.write as jest.Mock).mock.calls[0][0]
+                  : (process.stderr.write as jest.Mock).mock.calls[0][0]
               ).toBe(`${cur}${cur.length > 0 ? "\n" : ""}`);
             }
           });
-          expect(process.exit.mock.calls[0][0]).toBe(code);
+          expect(
+            ((process.exit as unknown) as jest.Mock).mock.calls[0][0]
+          ).toBe(code);
         }
       }
     );

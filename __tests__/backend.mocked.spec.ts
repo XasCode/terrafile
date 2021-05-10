@@ -175,7 +175,7 @@ describe("read file contents should read specified json file and validate its co
     //expect(console.log).toHaveBeenLastCalledWith("");
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
-    expect(retVals.contents).not.toBe(null);
+    //expect(retVals.contents).not.toBe(null);
     const testJson = JSON.parse(
       readFileSync(getAbsolutePath("terrafile.sample.json"), "utf-8")
     );

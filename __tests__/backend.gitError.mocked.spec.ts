@@ -26,6 +26,7 @@ jest.mock("../src/run", () => {
 import { readFileContents } from "../src/processFile";
 import { rimrafDir, getAbsolutePath } from "../src/fsHelpers";
 import { beforeEach as _beforeEach } from "./spy";
+import { CliOptions } from "../src/types";
 
 const testDirs = ["vendor_tfregistry_error"];
 
@@ -33,7 +34,7 @@ const cleanUpTestDirs = () =>
   testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir)));
 
 // expected result when provide bad file path
-async function expectFileIssue(options) {
+async function expectFileIssue(options: CliOptions): Promise<void> {
   const retVals = await readFileContents(options);
   expect(retVals.success).toBe(false);
   expect(retVals.contents).toBe(null);

@@ -1,8 +1,8 @@
-const { randomizeOrder } = require("./utils");
+import { randomizeOrder } from "./utils";
 
 // test randomization of array order
 describe("should take an array and rearrange the elements randomly", () => {
-  const inputArray = [];
+  const inputArray: number[] = [];
   for (let arraylen = 0; arraylen < 10; arraylen++) {
     inputArray.push(arraylen);
     test("check random values", () => {
@@ -12,8 +12,8 @@ describe("should take an array and rearrange the elements randomly", () => {
   }
 
   test("edge case - empty array", () => {
-    const input = [];
-    const output = [];
+    const input: number[] = [];
+    const output: number[] = [];
     expect(randomizeOrder(input)).toStrictEqual(output);
   });
 
@@ -38,7 +38,7 @@ describe("should take an array and rearrange the elements randomly", () => {
 
 /////////// helpers //////////
 
-function expectRearranged(inputArray, outputArray) {
+function expectRearranged(inputArray: unknown[], outputArray: unknown[]) {
   outputArray.map((_, i, outArr) => {
     expect(inputArray.length).toBe(outArr.length);
     expect(outArr.includes(inputArray[i])).toBe(true);

@@ -1,4 +1,4 @@
-import { testable } from "../../dist/src/processFile";
+import { testable } from "../../src/processFile";
 const { replaceUrlVersionIfVersionParam } = testable;
 
 test.each([

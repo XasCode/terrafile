@@ -1,4 +1,5 @@
-import { testable } from "../../dist/src/processFile";
+import { Entry } from "../../src/types";
+import { testable } from "../../src/processFile";
 const { replacePathIfPathParam, replaceUrlVersionIfVersionParam } = testable;
 
 test.each([
@@ -35,7 +36,7 @@ test.each([
     source:
       "https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=master",
   },
-])("", ({ source, path, version }) => {
+])("", ({ source, path, version }: Entry): void => {
   expect(replacePathIfPathParam(source, path)).toBe(source);
   expect(replaceUrlVersionIfVersionParam(source, version)).toBe(source);
 });

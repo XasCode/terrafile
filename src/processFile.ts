@@ -18,7 +18,7 @@ import {
 const registryURL = "https://registry.terraform.io/v1/modules";
 
 async function readFileContents(options: CliOptions): Promise<Status> {
-  console.log(`readFileContents: ${JSON.stringify(options)}`);
+  //console.log(`readFileContents: ${JSON.stringify(options)}`);
   return await Terrafile(options).process();
 }
 

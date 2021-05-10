@@ -6,7 +6,7 @@ function getRandomInt(max: number): number {
   return Math.floor(Math.random() * max);
 }
 
-function randomizeOrder(incoming) {
+function randomizeOrder(incoming: unknown[]): unknown[] {
   let workingCopy = [...incoming];
   const outgoing = [];
   for (let i = incoming.length; i > 0; i--) {
@@ -20,7 +20,7 @@ function randomizeOrder(incoming) {
   return outgoing;
 }
 
-async function cli(args: string[], cwd: Path): Promise<ExecResult> {
+async function cli(args: string[], cwd?: Path): Promise<ExecResult> {
   return new Promise((resolve) => {
     execFile(
       "node",
@@ -42,12 +42,12 @@ async function cli(args: string[], cwd: Path): Promise<ExecResult> {
 
 // eslint-disable-next-line max-len
 // from: https://stackoverflow.com/questions/15298912/javascript-generating-combinations-from-n-arrays-with-m-elements
-function calcCartesian(...args) {
-  const r = [],
+function calcCartesian(...args: string[][]): string[][] {
+  const r: string[][] = [],
     max = args.length - 1;
-  function helper(arr, i) {
+  function helper(arr: string[], i: number) {
     for (let j = 0, l = args[i].length; j < l; j++) {
-      const a = [...arr, args[i][j]];
+      const a: string[] = [...arr, args[i][j]];
       if (i === max) r.push(a);
       else helper(a, i + 1);
     }
@@ -55,7 +55,7 @@ function calcCartesian(...args) {
   helper([], 0);
   return r;
 }
-function cartesian(...args) {
+function cartesian(...args: string[][]): string[][] {
   if (args.length === 0) return [];
   return calcCartesian(...args);
 }
