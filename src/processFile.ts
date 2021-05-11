@@ -44,7 +44,7 @@ function copyFromLocalDir(params: Entry, dest: Path): Status {
   if (fsHelpers.checkIfDirExists(src)) {
     return copyAbs(src, dest);
   }
-  console.error();
+  console.error("error");
   return retVal;
 }
 
@@ -75,7 +75,7 @@ async function cloneRepo(
     `${repo}.git`,
     fullDest,
   ];
-  const results = await run(cloneCmd, undefined);
+  const results = await run(cloneCmd);
   //console.log(`clone: ${cloneCmd.join(" ")} / ${results}`);
   return results;
 }
@@ -279,10 +279,10 @@ function Terrafile(options: CliOptions): Status {
 
 function JsonTerrafile(filepath: Path): Status {
   function parse(
-    contents: Record<string, Record<string, string>>
+    c: Record<string, Record<string, string>>
   ): [string, Record<string, string>][] {
     try {
-      return Object.entries(contents);
+      return Object.entries(c);
     } catch (err) {
       return [];
     }
@@ -295,6 +295,7 @@ function JsonTerrafile(filepath: Path): Status {
     }, this.success);
     return {
       success: valid,
+      //contents: parse(this.contents),
       contents: valid ? parse(this.contents) : null,
       error: valid ? null : `Error: Not valid format`,
     };
@@ -330,7 +331,7 @@ function File(absFilePath: Path): Status {
 
   return {
     success: exists(absFilePath),
-    contents: null,
+    //contents: null,
     error: exists(absFilePath) ? null : `Error: not exists`,
   };
 }

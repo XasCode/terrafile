@@ -13,7 +13,7 @@ function restoreExistingDir(installDir: Path): Path {
   return retVal;
 }
 
-exports.restoreDirectory = function (installDir: Path): Status {
+function restoreDirectory(installDir: Path): Status {
   const retVals = { success: false, saved: null, created: null } as Status;
   const absInstallDir = fsHelpers.getAbsolutePath(installDir);
   const restored = restoreExistingDir(absInstallDir);
@@ -21,4 +21,6 @@ exports.restoreDirectory = function (installDir: Path): Status {
     retVals.success = fsHelpers.checkIfDirExists(absInstallDir);
   }
   return retVals;
-};
+}
+
+export { restoreDirectory };

@@ -1,7 +1,7 @@
 import { execFile } from "child_process";
 import { ExecResult, Path } from "./types";
 
-async function run(args: string[], cwd: Path): Promise<ExecResult> {
+async function run(args: string[], cwd?: Path): Promise<ExecResult> {
   return new Promise((resolve) => {
     execFile(
       "git",
