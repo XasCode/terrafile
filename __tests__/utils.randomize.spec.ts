@@ -1,23 +1,23 @@
-import { randomizeOrder } from "./utils";
+import { randomizeOrder } from './utils';
 
 // test randomization of array order
-describe("should take an array and rearrange the elements randomly", () => {
+describe('should take an array and rearrange the elements randomly', () => {
   const inputArray: number[] = [];
   for (let arraylen = 0; arraylen < 10; arraylen++) {
     inputArray.push(arraylen);
-    test("check random values", () => {
+    test('check random values', () => {
       const outputArray = randomizeOrder(inputArray);
       expectRearranged(inputArray, outputArray);
     });
   }
 
-  test("edge case - empty array", () => {
+  test('edge case - empty array', () => {
     const input: number[] = [];
     const output: number[] = [];
     expect(randomizeOrder(input)).toStrictEqual(output);
   });
 
-  test("edge case - duplicates", () => {
+  test('edge case - duplicates', () => {
     const input = [1, 1, 2];
     const possibleOutputs = [
       [1, 1, 2],

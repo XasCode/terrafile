@@ -1,35 +1,38 @@
-import { resolve } from "path";
+import { resolve } from 'path';
+import { readFileSync } from 'fs-extra';
 
-import { rimrafDir } from "../src/fsHelpers";
-import { beforeEach as _beforeEach } from "./spy";
-import { main } from "../src/terrafile";
-import { getRandomInt, cli, cartesian } from "./utils";
+import { rimrafDir, getAbsolutePath } from '../src/fsHelpers';
+import { beforeEach as _beforeEach } from './spy';
+import { main } from '../src/terrafile';
+import { getRandomInt, cli, cartesian } from './utils';
 import {
   helpContent,
   helpInstallContent,
   unknownCommand,
   unknownOptionLong,
   unknownOptionShort,
-} from "../dist/src/strings";
+} from '../src/strings';
 
-import { CliArgs, CliOptions, ExecResult, TestDefinition } from "../src/types";
+import { CliArgs, CliOptions, ExecResult, TestDefinition } from '../src/types';
 
 const backendVersions: Record<string, any> = {
-  "": require("../src/backend"),
-  "./backend.mock.ts": require("../__mocks__/backend.mock.ts"),
+  '': require('../src/backend'),
+  './backend.mock.ts': require('../__mocks__/backend.mock.ts'),
 };
 
-import { version } from "../package.json";
+const { version } = JSON.parse(
+  readFileSync(getAbsolutePath('./package.json'), 'utf-8')
+);
 
-const defaultOpts = { directory: "vendor/modules", file: "terrafile.json" };
+const defaultOpts = { directory: 'vendor/modules', file: 'terrafile.json' };
 
-const helpCommands = ["", "help"];
-const commands = ["", "install", "foo"];
-const helps = ["", "-h", "--help"];
-const versions = ["", "-V", "--version"];
-const directories = ["", "-d bar", "--directory bar"];
-const files = ["", "-f foobar", "--file foobar"];
-const badOptions = ["", "-b", "--bar"];
+const helpCommands = ['', 'help'];
+const commands = ['', 'install', 'foo'];
+const helps = ['', '-h', '--help'];
+const versions = ['', '-V', '--version'];
+const directories = ['', '-d bar', '--directory bar'];
+const files = ['', '-f foobar', '--file foobar'];
+const badOptions = ['', '-b', '--bar'];
 
 const combinations = cartesian(
   helpCommands,
@@ -45,60 +48,60 @@ const combinations = cartesian(
 function getOptions({ directory, file }: CliOptions): CliOptions {
   return {
     ...defaultOpts,
-    ...(directory !== "" ? { directory: directory.split(" ")[1] } : {}),
-    ...(file !== "" ? { file: file.split(" ")[1] } : {}),
+    ...(directory !== '' ? { directory: directory.split(' ')[1] } : {}),
+    ...(file !== '' ? { file: file.split(' ')[1] } : {}),
   };
 }
 
 // Specify the results for the CLI
 function getResults(args: CliArgs): ExecResult {
-  return args.ver !== ""
-    ? { code: 0, stdout: version, stderr: "" }
+  return args.ver !== ''
+    ? { code: 0, stdout: version, stderr: '' }
     : noVerCheckHelp(args);
 }
 
 function noVerCheckHelp(args: CliArgs): ExecResult {
-  return args.helpCommand !== "" || args.help !== ""
+  return args.helpCommand !== '' || args.help !== ''
     ? noVerYesHelpCheckCommand(args)
     : noVerNoHelpCheckCommand(args);
 }
 
 function noVerYesHelpCheckCommand(args: CliArgs): ExecResult {
-  return args.command === "install"
-    ? { code: 0, stdout: helpInstallContent, stderr: "" }
-    : args.command === ""
-    ? { code: 0, stdout: helpContent, stderr: "" }
+  return args.command === 'install'
+    ? { code: 0, stdout: helpInstallContent, stderr: '' }
+    : args.command === ''
+    ? { code: 0, stdout: helpContent, stderr: '' }
     : noVerYesHelpInvalidCommand(args);
 }
 
 function noVerYesHelpInvalidCommand(args: CliArgs): ExecResult {
-  return args.helpCommand !== ""
-    ? { code: 1, stdout: "", stderr: helpContent }
-    : { code: 0, stdout: helpContent, stderr: "" };
+  return args.helpCommand !== ''
+    ? { code: 1, stdout: '', stderr: helpContent }
+    : { code: 0, stdout: helpContent, stderr: '' };
 }
 
 function noVerNoHelpCheckCommand(args: CliArgs): ExecResult {
-  return args.command === ""
-    ? { code: 1, stdout: "", stderr: helpContent }
-    : args.command !== "install"
-    ? { code: 1, stdout: "", stderr: unknownCommand }
+  return args.command === ''
+    ? { code: 1, stdout: '', stderr: helpContent }
+    : args.command !== 'install'
+    ? { code: 1, stdout: '', stderr: unknownCommand }
     : noVerNoHelpValidCommandCheckOptions(args);
 }
 
 function noVerNoHelpValidCommandCheckOptions(args: CliArgs): ExecResult {
-  return args.badOption !== ""
+  return args.badOption !== ''
     ? {
         code: 1,
-        stdout: "",
+        stdout: '',
         stderr:
-          args.badOption[1] === "-" ? unknownOptionLong : unknownOptionShort,
+          args.badOption[1] === '-' ? unknownOptionLong : unknownOptionShort,
       }
     : {
         code: 0,
         stdout: JSON.stringify(
           getOptions({ directory: args.directory, file: args.file })
         ),
-        stderr: "",
+        stderr: '',
       };
 }
 
@@ -110,13 +113,13 @@ function getCommand({
   help,
   badOption,
 }: CliArgs): string {
-  return command === "install" &&
-    helpCommand === "" &&
-    ver === "" &&
-    help === "" &&
-    badOption === ""
-    ? "install"
-    : "";
+  return command === 'install' &&
+    helpCommand === '' &&
+    ver === '' &&
+    help === '' &&
+    badOption === ''
+    ? 'install'
+    : '';
 }
 
 // Assembles the various options into a command
@@ -130,9 +133,9 @@ function getArgs({
   badOption,
 }: CliArgs): string {
   return `${helpCommand} ${command} ${help} ${ver} ${directory} ${file} ${badOption}`
-    .split(" ")
+    .split(' ')
     .filter((cur) => cur.length > 0)
-    .join(" ");
+    .join(' ');
 }
 
 const variations = combinations.map(
@@ -144,7 +147,7 @@ const variations = combinations.map(
     directory,
     file,
     badOption,
-  ]: string[]): TestDefinition => {
+  ]: unknown[]): TestDefinition => {
     const allArgs = {
       helpCommand,
       command,
@@ -153,7 +156,7 @@ const variations = combinations.map(
       directory,
       file,
       badOption,
-    };
+    } as CliArgs;
 
     const results = getResults(allArgs);
 
@@ -175,7 +178,7 @@ const variations = combinations.map(
 // and the results of running via the CLI with each implementaiton / mock
 describe.each(variations)(
   `Iterate through test variations.`,
-  async ({
+  ({
     backends,
     args,
     command,
@@ -185,14 +188,14 @@ describe.each(variations)(
     stdErr,
   }: TestDefinition) => {
     beforeEach(() => {
-      rimrafDir(resolve(".", "vendor"));
-      rimrafDir(resolve(".", "bar"));
+      rimrafDir(resolve('.', 'vendor'));
+      rimrafDir(resolve('.', 'bar'));
       _beforeEach();
     });
 
     afterEach(() => {
-      rimrafDir(resolve(".", "vendor"));
-      rimrafDir(resolve(".", "bar"));
+      rimrafDir(resolve('.', 'vendor'));
+      rimrafDir(resolve('.', 'bar'));
     });
 
     // test the implementations / mocks (BE)
@@ -201,7 +204,7 @@ describe.each(variations)(
       async (backend) => {
         const { install } = backendVersions[backend];
         switch (command) {
-          case "install": {
+          case 'install': {
             install(options);
             expect(console.log).toBeCalledTimes(1);
             expect(console.log).toHaveBeenLastCalledWith(stdOut);
@@ -219,15 +222,15 @@ describe.each(variations)(
       async (backend) => {
         const myargs = [
           process.argv[0],
-          resolve("./dist/terrafile"),
-          ...(args ? args.split(" ") : []),
+          resolve('./dist/terrafile'),
+          ...(args ? args.split(' ') : []),
         ];
         backend.length > 0
           ? main(myargs, backendVersions[backend])
           : main(myargs);
 
         // if we successfully are running the installl command,
-        if (command === "install") {
+        if (command === 'install') {
           expect(console.log).toHaveBeenLastCalledWith(`${stdOut}`);
           expect(process.stdout.write).not.toHaveBeenCalled();
           expect(process.stderr.write).not.toHaveBeenCalled();
@@ -236,12 +239,12 @@ describe.each(variations)(
         } else {
           // if the install command is not run
           [stdOut, stdErr].map((cur) => {
-            if (cur != "") {
+            if (cur != '') {
               expect(
                 cur === stdOut
                   ? (process.stdout.write as jest.Mock).mock.calls[0][0]
                   : (process.stderr.write as jest.Mock).mock.calls[0][0]
-              ).toBe(`${cur}${cur.length > 0 ? "\n" : ""}`);
+              ).toBe(`${cur}${cur.length > 0 ? '\n' : ''}`);
             }
           });
           expect(
@@ -255,13 +258,13 @@ describe.each(variations)(
     if (getRandomInt(200) === 0) {
       //if (true) {
       test(`Sample CLI (BE="%s", args="${args}")`, async () => {
-        const result = await cli(args ? args.split(" ") : []);
+        const result = await cli(args ? args.split(' ') : []);
         [
           { actual: result.stdout, expected: stdOut },
           { actual: result.stderr, expected: stdErr },
         ].map((cur) => {
           expect(cur.actual).toBe(
-            `${cur.expected}${cur.expected.length > 0 ? "\n" : ""}`
+            `${cur.expected}${cur.expected.length > 0 ? '\n' : ''}`
           );
         });
         expect(result.code).toBe(code);

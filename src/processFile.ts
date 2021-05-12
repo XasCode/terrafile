@@ -1,9 +1,9 @@
-import * as fs from "fs-extra";
-import * as path from "path";
-import * as fsHelpers from "./fsHelpers";
-import { validOptions } from "./utils";
-import axios from "axios";
-import { run } from "./run";
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as fsHelpers from './fsHelpers';
+import { validOptions } from './utils';
+import axios from 'axios';
+import { run } from './run';
 import {
   CliOptions,
   Entry,
@@ -13,9 +13,9 @@ import {
   RepoLocation,
   SourceParts,
   Status,
-} from "./types";
+} from './types';
 
-const registryURL = "https://registry.terraform.io/v1/modules";
+const registryURL = 'https://registry.terraform.io/v1/modules';
 
 async function readFileContents(options: CliOptions): Promise<Status> {
   //console.log(`readFileContents: ${JSON.stringify(options)}`);
@@ -44,14 +44,14 @@ function copyFromLocalDir(params: Entry, dest: Path): Status {
   if (fsHelpers.checkIfDirExists(src)) {
     return copyAbs(src, dest);
   }
-  console.error("error");
+  console.error('error');
   return retVal;
 }
 
 function determineRef(ref: string): string[] {
   const commit = ref;
   const branchOrTag = ref;
-  return ref?.length === 40 ? ["", commit] : [branchOrTag, ""];
+  return ref?.length === 40 ? ['', commit] : [branchOrTag, ''];
 }
 
 function getPartsFromHttp(source: Path): RepoLocation {
@@ -61,7 +61,7 @@ function getPartsFromHttp(source: Path): RepoLocation {
 }
 
 function getRepoUrl(terraformRegistryGitUrl: Path) {
-  return terraformRegistryGitUrl.split("git::")[1];
+  return terraformRegistryGitUrl.split('git::')[1];
 }
 
 async function cloneRepo(
@@ -111,9 +111,9 @@ async function checkoutCommit(
 }
 
 function getRegDownloadPointerUrl(source: Path, version: string): Path {
-  const [ns, modName, provider] = source.split("/");
-  const registryDownloadUrl = `${registryURL}/${ns || ""}/${modName || ""}/${
-    provider || ""
+  const [ns, modName, provider] = source.split('/');
+  const registryDownloadUrl = `${registryURL}/${ns || ''}/${modName || ''}/${
+    provider || ''
   }/${version}/download`;
   return registryDownloadUrl;
 }
@@ -121,14 +121,14 @@ function getRegDownloadPointerUrl(source: Path, version: string): Path {
 async function getRegRepoUrl(downloadPointerUrl: Path): Promise<Path> {
   try {
     const response = await axios({
-      method: "get",
+      method: 'get',
       url: downloadPointerUrl,
     });
     if (response.status === 204) {
-      const downloadUrl = response.headers["x-terraform-get"];
+      const downloadUrl = response.headers['x-terraform-get'];
       return getRepoUrl(downloadUrl);
     } else {
-      console.log("!204");
+      console.log('!204');
     }
   } catch (err) {
     console.error(`Error fetching download URL from terraform registry.`);
@@ -164,7 +164,7 @@ async function copyFromTerraformRegistry(
 ): Promise<Status> {
   const downloadPointerUrl = getRegDownloadPointerUrl(
     params.source,
-    params?.version || ""
+    params?.version || ''
   );
   const regRepoUrl = await getRegRepoUrl(downloadPointerUrl);
   return regRepoUrl
@@ -182,39 +182,39 @@ async function copyFromTerraformRegistry(
 }
 
 function replaceUrlVersionIfVersionParam(source: Path, version: string): Path {
-  return version ? [source.split("?ref=")[0], version].join("?ref=") : source;
+  return version ? [source.split('?ref=')[0], version].join('?ref=') : source;
 }
 
 function insertGit(source: Path): Path {
-  const parts = source.split("?ref=");
+  const parts = source.split('?ref=');
   return parts.length < 2
     ? source
-    : source.includes(".git")
-    ? parts.join("?ref=")
-    : [parts[0], ".git", "?ref=", ...parts.slice(1)].join("");
+    : source.includes('.git')
+    ? parts.join('?ref=')
+    : [parts[0], '.git', '?ref=', ...parts.slice(1)].join('');
 }
 
 function sourceParts(source: Path): SourceParts {
   const tempSource = insertGit(source);
-  const [beforeGit, afterGit] = tempSource.split(".git");
-  const newSource = `${beforeGit}${source.includes(".git") ? ".git" : ""}`;
-  const newAfterGit = afterGit ? afterGit : "";
-  const [beforeQref, afterQref] = newAfterGit.split("?ref=");
-  const [, afterPathSep] = beforeQref.split("//");
-  const newPathPart = afterPathSep ? `//${afterPathSep}` : "";
+  const [beforeGit, afterGit] = tempSource.split('.git');
+  const newSource = `${beforeGit}${source.includes('.git') ? '.git' : ''}`;
+  const newAfterGit = afterGit ? afterGit : '';
+  const [beforeQref, afterQref] = newAfterGit.split('?ref=');
+  const [, afterPathSep] = beforeQref.split('//');
+  const newPathPart = afterPathSep ? `//${afterPathSep}` : '';
   return [newSource, newPathPart, afterQref];
 }
 
 function replacePathIfPathParam(source: Path, repoPath: Path): Path {
-  const [beforeGit, afterGit] = source.split(".git");
-  const newAfterGit = afterGit ? afterGit : "";
-  const [beforeQref, afterQref] = newAfterGit.split("?ref=");
-  const newQrefPart = afterQref ? `?ref=${afterQref}` : "";
-  const [beforePathSep, afterPathSep] = beforeQref.split("//");
-  const newPathPart = afterPathSep ? `//${afterPathSep}` : "";
+  const [beforeGit, afterGit] = source.split('.git');
+  const newAfterGit = afterGit ? afterGit : '';
+  const [beforeQref, afterQref] = newAfterGit.split('?ref=');
+  const newQrefPart = afterQref ? `?ref=${afterQref}` : '';
+  const [beforePathSep, afterPathSep] = beforeQref.split('//');
+  const newPathPart = afterPathSep ? `//${afterPathSep}` : '';
   const newPath = repoPath ? `/${repoPath}` : newPathPart;
   return `${beforeGit}${
-    source.includes(".git") ? ".git" : ""
+    source.includes('.git') ? '.git' : ''
   }${beforePathSep}${newPath}${newQrefPart}`;
 }
 
@@ -237,19 +237,19 @@ function Terrafile(options: CliOptions): Status {
           `${options.directory}${path.sep}${key}`
         );
         switch (moduleSourceType(val.source)) {
-          case "local-dir": {
+          case 'local-dir': {
             retVal = { ...retVal, ...copyFromLocalDir(val, dest) };
             break;
           }
-          case "terraform-registry": {
+          case 'terraform-registry': {
             retVal = {
               ...retVal,
               ...(await copyFromTerraformRegistry(val, dest)),
             };
             break;
           }
-          case "git-https":
-          case "git-ssh": {
+          case 'git-https':
+          case 'git-ssh': {
             retVal = {
               ...retVal,
               ...(await copyFromGit(val, dest)),
@@ -262,7 +262,7 @@ function Terrafile(options: CliOptions): Status {
     return retVal;
   }
 
-  return validOptions(options, "file" as Option)
+  return validOptions(options, 'file' as Option)
     ? {
         process,
         ...JsonTerrafile(
@@ -311,7 +311,7 @@ function JsonFile(absFilePath: Path): Status {
   function gulpJson(file: Path): [string, Record<string, string>][] | null {
     try {
       return JSON.parse(
-        fs.readFileSync(fsHelpers.getAbsolutePath(file), "utf-8")
+        fs.readFileSync(fsHelpers.getAbsolutePath(file), 'utf-8')
       );
     } catch (err) {
       console.error(err);
@@ -321,7 +321,7 @@ function JsonFile(absFilePath: Path): Status {
 
   return File(absFilePath).success
     ? Json(gulpJson(absFilePath))
-    : { success: false, contents: null, error: "Error: not file" };
+    : { success: false, contents: null, error: 'Error: not file' };
 }
 
 function File(absFilePath: Path): Status {
@@ -359,25 +359,25 @@ function startsWith(str: string, start: string): boolean {
 //}
 
 function isGitHttps(source: Path): string {
-  return startsWith(source, "https://") ? "git-https" : "";
+  return startsWith(source, 'https://') ? 'git-https' : '';
 }
 
 function isGitSSH(source: Path): string {
-  return startsWith(source, "git@") ? "git-ssh" : "";
+  return startsWith(source, 'git@') ? 'git-ssh' : '';
 }
 
 function isLocalDir(source: Path): string {
-  return startsWith(source, "/") ||
-    startsWith(source, "./") ||
-    startsWith(source, "../")
-    ? "local-dir"
-    : "";
+  return startsWith(source, '/') ||
+    startsWith(source, './') ||
+    startsWith(source, '../')
+    ? 'local-dir'
+    : '';
 }
 
 function moduleSourceType(source: Path): string {
   return (
-    [isGitHttps(source), isGitSSH(source), isLocalDir(source)].join("") ||
-    "terraform-registry"
+    [isGitHttps(source), isGitSSH(source), isLocalDir(source)].join('') ||
+    'terraform-registry'
   );
 }
 
@@ -391,7 +391,7 @@ function getModuleSourceType(source: Path): string {
 
 function validateEachField(moduleDef: Record<string, string>): boolean {
   let notFoundOrNotValid = false;
-  const acceptable = ["comment", "source", "version", "path"];
+  const acceptable = ['comment', 'source', 'version', 'path'];
   const params = Object.keys(moduleDef);
   for (const param of params) {
     if (!acceptable.includes(param)) {
@@ -405,7 +405,7 @@ function validateFieldsForEachModuleEntry(
   moduleDef: Record<string, string>
 ): boolean {
   let notFoundOrNotValid = false;
-  const sourceType = getModuleSourceType(moduleDef["source"]);
+  const sourceType = getModuleSourceType(moduleDef['source']);
   if (sourceType === undefined) {
     notFoundOrNotValid = true;
   } else {

@@ -14,10 +14,10 @@
     "**/*.ts", "node_modules/@types"
   ],
   "exclude": [
-    "node_modules", "__tests__/**/*.ts"
+    "node_modules", "__tests__/**/*.ts", "__mocks__/**/*.ts", "dist"
   ],
   "typeRoots": [
-    "node_modules/@types"
+    "node_modules/@types", "src"
   ],
   "types": [
     "jest"

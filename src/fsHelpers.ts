@@ -1,9 +1,9 @@
-import * as fs from "fs";
-import { sync as mkdirp } from "mkdirp";
-import { sync as rimraf } from "rimraf";
-import { sync as touch } from "touch";
-import * as path from "path";
-import { Path } from "./types";
+import * as fs from 'fs';
+import { sync as mkdirp } from 'mkdirp';
+import { sync as rimraf } from 'rimraf';
+import { sync as touch } from 'touch';
+import * as path from 'path';
+import { Path } from './types';
 
 function checkIfFileExists(filePath: Path): boolean {
   return fs.existsSync(filePath) && fs.lstatSync(filePath).isFile();
@@ -37,7 +37,7 @@ function createDir(dir: Path): Path {
   }
 }
 
-function touchFile(filePath: Path, perms: number): void {
+function touchFile(filePath: Path, perms?: number): void {
   touch(filePath);
   if (perms !== undefined) {
     fs.chmodSync(filePath, perms);
@@ -50,7 +50,7 @@ function rimrafDir(dir: Path): Path {
     rimraf(dir, { maxBusyTries: 3000 });
     return dir;
   } else {
-    //console.error(`Error deleting dir: ${dir}`);
+    console.error(`Error deleting dir: ${dir}`);
   }
 }
 
@@ -70,7 +70,7 @@ function abortDirCreation(dir: Path): void {
 function renameDir(oldPath: Path, newPath: Path): void {
   try {
     fs.renameSync(oldPath, newPath);
-    console.log("Successfully renamed the directory.");
+    console.log('Successfully renamed the directory.');
   } catch (err) {
     console.error(err.code);
   }

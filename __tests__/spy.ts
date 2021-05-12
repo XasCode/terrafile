@@ -1,18 +1,18 @@
 const globalAny: any = global;
 
 function setup(): void {
-  globalAny.consoleSpyLog = jest.spyOn(console, "log").mockImplementation();
+  globalAny.consoleSpyLog = jest.spyOn(console, 'log').mockImplementation();
   globalAny.stdoutSpy = jest
-    .spyOn(process.stdout, "write")
+    .spyOn(process.stdout, 'write')
     .mockImplementation();
-  globalAny.consoleSpyErr = jest.spyOn(console, "error").mockImplementation();
+  globalAny.consoleSpyErr = jest.spyOn(console, 'error').mockImplementation();
   globalAny.stderrSpy = jest
-    .spyOn(process.stderr, "write")
+    .spyOn(process.stderr, 'write')
     .mockImplementation();
   globalAny.mockExit = jest
-    .spyOn(process, "exit")
+    .spyOn(process, 'exit')
     .mockImplementation((): never => {
-      throw new Error("exit");
+      throw new Error('exit');
     });
 }
 

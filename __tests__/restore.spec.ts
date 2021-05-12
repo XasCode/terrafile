@@ -5,11 +5,11 @@ import {
   touchFile,
   checkIfDirExists,
   checkIfFileExists,
-} from "../dist/src/fsHelpers";
-import { restoreDirectory } from "../dist/src/restore";
-import { getSaveLocation, createTargetDirectory } from "../dist/src/venDir";
+} from '../src/fsHelpers';
+import { restoreDirectory } from '../src/restore';
+import { getSaveLocation, createTargetDirectory } from '../src/venDir';
 
-const testDirs = ["restore", "restore2"];
+const testDirs = ['restore', 'restore2'];
 
 const cleanUpTestDirs = () =>
   testDirs.map((testDir) => {
@@ -17,7 +17,7 @@ const cleanUpTestDirs = () =>
     getSaveLocation(testDir);
   });
 
-describe("unit test restoreDirectory", () => {
+describe('unit test restoreDirectory', () => {
   beforeEach(() => {
     cleanUpTestDirs();
     //spy.beforeEach();
@@ -27,37 +27,37 @@ describe("unit test restoreDirectory", () => {
     cleanUpTestDirs();
   });
 
-  test("should restore saved directory", () => {
-    const installDir = "restore/modules";
+  test('should restore saved directory', () => {
+    const installDir = 'restore/modules';
     //create a directory at install location
     createDir(getAbsolutePath(installDir));
     //touch file in the install location
-    touchFile(getAbsolutePath(installDir + "/main.tf"));
+    touchFile(getAbsolutePath(installDir + '/main.tf'));
     //create install location
     createTargetDirectory({ directory: installDir });
     //expect directory at install location
     const saveLocation = getSaveLocation(installDir);
     expect(checkIfDirExists(saveLocation)).toBe(true);
     //expect file at save location
-    expect(checkIfFileExists(getAbsolutePath(saveLocation) + "/main.tf")).toBe(
+    expect(checkIfFileExists(getAbsolutePath(saveLocation) + '/main.tf')).toBe(
       true
     );
     //expect file not to be at install location
-    expect(checkIfFileExists(getAbsolutePath(installDir) + "/main.tf")).toBe(
+    expect(checkIfFileExists(getAbsolutePath(installDir) + '/main.tf')).toBe(
       false
     );
     //restore install location
     restoreDirectory(installDir);
     //expect file at isntall directory
-    expect(checkIfFileExists(getAbsolutePath(installDir) + "/main.tf")).toBe(
+    expect(checkIfFileExists(getAbsolutePath(installDir) + '/main.tf')).toBe(
       true
     );
     //expect save location to be not found
     expect(checkIfDirExists(saveLocation)).toBe(false);
   });
 
-  test("should err if attempting to restore non-saved file", () => {
-    const installDir = "restore2/modules";
+  test('should err if attempting to restore non-saved file', () => {
+    const installDir = 'restore2/modules';
     //create install location
     createTargetDirectory({ directory: installDir });
     //restore install location
