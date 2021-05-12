@@ -13,11 +13,20 @@ import {
   unknownOptionShort,
 } from '../src/strings';
 
-import { CliArgs, CliOptions, ExecResult, TestDefinition } from '../src/types';
+import {
+  Backend,
+  CliArgs,
+  CliOptions,
+  ExecResult,
+  TestDefinition,
+} from '../src/types';
 
-const backendVersions: Record<string, any> = {
-  '': require('../src/backend'),
-  './backend.mock.ts': require('../__mocks__/backend.mock.ts'),
+import { install as defaultInstall } from '../src/backend';
+import { install as mockedInstall } from '../__mocks__/backend.mock';
+
+const backendVersions: Record<string, Backend> = {
+  '': { install: defaultInstall },
+  './backend.mock.ts': { install: mockedInstall },
 };
 
 const { version } = JSON.parse(

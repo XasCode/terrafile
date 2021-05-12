@@ -47,7 +47,7 @@ describe.each(Object.keys(curatedCliCommands))(
     });
 
     test(`check cli: ${cliCommand}`, async () => {
-      const result = await cli(cliCommand.split(' '), './dist');
+      const result = await cli(cliCommand.split(' '), './dist/src');
       expect(result.stdout).toBe(curatedCliCommands[cliCommand][0]);
       expect(result.stderr).toBe(curatedCliCommands[cliCommand][1]);
       expect(result.code).toBe(curatedCliCommands[cliCommand][2]);

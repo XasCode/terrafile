@@ -3,7 +3,6 @@
   "version": "0.1.0-alpha.1",
   "description": "",
   "main": "./dist/terrafile.ts",
-  "typings": "src/index",
   "bin": {
     "terrafile": "./dist/terrafile"
   },

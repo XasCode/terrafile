@@ -24,7 +24,7 @@ async function cli(args: string[], cwd?: Path): Promise<ExecResult> {
   return new Promise((resolve) => {
     execFile(
       'node',
-      [`${_resolve('./dist/terrafile')}`, ...args],
+      [`${_resolve('./dist/src/terrafile')}`, ...args],
       {
         cwd,
       },

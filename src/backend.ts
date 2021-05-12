@@ -1,5 +1,5 @@
-import * as fsHelpers from "./fsHelpers";
-import { CliOptions, Path } from "./types";
+import * as fsHelpers from './fsHelpers';
+import { CliOptions, Path } from './types';
 
 function install(options: CliOptions): void {
   createInstallDirectory(options.directory);

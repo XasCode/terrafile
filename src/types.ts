@@ -1,6 +1,10 @@
-import { ExecFileException } from "child_process";
+import { ExecFileException } from 'child_process';
 
 type Path = string | null;
+
+type Backend = {
+  install(c: CliOptions): void;
+};
 
 type ExecResult = {
   code: number;
@@ -45,8 +49,8 @@ type Status = {
 };
 
 enum Option {
-  file = "file",
-  folder = "directory",
+  file = 'file',
+  folder = 'directory',
 }
 
 type Entry = {
@@ -60,6 +64,7 @@ type RepoLocation = [Path, Path, string, string];
 type SourceParts = string[];
 
 export {
+  Backend,
   CliArgs,
   CliOptions,
   Entry,

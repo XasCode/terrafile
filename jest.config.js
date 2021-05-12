@@ -5,9 +5,9 @@ module.exports = {
   collectCoverage: true,
   testPathIgnorePatterns: [
     '/node_modules/',
-    './__tests__/utils.js',
-    './__tests__/testSetupFile.js',
-    './__tests__/spy.js',
+    './__tests__/utils.ts',
+    './__tests__/testSetupFile.ts',
+    './__tests__/spy.ts',
   ],
   reporters: ['jest-progress-bar-reporter'],
   setupFilesAfterEnv: ['<rootDir>/__tests__/testSetupFile.ts'],
