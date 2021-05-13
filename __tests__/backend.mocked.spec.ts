@@ -1,39 +1,9 @@
+import { mockAxiosGetTerraformUrl, mockCliSuccess } from './testUtils';
+mockAxiosGetTerraformUrl();
+mockCliSuccess();
+
 import { resolve } from 'path';
 import { readFileSync } from 'fs-extra';
-
-jest.mock('axios', () =>
-  jest.fn(() => {
-    return {
-      status: 204,
-      headers: {
-        'x-terraform-get':
-          'git::https://github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=2.78.0',
-      },
-    };
-  })
-);
-
-jest.mock('../src/run', () => {
-  return {
-    run: jest.fn().mockImplementation((args, cwd) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const fsHelpersLocal = require('../src/fsHelpers');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const pathLocal = require('path');
-      const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);
-      if (!fsHelpersLocal.checkIfDirExists(fullDest)) {
-        fsHelpersLocal.createDir(fullDest);
-        fsHelpersLocal.touchFile(`${fullDest}${pathLocal.sep}main.tf`);
-      }
-      return {
-        code: 0,
-        error: null,
-        stdout: '',
-        stderr: '',
-      };
-    }),
-  };
-});
 
 import { createTargetDirectory } from '../src/venDir';
 import { readFileContents } from '../src/processFile';
@@ -45,7 +15,7 @@ import {
   rimrafDir,
   checkIfFileExists,
 } from '../src/fsHelpers';
-import { beforeEach as _beforeEach } from './spy';
+import { spy } from './testUtils';
 import { CliOptions } from '../src/types';
 
 /* createTargetDirectory({"directory": <path>, ...})
@@ -60,7 +30,7 @@ describe('createTargetDirectory should create a directory for vendor modules', (
   beforeEach(() => {
     // before each test clean up any dirs created in previous tests
     cleanUpTestDirs();
-    _beforeEach();
+    spy.clear();
   });
 
   afterEach(() => {
@@ -157,7 +127,7 @@ describe('read file contents should read specified json file and validate its co
   beforeEach(() => {
     // cleans up any dirs created from previous tests
     cleanUpTestDirs();
-    _beforeEach();
+    spy.clear();
   });
 
   afterEach(() => {
@@ -238,5 +208,3 @@ describe('read file contents should read specified json file and validate its co
     await expectFileIssue(options);
   });
 });
-
-export {};

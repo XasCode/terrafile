@@ -6,7 +6,7 @@ import {
   getAbsolutePath,
   checkIfFileExists,
 } from '../src/fsHelpers';
-import { beforeEach as _beforeEach } from './spy';
+import { spy } from './testUtils';
 import { CliOptions } from '../src/types';
 
 const testDirs = [
@@ -20,7 +20,7 @@ const cleanUpTestDirs = () =>
 describe('read file contents should read specified json file and validate its contents', () => {
   beforeEach(() => {
     cleanUpTestDirs();
-    _beforeEach();
+    spy.clear();
   });
 
   afterEach(() => {
@@ -74,5 +74,3 @@ describe('read file contents should read specified json file and validate its co
     }
   });
 });
-
-export {};

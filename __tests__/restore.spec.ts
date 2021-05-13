@@ -20,7 +20,6 @@ const cleanUpTestDirs = () =>
 describe('unit test restoreDirectory', () => {
   beforeEach(() => {
     cleanUpTestDirs();
-    //spy.beforeEach();
   });
 
   afterEach(() => {
@@ -66,5 +65,3 @@ describe('unit test restoreDirectory', () => {
     expect(success).toBe(false);
   });
 });
-
-export {};

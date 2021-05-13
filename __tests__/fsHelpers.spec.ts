@@ -1,11 +1,11 @@
 import * as fsHelpers from '../src/fsHelpers';
 import * as path from 'path';
-import * as spy from './spy';
+import { spy } from './testUtils';
 import * as fs from 'fs-extra';
 
 describe('checkIfDirExists checks for the existence of a directory', () => {
   beforeEach(() => {
-    spy.beforeEach();
+    spy.clear();
   });
 
   test('should return true if directory exists', () => {
@@ -27,7 +27,7 @@ describe('checkIfDirExists checks for the existence of a directory', () => {
 
 describe('getAbsolutePath returns an absolute path from relative or abs path', () => {
   beforeEach(() => {
-    spy.beforeEach();
+    spy.clear();
   });
 
   test('should return path relative to current direct if valid relative path', () => {
@@ -55,7 +55,7 @@ describe('getAbsolutePath returns an absolute path from relative or abs path', (
 describe('createDir should create a directory at the provided location', () => {
   beforeEach(() => {
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath('bar'));
-    spy.beforeEach();
+    spy.clear();
   });
 
   afterEach(() => {
@@ -105,7 +105,7 @@ describe('createDir should create a directory at the provided location', () => {
 describe('rimrafDir should delete a dir and its contents', () => {
   beforeEach(() => {
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath('vendor'));
-    spy.beforeEach();
+    spy.clear();
   });
 
   afterEach(() => {
@@ -157,7 +157,7 @@ describe('rimrafDir should delete a dir and its contents', () => {
 describe('abortDirCreation should delete dirs that were created', () => {
   beforeEach(() => {
     fsHelpers.rimrafDir(fsHelpers.getAbsolutePath('bar'));
-    spy.beforeEach();
+    spy.clear();
   });
 
   afterEach(() => {
@@ -190,5 +190,3 @@ describe("rename", () => {
   });
 });
 */
-
-export {};

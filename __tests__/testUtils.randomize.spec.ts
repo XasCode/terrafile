@@ -1,4 +1,4 @@
-import { randomizeOrder } from './utils';
+import { randomizeOrder } from './testUtils';
 
 // test randomization of array order
 describe('should take an array and rearrange the elements randomly', () => {

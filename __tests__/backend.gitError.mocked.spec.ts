@@ -1,42 +1,10 @@
-//jest.mock('axios', () => ({
-//  default: jest.fn(() => {
-//    return {
-//      status: 204,
-//      headers: {
-//        'x-terraform-get':
-//          'git::https://github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=2.78.0',
-//      },
-//    };
-//  }),
-//}));
-jest.mock('axios', () =>
-  jest.fn(() => {
-    return {
-      status: 204,
-      headers: {
-        'x-terraform-get':
-          'git::https://github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=2.78.0',
-      },
-    };
-  })
-);
-
-jest.mock('../src/run', () => {
-  return {
-    run: jest.fn().mockImplementation(() => {
-      return {
-        code: -1,
-        error: 'oops!',
-        stdout: '',
-        stderr: '',
-      };
-    }),
-  };
-});
+import { mockAxiosGetTerraformUrl, mockCliError } from './testUtils';
+mockAxiosGetTerraformUrl();
+mockCliError();
 
 import { readFileContents } from '../src/processFile';
 import { rimrafDir, getAbsolutePath } from '../src/fsHelpers';
-import { beforeEach as _beforeEach } from './spy';
+import { spy } from './testUtils';
 import { CliOptions } from '../src/types';
 
 const testDirs = ['vendor_tfregistry_error'];
@@ -55,7 +23,7 @@ describe('read file contents should read specified json file and validate its co
   beforeEach(() => {
     // cleans up any dirs created from previous tests
     cleanUpTestDirs();
-    _beforeEach();
+    spy.clear();
   });
 
   afterEach(() => {
@@ -71,5 +39,3 @@ describe('read file contents should read specified json file and validate its co
     });
   });
 });
-
-export {};

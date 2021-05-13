@@ -2,9 +2,8 @@ import { resolve } from 'path';
 import { readFileSync } from 'fs-extra';
 
 import { rimrafDir, getAbsolutePath } from '../src/fsHelpers';
-import { beforeEach as _beforeEach } from './spy';
 import { main } from '../src/terrafile';
-import { getRandomInt, cli, cartesian } from './utils';
+import { getRandomInt, cli, cartesian, spy } from './testUtils';
 import {
   helpContent,
   helpInstallContent,
@@ -199,7 +198,7 @@ describe.each(variations)(
     beforeEach(() => {
       rimrafDir(resolve('.', 'vendor'));
       rimrafDir(resolve('.', 'bar'));
-      _beforeEach();
+      spy.clear();
     });
 
     afterEach(() => {
@@ -281,5 +280,3 @@ describe.each(variations)(
     }
   }
 );
-
-export {};

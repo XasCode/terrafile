@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 
-import { cli } from './utils';
+import { cli } from './testUtils';
 import { getAbsolutePath, rimrafDir } from '../src/fsHelpers';
 
 import {
@@ -12,7 +12,6 @@ import {
 } from '../src/strings';
 
 import { version } from '../package.json';
-//import { beforeEach as _beforeEach } from "./spy";
 
 const defaultOpts = { directory: 'vendor/modules', file: 'terrafile.json' };
 
@@ -54,5 +53,3 @@ describe.each(Object.keys(curatedCliCommands))(
     });
   }
 );
-
-export {};

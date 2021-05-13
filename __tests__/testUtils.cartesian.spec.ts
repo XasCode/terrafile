@@ -1,4 +1,4 @@
-import { cartesian } from './utils';
+import { cartesian } from './testUtils/cartesian';
 
 describe('should take arrays and generate combinations of the elements', () => {
   test('take and array of arrays and verify outout', () => {
