@@ -2,231 +2,15 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as fsHelpers from './fsHelpers';
 import { validOptions } from './utils';
-import axios from 'axios';
-import { run } from './run';
-import {
-  CliOptions,
-  Entry,
-  ExecResult,
-  Option,
-  Path,
-  RepoLocation,
-  SourceParts,
-  Status,
-} from './types';
-
-const registryURL = 'https://registry.terraform.io/v1/modules';
+import { CliOptions, Option, Path, Status } from './types';
 
 async function readFileContents(options: CliOptions): Promise<Status> {
-  //console.log(`readFileContents: ${JSON.stringify(options)}`);
   return await Terrafile(options).process();
-}
-
-function copyAbs(src: Path, dest: Path): Status {
-  const retVal = { success: true, contents: undefined, error: null } as Status;
-  try {
-    fs.copySync(src, dest, { overwrite: false, errorOnExist: true });
-  } catch (err) {
-    retVal.success = false;
-    retVal.contents = null;
-    retVal.error = `Error copying absolute from '${src}' to '${dest}'`;
-  }
-  return retVal;
-}
-
-function copyFromLocalDir(params: Entry, dest: Path): Status {
-  const retVal = {
-    success: false,
-    contents: null,
-    error: `Error copying from local dir`,
-  } as Status;
-  const src = fsHelpers.getAbsolutePath(params.source);
-  if (fsHelpers.checkIfDirExists(src)) {
-    return copyAbs(src, dest);
-  }
-  console.error('error');
-  return retVal;
-}
-
-function determineRef(ref: string): string[] {
-  const commit = ref;
-  const branchOrTag = ref;
-  return ref?.length === 40 ? ['', commit] : [branchOrTag, ''];
-}
-
-function getPartsFromHttp(source: Path): RepoLocation {
-  const [repo, repoDir, ref] = sourceParts(source);
-  const [branchOrTag, commit] = determineRef(ref);
-  return [repo, repoDir, branchOrTag, commit];
-}
-
-function getRepoUrl(terraformRegistryGitUrl: Path) {
-  return terraformRegistryGitUrl.split('git::')[1];
-}
-
-async function cloneRepo(
-  [repo, repoDir, branchOrTag]: RepoLocation,
-  fullDest: Path
-): Promise<ExecResult> {
-  const cloneCmd = [
-    `clone`,
-    ...(repoDir ? [`--depth`, `1`, `--filter=blob:none`, `--sparse`] : []),
-    ...(branchOrTag ? [`--branch=${branchOrTag}`] : []),
-    `${repo}.git`,
-    fullDest,
-  ];
-  const results = await run(cloneCmd);
-  //console.log(`clone: ${cloneCmd.join(" ")} / ${results}`);
-  return results;
-}
-
-async function scopeRepo(
-  [, repoDir]: RepoLocation,
-  fullDest: Path
-): Promise<ExecResult> {
-  const sparseCmd = [`sparse-checkout`, `set`, repoDir];
-  const results = await (repoDir
-    ? run(sparseCmd, fullDest)
-    : ({ code: 0, error: null } as ExecResult));
-  //console.log(
-  //  `sparse: ${repoDir ? sparseCmd.join(" ") : ""} / ${JSON.stringify(results)}`
-  //);
-  return results;
-}
-
-async function checkoutCommit(
-  [, , , commit]: RepoLocation,
-  fullDest: Path
-): Promise<ExecResult> {
-  const commitCmd = [`checkout`, commit];
-  const results = await (commit
-    ? run(commitCmd, fullDest)
-    : ({ code: 0, error: null } as ExecResult));
-  //console.log(
-  //  `checkout: ${commit ? commitCmd.join(" ") : ""} / ${JSON.stringify(
-  //    results
-  //  )}`
-  //);
-  return results;
-}
-
-function getRegDownloadPointerUrl(source: Path, version: string): Path {
-  const [ns, modName, provider] = source.split('/');
-  const registryDownloadUrl = `${registryURL}/${ns || ''}/${modName || ''}/${
-    provider || ''
-  }/${version}/download`;
-  return registryDownloadUrl;
-}
-
-async function getRegRepoUrl(downloadPointerUrl: Path): Promise<Path> {
-  try {
-    const response = await axios({
-      method: 'get',
-      url: downloadPointerUrl,
-    });
-    if (response.status === 204) {
-      const downloadUrl = response.headers['x-terraform-get'];
-      return getRepoUrl(downloadUrl);
-    } else {
-      console.log('!204');
-    }
-  } catch (err) {
-    console.error(`Error fetching download URL from terraform registry.`);
-  }
-}
-
-async function cloneRepoToDest(repoUrl: Path, fullDest: Path): Promise<Status> {
-  const retVal = {
-    success: false,
-    contents: null,
-    error: `Error copying from terraform registry ${repoUrl} - ${fullDest}`,
-  } as Status;
-  const [a, b, c, d]: RepoLocation = getPartsFromHttp(repoUrl);
-  const results1 = await cloneRepo([a, b, c, d], fullDest);
-  const results2 = await scopeRepo([a, b, c, d], fullDest);
-  const results3 = await checkoutCommit([a, b, c, d], fullDest);
-  if (
-    results1.code + results2.code + results3.code === 0 &&
-    results1.error === null &&
-    results2.error === null &&
-    results3.error === null
-  ) {
-    retVal.success = true;
-    retVal.error = null;
-    delete retVal.contents;
-  }
-  return retVal;
-}
-
-async function copyFromTerraformRegistry(
-  params: Entry,
-  dest: Path
-): Promise<Status> {
-  const downloadPointerUrl = getRegDownloadPointerUrl(
-    params.source,
-    params?.version || ''
-  );
-  const regRepoUrl = await getRegRepoUrl(downloadPointerUrl);
-  return regRepoUrl
-    ? await cloneRepoToDest(regRepoUrl, dest)
-    : {
-        success: false,
-        contents: null,
-        // eslint-disable-next-line max-len
-        error: `Repo URL not found in Terraform registry. ${dest}, ${JSON.stringify(
-          params
-        )}, ${downloadPointerUrl}, ${regRepoUrl}, ${isGitHttps(
-          params.source
-        )}, ${isGitSSH(params.source)}, ${isLocalDir(params.source)}`,
-      };
-}
-
-function replaceUrlVersionIfVersionParam(source: Path, version: string): Path {
-  return version ? [source.split('?ref=')[0], version].join('?ref=') : source;
-}
-
-function insertGit(source: Path): Path {
-  const parts = source.split('?ref=');
-  return parts.length < 2
-    ? source
-    : source.includes('.git')
-    ? parts.join('?ref=')
-    : [parts[0], '.git', '?ref=', ...parts.slice(1)].join('');
-}
-
-function sourceParts(source: Path): SourceParts {
-  const tempSource = insertGit(source);
-  const [beforeGit, afterGit] = tempSource.split('.git');
-  const newSource = `${beforeGit}${source.includes('.git') ? '.git' : ''}`;
-  const newAfterGit = afterGit ? afterGit : '';
-  const [beforeQref, afterQref] = newAfterGit.split('?ref=');
-  const [, afterPathSep] = beforeQref.split('//');
-  const newPathPart = afterPathSep ? `//${afterPathSep}` : '';
-  return [newSource, newPathPart, afterQref];
-}
-
-function replacePathIfPathParam(source: Path, repoPath: Path): Path {
-  const [beforeGit, afterGit] = source.split('.git');
-  const newAfterGit = afterGit ? afterGit : '';
-  const [beforeQref, afterQref] = newAfterGit.split('?ref=');
-  const newQrefPart = afterQref ? `?ref=${afterQref}` : '';
-  const [beforePathSep, afterPathSep] = beforeQref.split('//');
-  const newPathPart = afterPathSep ? `//${afterPathSep}` : '';
-  const newPath = repoPath ? `/${repoPath}` : newPathPart;
-  return `${beforeGit}${
-    source.includes('.git') ? '.git' : ''
-  }${beforePathSep}${newPath}${newQrefPart}`;
-}
-
-async function copyFromGit(params: Entry, dest: Path): Promise<Status> {
-  const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
-  const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
-  return await cloneRepoToDest(regRepoUrl, dest);
 }
 
 function Terrafile(options: CliOptions): Status {
   async function process(): Promise<Status> {
-    let retVal = {
+    const retVal = {
       success: this.success,
       contents: this.contents,
       error: this.error,
@@ -236,27 +20,10 @@ function Terrafile(options: CliOptions): Status {
         const dest = fsHelpers.getAbsolutePath(
           `${options.directory}${path.sep}${key}`
         );
-        switch (moduleSourceType(val.source)) {
-          case 'local-dir': {
-            retVal = { ...retVal, ...copyFromLocalDir(val, dest) };
-            break;
-          }
-          case 'terraform-registry': {
-            retVal = {
-              ...retVal,
-              ...(await copyFromTerraformRegistry(val, dest)),
-            };
-            break;
-          }
-          case 'git-https':
-          case 'git-ssh': {
-            retVal = {
-              ...retVal,
-              ...(await copyFromGit(val, dest)),
-            };
-            break;
-          }
-        }
+        const currentModuleRetVal = await modules.fetch(val, dest);
+        retVal.success = this.success && currentModuleRetVal.success;
+        retVal.contents = currentModuleRetVal.contents;
+        retVal.error = this.error && currentModuleRetVal.error;
       }
     }
     return retVal;
@@ -350,44 +117,7 @@ function Json(json: [string, Record<string, string>][] | null): Status {
   };
 }
 
-function startsWith(str: string, start: string): boolean {
-  return start === str.slice(0, start.length);
-}
-
-//function endsWith(str: string, end: string): boolean {
-//  return end === str.slice(-1 * end.length);
-//}
-
-function isGitHttps(source: Path): string {
-  return startsWith(source, 'https://') ? 'git-https' : '';
-}
-
-function isGitSSH(source: Path): string {
-  return startsWith(source, 'git@') ? 'git-ssh' : '';
-}
-
-function isLocalDir(source: Path): string {
-  return startsWith(source, '/') ||
-    startsWith(source, './') ||
-    startsWith(source, '../')
-    ? 'local-dir'
-    : '';
-}
-
-function moduleSourceType(source: Path): string {
-  return (
-    [isGitHttps(source), isGitSSH(source), isLocalDir(source)].join('') ||
-    'terraform-registry'
-  );
-}
-
-function getModuleSourceType(source: Path): string {
-  let returnValue = undefined;
-  if (source !== undefined) {
-    returnValue = moduleSourceType(source);
-  }
-  return returnValue;
-}
+import modules from './moduleSources';
 
 function validateEachField(moduleDef: Record<string, string>): boolean {
   let notFoundOrNotValid = false;
@@ -405,7 +135,7 @@ function validateFieldsForEachModuleEntry(
   moduleDef: Record<string, string>
 ): boolean {
   let notFoundOrNotValid = false;
-  const sourceType = getModuleSourceType(moduleDef['source']);
+  const sourceType = modules.getType(moduleDef['source']);
   if (sourceType === undefined) {
     notFoundOrNotValid = true;
   } else {
@@ -414,9 +144,4 @@ function validateFieldsForEachModuleEntry(
   return notFoundOrNotValid;
 }
 
-const testable = {
-  replacePathIfPathParam,
-  replaceUrlVersionIfVersionParam,
-};
-
-export { testable, readFileContents };
+export { readFileContents };

@@ -1,5 +1,5 @@
 import { Entry } from '../../src/types';
-import { testable } from '../../src/processFile';
+import { testable } from '../../src/moduleSources/common/git';
 const { replacePathIfPathParam, replaceUrlVersionIfVersionParam } = testable;
 
 test.each([
