@@ -44,8 +44,15 @@ type Status = {
   created?: Path;
   error?: string | null;
   contents?: [string, Record<string, string>][];
+  options?: CliOptions;
   process?: () => Promise<Status>;
   validateFormat?: () => Status;
+  validateOptions?: () => Status;
+  verifyFile?: () => Status;
+  readFile?: () => Status;
+  parse?: () => Status;
+  validateJson?: () => Status;
+  proces?: () => Status;
 };
 
 enum Option {

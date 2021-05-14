@@ -2,19 +2,146 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as fsHelpers from './fsHelpers';
 import { validOptions } from './utils';
-import { CliOptions, Option, Path, Status } from './types';
+import { CliOptions, Option, Status } from './types';
+import modules from './moduleSources';
 
 async function readFileContents(options: CliOptions): Promise<Status> {
-  return await Terrafile(options).process();
+  return await Terrafile(options);
 }
 
+function TerrafileImplementation(options: CliOptions): Status {
+  function validateOptions(): Status {
+    if (!validOptions(this.options, 'file' as Option)) {
+      this.success = false;
+      this.contents = null;
+      this.error = `Error: Not valid options`;
+    }
+    return this;
+  }
+
+  function verifyFile(): Status {
+    if (
+      !fsHelpers.checkIfFileExists(
+        fsHelpers.getAbsolutePath(this.options?.file)
+      )
+    ) {
+      this.success = false;
+      this.contents = null;
+      this.error = `Error: ${this.options?.file} does not exist`;
+    }
+    return this;
+  }
+
+  function readFile(): Status {
+    try {
+      this.json = JSON.parse(
+        fs.readFileSync(fsHelpers.getAbsolutePath(this.options.file), 'utf-8')
+      );
+    } catch (err) {
+      this.success = false;
+      this.contents = null;
+      this.error = `Error: could not parse ${this.options?.file}`;
+    }
+    return this;
+  }
+
+  function parse(): Status {
+    try {
+      this.contents = Object.entries(this.json);
+    } catch (err) {
+      this.success = false;
+      this.contents = [];
+      this.error = `Error: could not parse json appropriately`;
+    }
+    return this;
+  }
+
+  function validateJson(): Status {
+    const valid = this.contents.reduce(
+      (acc: boolean, [, val]: Record<string, string>[]) => {
+        return acc && !validateFieldsForEachModuleEntry(val);
+      },
+      this.success
+    );
+    this.success = valid;
+    this.contents = valid ? this.contents : null;
+    this.error = valid ? null : `Error: Not valid format`;
+    return this;
+  }
+
+  async function process(): Promise<Status> {
+    const retVal = { ...this };
+
+    if (this.success) {
+      for (const [key, val] of this.contents) {
+        const dest = fsHelpers.getAbsolutePath(
+          `${options.directory}${path.sep}${key}`
+        );
+        const currentModuleRetVal = await modules.fetch(val, dest);
+        retVal.success = this.success && currentModuleRetVal.success;
+        retVal.contents = currentModuleRetVal.contents;
+        retVal.error = this.error && currentModuleRetVal.error;
+      }
+    }
+    return retVal;
+  }
+
+  return {
+    options,
+    success: true,
+    contents: null,
+    error: null,
+    validateOptions,
+    verifyFile,
+    readFile,
+    parse,
+    validateJson,
+    process,
+  };
+}
+
+async function Terrafile(options: CliOptions): Promise<Status> {
+  return TerrafileImplementation(options)
+    .validateOptions()
+    .verifyFile()
+    .readFile()
+    .parse()
+    .validateJson()
+    .process();
+}
+
+function validateEachField(moduleDef: Record<string, string>): boolean {
+  let notFoundOrNotValid = false;
+  const acceptable = ['comment', 'source', 'version', 'path'];
+  const params = Object.keys(moduleDef);
+  for (const param of params) {
+    if (!acceptable.includes(param)) {
+      notFoundOrNotValid = true;
+    }
+  }
+  return notFoundOrNotValid;
+}
+
+function validateFieldsForEachModuleEntry(
+  moduleDef: Record<string, string>
+): boolean {
+  let notFoundOrNotValid = false;
+  const sourceType = modules.getType(moduleDef['source']);
+  if (sourceType === undefined) {
+    notFoundOrNotValid = true;
+  } else {
+    notFoundOrNotValid = notFoundOrNotValid || validateEachField(moduleDef);
+  }
+  return notFoundOrNotValid;
+}
+
+export { readFileContents };
+
+/*
 function Terrafile(options: CliOptions): Status {
   async function process(): Promise<Status> {
-    const retVal = {
-      success: this.success,
-      contents: this.contents,
-      error: this.error,
-    };
+    const retVal = { ...this };
+
     if (this.success) {
       for (const [key, val] of this.contents) {
         const dest = fsHelpers.getAbsolutePath(
@@ -116,32 +243,4 @@ function Json(json: [string, Record<string, string>][] | null): Status {
     error: isValidJson(json) ? null : `Error: is not valid json`,
   };
 }
-
-import modules from './moduleSources';
-
-function validateEachField(moduleDef: Record<string, string>): boolean {
-  let notFoundOrNotValid = false;
-  const acceptable = ['comment', 'source', 'version', 'path'];
-  const params = Object.keys(moduleDef);
-  for (const param of params) {
-    if (!acceptable.includes(param)) {
-      notFoundOrNotValid = true;
-    }
-  }
-  return notFoundOrNotValid;
-}
-
-function validateFieldsForEachModuleEntry(
-  moduleDef: Record<string, string>
-): boolean {
-  let notFoundOrNotValid = false;
-  const sourceType = modules.getType(moduleDef['source']);
-  if (sourceType === undefined) {
-    notFoundOrNotValid = true;
-  } else {
-    notFoundOrNotValid = notFoundOrNotValid || validateEachField(moduleDef);
-  }
-  return notFoundOrNotValid;
-}
-
-export { readFileContents };
+*/
