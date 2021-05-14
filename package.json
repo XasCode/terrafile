@@ -26,7 +26,6 @@
     "axios": "^0.21.1",
     "commander": "^7.2.0",
     "fs-extra": "^9.1.0",
-    "jest-progress-bar-reporter": "^1.0.20",
     "mkdirp": "^1.0.4",
     "rimraf": "^3.0.2",
     "touch": "^3.1.0"
@@ -45,6 +44,7 @@
     "eslint": "^7.26.0",
     "husky": "^6.0.0",
     "jest": "^26.6.3",
+    "jest-progress-bar-reporter": "^1.0.21",
     "lint-staged": "^9.4.3",
     "prettier-standard": "^15.0.1",
     "ts-jest": "^26.5.6",
