@@ -19,7 +19,7 @@ function mockAxiosGetTerraformUrl(): void {
 function mockCliError(): void {
   jest.mock('../../src/run', () => {
     return {
-      run: jest.fn().mockImplementation(() => {
+      git: jest.fn().mockImplementation(() => {
         return {
           code: -1,
           error: 'oops!',
@@ -35,7 +35,7 @@ function mockCliError(): void {
 function mockCliSuccess(): void {
   jest.mock('../../src/run', () => {
     return {
-      run: jest.fn().mockImplementation((args, cwd) => {
+      git: jest.fn().mockImplementation((args, cwd) => {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const fsHelpersLocal = require('../../src/fsHelpers');
         // eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -1,0 +1,7 @@
+{
+  "xascode-sample-invalid3": {
+    "comment": "Git module (HTTPS)",
+    "source": "https://github.com/terraform-aws-modules/terraform-aws-vpc.git",
+    "badkey": "abcdefg"
+  }
+}

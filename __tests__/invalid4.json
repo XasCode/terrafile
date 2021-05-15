@@ -1,0 +1,7 @@
+{
+  "xascode-sample-invalid4": {
+    "comment": "Terrarform module",
+    "source": "foo/bar",
+    "badkey": "abcdefg"
+  }
+}

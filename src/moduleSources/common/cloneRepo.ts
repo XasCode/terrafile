@@ -5,7 +5,7 @@ import {
   SourceParts,
   Status,
 } from '../../types';
-import { run } from '../../run';
+import { git } from '../../run';
 
 function determineRef(ref: string): string[] {
   const commit = ref;
@@ -50,8 +50,7 @@ async function cloneRepo(
     `${repo}.git`,
     fullDest,
   ];
-  const results = await run(cloneCmd);
-  //console.log(`clone: ${cloneCmd.join(" ")} / ${results}`);
+  const results = await git(cloneCmd);
   return results;
 }
 
@@ -61,8 +60,8 @@ async function scopeRepo(
 ): Promise<ExecResult> {
   const sparseCmd = [`sparse-checkout`, `set`, repoDir];
   const results = await (repoDir
-    ? run(sparseCmd, fullDest)
-    : ({ code: 0, error: null } as ExecResult));
+    ? git(sparseCmd, fullDest)
+    : ({} as ExecResult));
   return results;
 }
 
@@ -72,8 +71,8 @@ async function checkoutCommit(
 ): Promise<ExecResult> {
   const commitCmd = [`checkout`, commit];
   const results = await (commit
-    ? run(commitCmd, fullDest)
-    : ({ code: 0, error: null } as ExecResult));
+    ? git(commitCmd, fullDest)
+    : ({} as ExecResult));
   return results;
 }
 
@@ -87,12 +86,7 @@ async function cloneRepoToDest(repoUrl: Path, fullDest: Path): Promise<Status> {
   const results1 = await cloneRepo([a, b, c, d], fullDest);
   const results2 = await scopeRepo([a, b, c, d], fullDest);
   const results3 = await checkoutCommit([a, b, c, d], fullDest);
-  if (
-    results1.code + results2.code + results3.code === 0 &&
-    results1.error === null &&
-    results2.error === null &&
-    results3.error === null
-  ) {
+  if (!results1.error && !results2.error && !results3.error) {
     retVal.success = true;
     retVal.error = null;
     delete retVal.contents;

@@ -58,14 +58,14 @@ function TerrafileImplementation(options: CliOptions): Status {
 
   function validateJson(): Status {
     const valid = this.contents.reduce(
-      (acc: boolean, [, val]: Record<string, string>[]) => {
-        return acc && !validateFieldsForEachModuleEntry(val);
+      (acc: boolean, [, val]: [string, Record<string, string>]) => {
+        return acc && !modules.validate(val);
       },
       this.success
     );
     this.success = valid;
     this.contents = valid ? this.contents : null;
-    this.error = valid ? null : `Error: Not valid format`;
+    this.error = valid ? null : `Error: Not valid JSON format`;
     return this;
   }
 
@@ -80,7 +80,7 @@ function TerrafileImplementation(options: CliOptions): Status {
         const currentModuleRetVal = await modules.fetch(val, dest);
         retVal.success = this.success && currentModuleRetVal.success;
         retVal.contents = currentModuleRetVal.contents;
-        retVal.error = this.error && currentModuleRetVal.error;
+        retVal.error = this.error || currentModuleRetVal.error;
       }
     }
     return retVal;
@@ -108,31 +108,6 @@ async function Terrafile(options: CliOptions): Promise<Status> {
     .parse()
     .validateJson()
     .process();
-}
-
-function validateEachField(moduleDef: Record<string, string>): boolean {
-  let notFoundOrNotValid = false;
-  const acceptable = ['comment', 'source', 'version', 'path'];
-  const params = Object.keys(moduleDef);
-  for (const param of params) {
-    if (!acceptable.includes(param)) {
-      notFoundOrNotValid = true;
-    }
-  }
-  return notFoundOrNotValid;
-}
-
-function validateFieldsForEachModuleEntry(
-  moduleDef: Record<string, string>
-): boolean {
-  let notFoundOrNotValid = false;
-  const sourceType = modules.getType(moduleDef['source']);
-  if (sourceType === undefined) {
-    notFoundOrNotValid = true;
-  } else {
-    notFoundOrNotValid = notFoundOrNotValid || validateEachField(moduleDef);
-  }
-  return notFoundOrNotValid;
 }
 
 export { readFileContents };

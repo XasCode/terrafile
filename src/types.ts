@@ -1,13 +1,12 @@
 import { ExecFileException } from 'child_process';
 
-type Path = string | null;
+type Path = string;
 
 type Backend = {
   install(c: CliOptions): void;
 };
 
 type ExecResult = {
-  code: number;
   error?: ExecFileException;
   stdout?: string;
   stderr?: string;

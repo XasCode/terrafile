@@ -38,4 +38,17 @@ function copyFromLocalDir(params: Entry, dest: Path): Status {
   return retVal;
 }
 
-export default { match, fetch: copyFromLocalDir };
+const acceptable = ['comment', 'source'];
+
+function validate(params: Entry): boolean {
+  let notFoundOrNotValid = false;
+  const paramKeys = Object.keys(params);
+  for (const param of paramKeys) {
+    if (!acceptable.includes(param)) {
+      notFoundOrNotValid = true;
+    }
+  }
+  return notFoundOrNotValid;
+}
+
+export default { match, fetch: copyFromLocalDir, validate };

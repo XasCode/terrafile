@@ -11,9 +11,25 @@ function getType(source: Path): ModulesKeyType {
 
 async function fetch(params: Entry, dest: Path): Promise<Status> {
   const moduleType: ModulesKeyType = getType(params.source);
-  return moduleType
-    ? await modules[moduleType].fetch(params, dest)
-    : ({} as Status);
+  return modules[moduleType].fetch(params, dest);
 }
 
-export default { getType, fetch, modules };
+function validateFieldsForEachModuleEntry(params: Entry): boolean {
+  let notFoundOrNotValid = false;
+  const sourceType = getType(params['source']);
+  if (sourceType === undefined) {
+    notFoundOrNotValid = true;
+  } else {
+    //const moduleType: ModulesKeyType = getType(params.source);
+    notFoundOrNotValid =
+      notFoundOrNotValid || modules[sourceType].validate(params);
+  }
+  return notFoundOrNotValid;
+}
+
+export default {
+  getType,
+  fetch,
+  modules,
+  validate: validateFieldsForEachModuleEntry,
+};

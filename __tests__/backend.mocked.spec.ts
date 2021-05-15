@@ -186,6 +186,9 @@ describe('read file contents should read specified json file and validate its co
     { file: '__tests__/invalid.txt' },
     { file: '__tests__/invalid.json' },
     { file: '__tests__/invalid2.json' },
+    { file: '__tests__/invalid3.json' },
+    { file: '__tests__/invalid4.json' },
+    { file: '__tests__/invalid5.json' },
   ])('should err when bad file provided: %s', async (badFileOption) => {
     await expectFileIssue(badFileOption);
   });

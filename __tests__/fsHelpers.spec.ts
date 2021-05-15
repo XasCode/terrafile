@@ -182,11 +182,9 @@ describe('abortDirCreation should delete dirs that were created', () => {
   });
 });
 
-/* validated by type
-describe("rename", () => {
-  test("should err on invalid dirs", () => {
-    fsHelpers.renameDir(-1, -2);
-    expect(console.error).toHaveBeenLastCalledWith("ERR_INVALID_ARG_TYPE");
+describe('rename', () => {
+  test('should err on invalid dirs', () => {
+    fsHelpers.renameDir('./doesNotExist', './doesNotExistEither');
+    expect(console.error).toHaveBeenLastCalledWith('ENOENT');
   });
 });
-*/

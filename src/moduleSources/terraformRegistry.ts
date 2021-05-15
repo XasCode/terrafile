@@ -53,7 +53,7 @@ async function copyFromTerraformRegistry(
 ): Promise<Status> {
   const downloadPointerUrl = getRegDownloadPointerUrl(
     params.source,
-    params?.version || ''
+    params.version || ''
   );
   const regRepoUrl = await getRegRepoUrl(downloadPointerUrl);
   return regRepoUrl
@@ -66,4 +66,17 @@ async function copyFromTerraformRegistry(
       };
 }
 
-export default { match, fetch: copyFromTerraformRegistry };
+const acceptable = ['comment', 'source', 'version'];
+
+function validate(params: Entry): boolean {
+  let notFoundOrNotValid = false;
+  const paramKeys = Object.keys(params);
+  for (const param of paramKeys) {
+    if (!acceptable.includes(param)) {
+      notFoundOrNotValid = true;
+    }
+  }
+  return notFoundOrNotValid;
+}
+
+export default { match, fetch: copyFromTerraformRegistry, validate };
