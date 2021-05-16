@@ -2,16 +2,14 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as fsHelpers from './fsHelpers';
 import { validOptions } from './utils';
-import { CliOptions, Option, Status } from './types';
+import {
+  CliOptions, Option, Path, Status,
+} from './types';
 import modules from './moduleSources';
-
-async function readFileContents(options: CliOptions): Promise<Status> {
-  return await Terrafile(options);
-}
 
 function TerrafileImplementation(options: CliOptions): Status {
   function validateOptions(): Status {
-    if (!validOptions(this.options, 'file' as Option)) {
+    if (!validOptions(this.options, `file` as Option)) {
       this.success = false;
       this.contents = null;
       this.error = `Error: Not valid options`;
@@ -22,7 +20,7 @@ function TerrafileImplementation(options: CliOptions): Status {
   function verifyFile(): Status {
     if (
       !fsHelpers.checkIfFileExists(
-        fsHelpers.getAbsolutePath(this.options?.file)
+        fsHelpers.getAbsolutePath(this.options?.file),
       )
     ) {
       this.success = false;
@@ -35,7 +33,7 @@ function TerrafileImplementation(options: CliOptions): Status {
   function readFile(): Status {
     try {
       this.json = JSON.parse(
-        fs.readFileSync(fsHelpers.getAbsolutePath(this.options.file), 'utf-8')
+        fs.readFileSync(fsHelpers.getAbsolutePath(this.options.file), `utf-8`),
       );
     } catch (err) {
       this.success = false;
@@ -58,10 +56,8 @@ function TerrafileImplementation(options: CliOptions): Status {
 
   function validateJson(): Status {
     const valid = this.contents.reduce(
-      (acc: boolean, [, val]: [string, Record<string, string>]) => {
-        return acc && !modules.validate(val);
-      },
-      this.success
+      (acc: boolean, [, val]: [string, Record<string, string>]) => acc && !modules.validate(val),
+      this.success,
     );
     this.success = valid;
     this.contents = valid ? this.contents : null;
@@ -69,21 +65,31 @@ function TerrafileImplementation(options: CliOptions): Status {
     return this;
   }
 
-  async function process(): Promise<Status> {
-    const retVal = { ...this };
-
-    if (this.success) {
-      for (const [key, val] of this.contents) {
-        const dest = fsHelpers.getAbsolutePath(
-          `${options.directory}${path.sep}${key}`
-        );
-        const currentModuleRetVal = await modules.fetch(val, dest);
-        retVal.success = this.success && currentModuleRetVal.success;
-        retVal.contents = currentModuleRetVal.contents;
-        retVal.error = this.error || currentModuleRetVal.error;
-      }
-    }
+  function checkResults(t: Status, promiseResults: Status[]): Status {
+    const retVal = {} as Status;
+    promiseResults.forEach((currentModuleRetVal) => {
+      retVal.success = t.success && currentModuleRetVal.success;
+      retVal.contents = currentModuleRetVal.contents;
+      retVal.error = t.error || currentModuleRetVal.error;
+    });
     return retVal;
+  }
+
+  function fetchModules(contents: [string, Record<string, string>][], dir: Path): Promise<Status>[] {
+    return contents.map(([key, val]) => {
+      const dest = fsHelpers.getAbsolutePath(
+        `${dir}${path.sep}${key}`,
+      );
+      return modules.fetch(val, dest);
+    });
+  }
+
+  async function process(): Promise<Status> {
+    if (this.success) {
+      const fetchResults = fetchModules(this.contents, options.directory);
+      return { ...this, ...checkResults(this, await Promise.all(fetchResults)) };
+    }
+    return { ...this };
   }
 
   return {
@@ -108,6 +114,10 @@ async function Terrafile(options: CliOptions): Promise<Status> {
     .parse()
     .validateJson()
     .process();
+}
+
+async function readFileContents(options: CliOptions): Promise<Status> {
+  return Terrafile(options);
 }
 
 export { readFileContents };

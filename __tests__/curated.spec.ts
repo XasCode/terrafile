@@ -1,3 +1,4 @@
+import { ExecFileException } from 'child_process';
 import { resolve } from 'path';
 
 import { cli } from './testUtils';
@@ -13,24 +14,25 @@ import {
 
 import { version } from '../package.json';
 
-const defaultOpts = { directory: 'vendor/modules', file: 'terrafile.json' };
+const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
 
 // each of these commands will be execed to test cli output
-const curatedCliCommands: Record<string, [string, string, number]> = {
-  help: [`${helpContent}\n`, '', 0],
-  '--version': [`${version}\n`, '', 0],
-  install: [`${JSON.stringify(defaultOpts)}\n`, '', 0],
-  foo: ['', `${unknownCommand}\n`, 1],
-  '--error': ['', `${helpContent}\n`, 1],
-  'install --bar': ['', `${unknownOptionLong}\n`, 1],
-  'install -b': ['', `${unknownOptionShort}\n`, 1],
-  'help install': [`${helpInstallContent}\n`, '', 0],
+const curatedCliCommands: Record<
+string,
+[string, string, ExecFileException]
+> = {
+  help: [`${helpContent}\n`, ``, null],
+  '--version': [`${version}\n`, ``, null],
+  install: [`${JSON.stringify(defaultOpts)}\n`, ``, null],
+  foo: [``, `${unknownCommand}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
+  '--error': [``, `${helpContent}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
+  'install --bar': [``, `${unknownOptionLong}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
+  'install -b': [``, `${unknownOptionShort}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
+  'help install': [`${helpInstallContent}\n`, ``, null],
   'install -d <abc': [
     `{"directory":"<abc","file":"terrafile.json"}\n`,
-    `Error resolving path: <abc\nError creating dir: ${getAbsolutePath(
-      'src/<abc'
-    )}\n`,
-    0,
+    `Error resolving path: <abc\nError creating dir: ${getAbsolutePath(`src/<abc`)}\n`,
+    null,
   ],
 };
 
@@ -38,18 +40,19 @@ describe.each(Object.keys(curatedCliCommands))(
   `should execute 'terrafile' with a set of commands/options and verify the output`,
   (cliCommand) => {
     beforeEach(() => {
-      rimrafDir(resolve('.', './dist/vendor'));
+      rimrafDir(resolve(`.`, `./dist/vendor`));
     });
 
     afterEach(() => {
-      rimrafDir(resolve('.', './dist/vendor'));
+      rimrafDir(resolve(`.`, `./dist/vendor`));
     });
 
     test(`check cli: ${cliCommand}`, async () => {
-      const result = await cli(cliCommand.split(' '), './dist/src');
+      const result = await cli(cliCommand.split(` `), `./dist/src`);
       expect(result.stdout).toBe(curatedCliCommands[cliCommand][0]);
       expect(result.stderr).toBe(curatedCliCommands[cliCommand][1]);
-      expect(result.code).toBe(curatedCliCommands[cliCommand][2]);
+      expect(result.error === null ? result.error : result.error.code)
+        .toBe(curatedCliCommands[cliCommand][2] === null ? curatedCliCommands[cliCommand][2] : curatedCliCommands[cliCommand][2].code);
     });
-  }
+  },
 );

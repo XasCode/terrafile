@@ -4,7 +4,7 @@ import { ExecResult, Path } from './types';
 async function git(args: string[], cwd?: Path): Promise<ExecResult> {
   return new Promise((resolve) => {
     execFile(
-      'git',
+      `git`,
       [...args],
       {
         cwd,
@@ -15,7 +15,7 @@ async function git(args: string[], cwd?: Path): Promise<ExecResult> {
           stdout,
           stderr,
         });
-      }
+      },
     );
   });
 }

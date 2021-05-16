@@ -6,19 +6,18 @@ import { ExecResult, Path } from '../../src/types';
 async function cli(args: string[], cwd?: Path): Promise<ExecResult> {
   return new Promise((resolvePromise) => {
     execFile(
-      'node',
-      [`${resolve('./dist/src/terrafile')}`, ...args],
+      `node`,
+      [`${resolve(`./dist/src/terrafile`)}`, ...args],
       {
         cwd,
       },
       (error, stdout, stderr) => {
         resolvePromise({
-          code: error && error.code ? error.code : 0,
           error,
           stdout,
           stderr,
         });
-      }
+      },
     );
   });
 }

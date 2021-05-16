@@ -27,7 +27,7 @@ type TestDefinition = {
   args: string;
   command: string;
   options: CliOptions;
-  code: number;
+  code: ExecFileException;
   stdOut: string;
   stdErr: string;
 };
@@ -55,8 +55,8 @@ type Status = {
 };
 
 enum Option {
-  file = 'file',
-  folder = 'directory',
+  file = `file`,
+  folder = `directory`,
 }
 
 type Entry = {

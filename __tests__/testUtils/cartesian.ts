@@ -8,8 +8,8 @@ function cartesian(...args: unknown[][]): unknown[][] {
 // eslint-disable-next-line max-len
 // from: https://stackoverflow.com/questions/15298912/javascript-generating-combinations-from-n-arrays-with-m-elements
 function calcCartesian(...args: unknown[][]): unknown[][] {
-  const r: unknown[][] = [],
-    max = args.length - 1;
+  const r: unknown[][] = [];
+  const max = args.length - 1;
   function helper(arr: unknown[], i: number) {
     for (let j = 0, l = args[i].length; j < l; j++) {
       const a: unknown[] = [...arr, args[i][j]];

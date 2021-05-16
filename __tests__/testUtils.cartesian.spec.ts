@@ -1,7 +1,7 @@
 import { cartesian } from './testUtils/cartesian';
 
-describe('should take arrays and generate combinations of the elements', () => {
-  test('take and array of arrays and verify outout', () => {
+describe(`should take arrays and generate combinations of the elements`, () => {
+  test(`take and array of arrays and verify outout`, () => {
     const input = [
       [1, 2],
       [3, 4],
@@ -20,24 +20,24 @@ describe('should take arrays and generate combinations of the elements', () => {
     expect(cartesian(...input)).toStrictEqual(output);
   });
 
-  test('edge case when called with no args', () => {
+  test(`edge case when called with no args`, () => {
     const input = [] as number[][];
     const output = [] as number[][];
     expect(cartesian(...input)).toStrictEqual(output);
   });
 
-  test('edge case when one of the lists is empty', () => {
+  test(`edge case when one of the lists is empty`, () => {
     const input = [[1, 2], [], [3, 4]];
     const output = [] as number[][];
     expect(cartesian(...input)).toStrictEqual(output);
   });
 
-  test('edge case when one list withone elment', () => {
+  test(`edge case when one list withone elment`, () => {
     const input = [[1]];
     expect(cartesian(...input)).toStrictEqual(input);
   });
 
-  test('when different size lists', () => {
+  test(`when different size lists`, () => {
     const input = [
       [1, 2],
       [3, 4, 5],

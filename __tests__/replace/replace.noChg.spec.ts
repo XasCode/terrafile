@@ -1,42 +1,43 @@
 import { Entry } from '../../src/types';
 import { testable } from '../../src/moduleSources/common/git';
+
 const { replacePathIfPathParam, replaceUrlVersionIfVersionParam } = testable;
 
 test.each([
   {
-    source: './__tests__/modules/test-module',
+    source: `./__tests__/modules/test-module`,
   },
   {
-    source: 'https://github.com/terraform-aws-modules/terraform-aws-vpc.git',
-  },
-  {
-    source:
-      'https://github.com/terraform-aws-modules/terraform-aws-vpc.git?ref=v2.78.0',
+    source: `https://github.com/terraform-aws-modules/terraform-aws-vpc.git`,
   },
   {
     source:
-      'https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc',
+      `https://github.com/terraform-aws-modules/terraform-aws-vpc.git?ref=v2.78.0`,
   },
   {
     source:
-      'https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=v2.78.0',
-  },
-  {
-    source: 'git@github.com/terraform-aws-modules/terraform-aws-vpc.git',
+      `https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc`,
   },
   {
     source:
-      'git@github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=v2.78.0',
+      `https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=v2.78.0`,
+  },
+  {
+    source: `git@github.com/terraform-aws-modules/terraform-aws-vpc.git`,
   },
   {
     source:
-      'https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc',
+      `git@github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=v2.78.0`,
   },
   {
     source:
-      'https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=master',
+      `https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc`,
   },
-])('', ({ source, path, version }: Entry): void => {
+  {
+    source:
+      `https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=master`,
+  },
+])(``, ({ source, path, version }: Entry): void => {
   expect(replacePathIfPathParam(source, path)).toBe(source);
   expect(replaceUrlVersionIfVersionParam(source, version)).toBe(source);
 });

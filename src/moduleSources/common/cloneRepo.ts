@@ -10,26 +10,26 @@ import { git } from '../../run';
 function determineRef(ref: string): string[] {
   const commit = ref;
   const branchOrTag = ref;
-  return ref?.length === 40 ? ['', commit] : [branchOrTag, ''];
+  return ref?.length === 40 ? [``, commit] : [branchOrTag, ``];
 }
 
 function insertGit(source: Path): Path {
-  const parts = source.split('?ref=');
+  const parts = source.split(`?ref=`);
   return parts.length < 2
     ? source
-    : source.includes('.git')
-    ? parts.join('?ref=')
-    : [parts[0], '.git', '?ref=', ...parts.slice(1)].join('');
+    : source.includes(`.git`)
+      ? parts.join(`?ref=`)
+      : [parts[0], `.git`, `?ref=`, ...parts.slice(1)].join(``);
 }
 
 function sourceParts(source: Path): SourceParts {
   const tempSource = insertGit(source);
-  const [beforeGit, afterGit] = tempSource.split('.git');
-  const newSource = `${beforeGit}${source.includes('.git') ? '.git' : ''}`;
-  const newAfterGit = afterGit ? afterGit : '';
-  const [beforeQref, afterQref] = newAfterGit.split('?ref=');
-  const [, afterPathSep] = beforeQref.split('//');
-  const newPathPart = afterPathSep ? `//${afterPathSep}` : '';
+  const [beforeGit, afterGit] = tempSource.split(`.git`);
+  const newSource = `${beforeGit}${source.includes(`.git`) ? `.git` : ``}`;
+  const newAfterGit = afterGit || ``;
+  const [beforeQref, afterQref] = newAfterGit.split(`?ref=`);
+  const [, afterPathSep] = beforeQref.split(`//`);
+  const newPathPart = afterPathSep ? `//${afterPathSep}` : ``;
   return [newSource, newPathPart, afterQref];
 }
 
@@ -41,7 +41,7 @@ function getPartsFromHttp(source: Path): RepoLocation {
 
 async function cloneRepo(
   [repo, repoDir, branchOrTag]: RepoLocation,
-  fullDest: Path
+  fullDest: Path,
 ): Promise<ExecResult> {
   const cloneCmd = [
     `clone`,
@@ -56,7 +56,7 @@ async function cloneRepo(
 
 async function scopeRepo(
   [, repoDir]: RepoLocation,
-  fullDest: Path
+  fullDest: Path,
 ): Promise<ExecResult> {
   const sparseCmd = [`sparse-checkout`, `set`, repoDir];
   const results = await (repoDir
@@ -67,7 +67,7 @@ async function scopeRepo(
 
 async function checkoutCommit(
   [, , , commit]: RepoLocation,
-  fullDest: Path
+  fullDest: Path,
 ): Promise<ExecResult> {
   const commitCmd = [`checkout`, commit];
   const results = await (commit

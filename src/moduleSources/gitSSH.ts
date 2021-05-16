@@ -3,10 +3,10 @@ import { Entry, Path } from '../types';
 import { fetch } from './common/git';
 import { ModulesKeyType } from './modules';
 
-const acceptable = ['comment', 'source', 'version', 'path'];
+const acceptable = [`comment`, `source`, `version`, `path`];
 
-function match(source: Path): ModulesKeyType | '' {
-  return startsWith(source, 'git@') ? 'gitSSH' : '';
+function match(source: Path): ModulesKeyType | `` {
+  return startsWith(source, `git@`) ? `gitSSH` : ``;
 }
 
 function validate(params: Entry): boolean {

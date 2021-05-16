@@ -1,14 +1,16 @@
 import * as path from 'path';
 import * as fsHelpers from './fsHelpers';
 import { validOptions } from './utils';
-import { CliOptions, Option, Path, Status } from './types';
+import {
+  CliOptions, Option, Path, Status,
+} from './types';
 
 function cleanUpOldSaveLocation(dir: Path): void {
   fsHelpers.rimrafDir(dir);
 }
 
 function getSaveLocation(dir: Path): Path {
-  return path.resolve(dir, '..', '.terrafile.save');
+  return path.resolve(dir, `..`, `.terrafile.save`);
 }
 
 function renameExistingDir(installDir: Path): Path {
@@ -29,7 +31,7 @@ function createNewDir(installDir: Path): Path {
 
 function createTargetDirectory(options: CliOptions): Status {
   const retVals: Status = { success: false, saved: null, created: null };
-  if (validOptions(options, 'directory' as Option)) {
+  if (validOptions(options, `directory` as Option)) {
     const installDir = fsHelpers.getAbsolutePath(options.directory);
     retVals.saved = renameExistingDir(installDir);
     retVals.created = createNewDir(installDir);

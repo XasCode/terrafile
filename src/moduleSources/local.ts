@@ -1,15 +1,15 @@
+import fs from 'fs-extra';
 import { startsWith } from '../utils';
 import { Entry, Path, Status } from '../types';
-import fs from 'fs-extra';
 import * as fsHelpers from '../fsHelpers';
 import { ModulesKeyType } from './modules';
 
-function match(source: Path): ModulesKeyType | '' {
-  return startsWith(source, '/') ||
-    startsWith(source, './') ||
-    startsWith(source, '../')
-    ? 'local'
-    : '';
+function match(source: Path): ModulesKeyType | `` {
+  return startsWith(source, `/`)
+    || startsWith(source, `./`)
+    || startsWith(source, `../`)
+    ? `local`
+    : ``;
 }
 
 function copyAbs(src: Path, dest: Path): Status {
@@ -34,11 +34,11 @@ function copyFromLocalDir(params: Entry, dest: Path): Status {
   if (fsHelpers.checkIfDirExists(src)) {
     return copyAbs(src, dest);
   }
-  console.error('error');
+  console.error(`error`);
   return retVal;
 }
 
-const acceptable = ['comment', 'source'];
+const acceptable = [`comment`, `source`];
 
 function validate(params: Entry): boolean {
   let notFoundOrNotValid = false;

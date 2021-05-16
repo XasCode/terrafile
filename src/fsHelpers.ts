@@ -28,7 +28,7 @@ function createDir(dir: Path): Path {
   try {
     if (dir === undefined || getAbsolutePath(dir) !== dir) {
       throw Error(
-        `Function "createDir" expected an absolute path. Recieved "${dir}".`
+        `Function "createDir" expected an absolute path. Recieved "${dir}".`,
       );
     }
     return mkdirp(dir);
@@ -49,17 +49,16 @@ function rimrafDir(dir: Path): Path {
   if (absPath !== undefined && checkIfDirExists(dir)) {
     rimraf(dir, { maxBusyTries: 3000 });
     return dir;
-  } else {
-    console.error(`Error deleting dir: ${dir}`);
   }
+  console.error(`Error deleting dir: ${dir}`);
 }
 
 function abortDirCreation(dir: Path): void {
   if (dir !== null && checkIfDirExists(dir)) {
     console.error(
       `Cleaning up due to abort, directories created starting at: ${JSON.stringify(
-        dir
-      )}`
+        dir,
+      )}`,
     );
     rimrafDir(dir);
   } else {
@@ -70,7 +69,7 @@ function abortDirCreation(dir: Path): void {
 function renameDir(oldPath: Path, newPath: Path): void {
   try {
     fs.renameSync(oldPath, newPath);
-    console.log('Successfully renamed the directory.');
+    console.log(`Successfully renamed the directory.`);
   } catch (err) {
     console.error(err.code);
   }

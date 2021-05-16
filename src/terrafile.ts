@@ -7,20 +7,18 @@ import { Backend } from './types';
 function main(myargs: string[], be?: Backend): void {
   const program = new Command();
   program
-    .version(version, '-V, --version', 'Show version information for terrafile')
-    .description('Manage vendored modules using a JSON file.')
-    .command('install')
-    .description('Installs the files in your terrafile.json')
-    .action((options) =>
-      be === undefined ? backend.install(options) : be.install(options)
+    .version(version, `-V, --version`, `Show version information for terrafile`)
+    .description(`Manage vendored modules using a JSON file.`)
+    .command(`install`)
+    .description(`Installs the files in your terrafile.json`)
+    .action((options) => (be === undefined ? backend.install(options) : be.install(options)))
+    .addOption(
+      new Option(`-d, --directory <string>`, `module directory`).default(
+        `vendor/modules`,
+      ),
     )
     .addOption(
-      new Option('-d, --directory <string>', 'module directory').default(
-        'vendor/modules'
-      )
-    )
-    .addOption(
-      new Option('-f, --file <string>', 'config file').default('terrafile.json')
+      new Option(`-f, --file <string>`, `config file`).default(`terrafile.json`),
     );
 
   try {
@@ -33,8 +31,6 @@ function main(myargs: string[], be?: Backend): void {
 /* istanbul ignore if */
 if (require.main === module) {
   main(process.argv);
-} else {
-  //module.exports.main = main;
 }
 
 export { main };

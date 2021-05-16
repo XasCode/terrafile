@@ -1,16 +1,16 @@
-import { mockAxiosGetTerraformUrl, mockCliError } from './testUtils';
-mockAxiosGetTerraformUrl();
-mockCliError();
+import { mockAxiosGetTerraformUrl, mockCliError, spy } from './testUtils';
 
 import { readFileContents } from '../src/processFile';
 import { rimrafDir, getAbsolutePath } from '../src/fsHelpers';
-import { spy } from './testUtils';
+
 import { CliOptions } from '../src/types';
 
-const testDirs = ['vendor_tfregistry_error'];
+mockAxiosGetTerraformUrl();
+mockCliError();
 
-const cleanUpTestDirs = () =>
-  testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir)));
+const testDirs = [`vendor_tfregistry_error`];
+
+const cleanUpTestDirs = () => testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir)));
 
 // expected result when provide bad file path
 async function expectFileIssue(options: CliOptions): Promise<void> {
@@ -19,7 +19,7 @@ async function expectFileIssue(options: CliOptions): Promise<void> {
   expect(retVals.contents).toBe(null);
 }
 
-describe('read file contents should read specified json file and validate its contents', () => {
+describe(`read file contents should read specified json file and validate its contents`, () => {
   beforeEach(() => {
     // cleans up any dirs created from previous tests
     cleanUpTestDirs();
@@ -31,10 +31,10 @@ describe('read file contents should read specified json file and validate its co
     cleanUpTestDirs();
   });
 
-  test('should err on bad terraform registry', async () => {
-    const configFile = '__tests__/tfRegistryError.json';
+  test(`should err on bad terraform registry`, async () => {
+    const configFile = `__tests__/tfRegistryError.json`;
     await expectFileIssue({
-      directory: 'vendor_tfregistry_error/modules',
+      directory: `vendor_tfregistry_error/modules`,
       file: configFile,
     });
   });

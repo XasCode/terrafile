@@ -9,7 +9,7 @@
     "outDir": "./dist",
     "noImplicitAny": true,
     "esModuleInterop": true
-},
+  },
   "include": [
     "**/*.ts", "node_modules/@types"
   ],
