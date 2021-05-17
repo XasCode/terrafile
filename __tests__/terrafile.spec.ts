@@ -1,230 +1,32 @@
 /* eslint-disable no-console */
-import { ExecFileException } from 'child_process';
 import { resolve } from 'path';
-import { readFileSync } from 'fs-extra';
 
-import { rimrafDir, getAbsolutePath } from '../src/fsHelpers';
+import { rimrafDir } from '../src/fsHelpers';
 import { main } from '../src/terrafile';
 import {
-  getRandomInt, cli, cartesian, spy,
+  getRandomInt, cli, spy, variations, backendVersions,
 } from './testUtils';
-import {
-  helpContent,
-  helpInstallContent,
-  unknownCommand,
-  unknownOptionLong,
-  unknownOptionShort,
-} from '../src/strings';
 
-import {
-  Backend,
-  CliArgs,
-  CliOptions,
-  ExecResult,
-  TestDefinition,
-} from '../src/types';
+import { TestDefinition } from '../src/types';
 
-import { install as defaultInstall } from '../src/backend';
-import { install as mockedInstall } from '../__mocks__/backend.mock';
+const backends = Object.keys(backendVersions);
 
-const backendVersions: Record<string, Backend> = {
-  '': { install: defaultInstall },
-  './backend.mock.ts': { install: mockedInstall },
-};
-
-const { version } = JSON.parse(
-  readFileSync(getAbsolutePath(`./package.json`), `utf-8`),
-);
-
-const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
-
-const helpCommands = [``, `help`];
-const commands = [``, `install`, `foo`];
-const helps = [``, `-h`, `--help`];
-const versions = [``, `-V`, `--version`];
-const directories = [``, `-d bar`, `--directory bar`];
-const files = [``, `-f foobar`, `--file foobar`];
-const badOptions = [``, `-b`, `--bar`];
-
-const combinations = cartesian(
-  helpCommands,
-  commands,
-  helps,
-  versions,
-  directories,
-  files,
-  badOptions,
-);
-
-// Specify the options that should be passed to the install command
-function getOptions({ directory, file }: CliOptions): CliOptions {
-  return {
-    ...defaultOpts,
-    ...(directory !== `` ? { directory: directory.split(` `)[1] } : {}),
-    ...(file !== `` ? { file: file.split(` `)[1] } : {}),
-  };
-}
-
-function noVerNoHelpValidCommandCheckOptions(args: CliArgs): ExecResult {
-  return args.badOption !== ``
-    ? {
-      error: { name: ``, message: ``, code: 1 } as ExecFileException,
-      stdout: ``,
-      stderr:
-          args.badOption[1] === `-` ? unknownOptionLong : unknownOptionShort,
-    }
-    : {
-      error: null,
-      stdout: JSON.stringify(
-        getOptions({ directory: args.directory, file: args.file }),
-      ),
-      stderr: ``,
-    };
-}
-
-function noVerNoHelpCheckCommand(args: CliArgs): ExecResult {
-  // eslint-disable-next-line no-nested-ternary
-  return args.command === ``
-    ? {
-      error: { name: ``, message: ``, code: 1 } as ExecFileException,
-      stdout: ``,
-      stderr: helpContent,
-    }
-    : args.command !== `install`
-      ? {
-        error: { name: ``, message: ``, code: 1 } as ExecFileException,
-        stdout: ``,
-        stderr: unknownCommand,
-      }
-      : noVerNoHelpValidCommandCheckOptions(args);
-}
-
-function noVerYesHelpInvalidCommand(args: CliArgs): ExecResult {
-  return args.helpCommand !== ``
-    ? {
-      error: { name: ``, message: ``, code: 1 } as ExecFileException,
-      stdout: ``,
-      stderr: helpContent,
-    }
-    : {
-      error: null,
-      stdout: helpContent,
-      stderr: ``,
-    };
-}
-function noVerYesHelpCheckCommand(args: CliArgs): ExecResult {
-  // eslint-disable-next-line no-nested-ternary
-  return args.command === `install`
-    ? {
-      error: null,
-      stdout: helpInstallContent,
-      stderr: ``,
-    }
-    : args.command === ``
-      ? {
-        error: null,
-        stdout: helpContent,
-        stderr: ``,
-      }
-      : noVerYesHelpInvalidCommand(args);
-}
-
-function noVerCheckHelp(args: CliArgs): ExecResult {
-  return args.helpCommand !== `` || args.help !== ``
-    ? noVerYesHelpCheckCommand(args)
-    : noVerNoHelpCheckCommand(args);
-}
-
-// Specify the results for the CLI
-function getResults(args: CliArgs): ExecResult {
-  return args.ver !== ``
-    ? {
-      error: null,
-      stdout: version,
-      stderr: ``,
-    }
-    : noVerCheckHelp(args);
-}
-
-// Determines if the install command will be run
-function getCommand({
-  command,
-  helpCommand,
-  ver,
-  help,
-  badOption,
-}: CliArgs): string {
-  return command === `install`
-    && helpCommand === ``
-    && ver === ``
-    && help === ``
-    && badOption === ``
-    ? `install`
-    : ``;
-}
-
-// Assembles the various options into a command
-function getArgs({
-  helpCommand,
-  command,
-  help,
-  ver,
-  directory,
-  file,
-  badOption,
-}: CliArgs): string {
-  return `${helpCommand} ${command} ${help} ${ver} ${directory} ${file} ${badOption}`
-    .split(` `)
-    .filter((cur) => cur.length > 0)
-    .join(` `);
-}
-
-const variations = combinations.map(
-  ([
-    helpCommand,
-    command,
-    help,
-    ver,
-    directory,
-    file,
-    badOption,
-  ]: unknown[]): TestDefinition => {
-    const allArgs = {
-      helpCommand,
-      command,
-      help,
-      ver,
-      directory,
-      file,
-      badOption,
-    } as CliArgs;
-
-    const results = getResults(allArgs);
-
-    // Add each test case to variations list
-    return {
-      // run tests across a list of api implementations / mocks
-      backends: Object.keys(backendVersions),
-      args: getArgs(allArgs), // the test command
-      command: getCommand(allArgs), // api command to run or ""
-      options: getOptions(allArgs),
-      code: results.error, // results.error === null ? null : results.error.code,
-      stdOut: results.stdout,
-      stdErr: results.stderr,
-    };
-  },
-);
-
-// For each test case, we test both the implementations / mocks (BE) only
-// and the results of running via the CLI with each implementaiton / mock
+// Iterate over many different combinations of valid and invalid cli args.
+//   'args' - the combination of args that is being tested.
+//   'command' - the backend command to execute; derived from args.
+//   'options' - the options to pass to the backend cmd; derived from args.
+// Test to make sure the specified args execute the backend command as expected.
+//   'error' - null, if not error; or object containing at a minimum an error 'code'.
+//   'stdOut' - text expected to be written to stdOut.
+//   'stdErr' - text expected to be written to stdErr.
 describe.each(variations)(
   `Iterate through test variations.`,
   ({
-    backends,
+    // backends,
     args,
     command,
     options,
-    code,
+    error,
     stdOut,
     stdErr,
   }: TestDefinition) => {
@@ -239,10 +41,18 @@ describe.each(variations)(
       rimrafDir(resolve(`.`, `bar`));
     });
 
-    // test the implementations / mocks (BE)
+    // run each test against multiple backends
+    // i.e. pass the options to the specified command() on the backend
+    // backends include:
+    //   1) default ('') which is the backend that normally gets called by the frontend,
+    //      however we'll test the backends separate from the frontends.
+    //   2) mocked ('__mocks__/backend.mock) - this mocks the backend so that we can test
+    //      the frontend without actually running the backend. We run the tests against
+    //      the default and mocked with the same inputs and expect the same outputs to make
+    //      sure that our mock successfully simulates the actual implementation
     test.each(backends)(
       `Check BE output (BE="%s", args="${args}")`,
-      async (backend) => {
+      (backend) => {
         const { install } = backendVersions[backend];
         switch (command) {
           case `install`: {
@@ -258,9 +68,13 @@ describe.each(variations)(
       },
     );
 
+    // Test the frontend and the backends. Essentially this tests
+    // the frontend cli interface to ensure that it processes the
+    // cli arguments, executes the commands with the given options,
+    // and produces the same results as the backend tests.
     test.each(backends)(
       `Check CLI as module (BE="%s", args="${args}")`,
-      async (backend) => {
+      (backend) => {
         const myargs = [
           process.argv[0],
           resolve(`./dist/terrafile`),
@@ -291,12 +105,13 @@ describe.each(variations)(
             }
           });
           const exitCode = ((process.exit as unknown) as jest.Mock).mock.calls[0][0];
-          expect(exitCode).toBe(code === null ? 0 : code.code);
+          expect(exitCode).toBe(error === null ? 0 : error.code); // no error (null) --> exit(0)
         }
       },
     );
 
-    // sample CLI commands
+    // Actually executing the CLI commands is time consuming. So we only
+    // execute a small sample of the tests.
     if (getRandomInt(200) === 0) {
       // if (true) {
       test(`Sample CLI (BE="%s", args="${args}")`, async () => {
@@ -310,7 +125,7 @@ describe.each(variations)(
           );
         });
         expect(result.error === null ? result.error : result.error.code).toBe(
-          code === null ? code : code.code,
+          error === null ? error : error.code,
         );
       });
     }

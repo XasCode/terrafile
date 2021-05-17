@@ -65,31 +65,24 @@ function TerrafileImplementation(options: CliOptions): Status {
     return this;
   }
 
-  function checkResults(t: Status, promiseResults: Status[]): Status {
-    const retVal = {} as Status;
-    promiseResults.forEach((currentModuleRetVal) => {
-      retVal.success = t.success && currentModuleRetVal.success;
-      retVal.contents = currentModuleRetVal.contents;
-      retVal.error = t.error || currentModuleRetVal.error;
-    });
-    return retVal;
-  }
-
-  function fetchModules(contents: [string, Record<string, string>][], dir: Path): Promise<Status>[] {
-    return contents.map(([key, val]) => {
-      const dest = fsHelpers.getAbsolutePath(
-        `${dir}${path.sep}${key}`,
-      );
+  async function fetchModules(contents: [string, Record<string, string>][], dir: Path): Promise<Status[]> {
+    return Promise.all(contents.map(([key, val]) => {
+      const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);
       return modules.fetch(val, dest);
-    });
+    }));
   }
 
   async function process(): Promise<Status> {
+    const retVal = { ...this };
     if (this.success) {
-      const fetchResults = fetchModules(this.contents, options.directory);
-      return { ...this, ...checkResults(this, await Promise.all(fetchResults)) };
+      const fetchResults = await fetchModules(this.contents, options.directory);
+      fetchResults.forEach((currentModuleRetVal) => {
+        retVal.success = this.success && currentModuleRetVal.success;
+        retVal.contents = currentModuleRetVal.contents;
+        retVal.error = this.error || currentModuleRetVal.error;
+      });
     }
-    return { ...this };
+    return retVal;
   }
 
   return {
@@ -121,111 +114,3 @@ async function readFileContents(options: CliOptions): Promise<Status> {
 }
 
 export { readFileContents };
-
-/*
-function Terrafile(options: CliOptions): Status {
-  async function process(): Promise<Status> {
-    const retVal = { ...this };
-
-    if (this.success) {
-      for (const [key, val] of this.contents) {
-        const dest = fsHelpers.getAbsolutePath(
-          `${options.directory}${path.sep}${key}`
-        );
-        const currentModuleRetVal = await modules.fetch(val, dest);
-        retVal.success = this.success && currentModuleRetVal.success;
-        retVal.contents = currentModuleRetVal.contents;
-        retVal.error = this.error && currentModuleRetVal.error;
-      }
-    }
-    return retVal;
-  }
-
-  return validOptions(options, 'file' as Option)
-    ? {
-        process,
-        ...JsonTerrafile(
-          fsHelpers.getAbsolutePath(options.file)
-        ).validateFormat(),
-      }
-    : {
-        process,
-        success: false,
-        contents: null,
-        error: `Error: Not valid options`,
-      };
-}
-
-function JsonTerrafile(filepath: Path): Status {
-  function parse(
-    c: Record<string, Record<string, string>>
-  ): [string, Record<string, string>][] {
-    try {
-      return Object.entries(c);
-    } catch (err) {
-      return [];
-    }
-  }
-
-  function validateFormat(): Status {
-    const moduleEntries = parse(this.contents);
-    const valid = moduleEntries.reduce((acc, [, val]) => {
-      return acc && !validateFieldsForEachModuleEntry(val);
-    }, this.success);
-    return {
-      success: valid,
-      //contents: parse(this.contents),
-      contents: valid ? parse(this.contents) : null,
-      error: valid ? null : `Error: Not valid format`,
-    };
-  }
-
-  return {
-    validateFormat,
-    ...JsonFile(filepath),
-  };
-}
-
-function JsonFile(absFilePath: Path): Status {
-  function gulpJson(file: Path): [string, Record<string, string>][] | null {
-    try {
-      return JSON.parse(
-        fs.readFileSync(fsHelpers.getAbsolutePath(file), 'utf-8')
-      );
-    } catch (err) {
-      console.error(err);
-      return null;
-    }
-  }
-
-  return File(absFilePath).success
-    ? Json(gulpJson(absFilePath))
-    : { success: false, contents: null, error: 'Error: not file' };
-}
-
-function File(absFilePath: Path): Status {
-  function exists(filePath: Path): boolean {
-    return fsHelpers.checkIfFileExists(filePath);
-  }
-
-  return {
-    success: exists(absFilePath),
-    //contents: null,
-    error: exists(absFilePath) ? null : `Error: not exists`,
-  };
-}
-
-function Json(json: [string, Record<string, string>][] | null): Status {
-  function isValidJson(
-    contents: [string, Record<string, string>][] | null
-  ): boolean {
-    return contents !== null;
-  }
-
-  return {
-    success: isValidJson(json),
-    contents: json,
-    error: isValidJson(json) ? null : `Error: is not valid json`,
-  };
-}
-*/

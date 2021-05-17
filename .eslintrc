@@ -19,6 +19,21 @@
     "max-len": ["error", { "code": 120 }],
     "@typescript-eslint/quotes": "off",
     "quotes": ["error", "backtick"],
-    "no-restricted-syntax": "off"
-  }
+    "no-restricted-syntax": "off",
+    "import/prefer-default-export": "off"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.mocked.spec.ts"],
+      "rules": {
+        "import/first": "off"
+      }
+    },
+    {
+      "files": ["__tests__/testUtils/mock.ts"],
+      "rules": {
+        "global-require": "off"
+      }
+    }
+  ]
 }

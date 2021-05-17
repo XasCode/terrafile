@@ -1,12 +1,12 @@
 import { mockAxiosGetTerraformUrl, mockCliError, spy } from './testUtils';
 
+mockAxiosGetTerraformUrl();
+mockCliError();
+
 import { readFileContents } from '../src/processFile';
 import { rimrafDir, getAbsolutePath } from '../src/fsHelpers';
 
 import { CliOptions } from '../src/types';
-
-mockAxiosGetTerraformUrl();
-mockCliError();
 
 const testDirs = [`vendor_tfregistry_error`];
 

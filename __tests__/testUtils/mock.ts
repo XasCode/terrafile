@@ -15,8 +15,7 @@ function mockAxiosGetTerraformUrl(): void {
 function mockCliError(): void {
   jest.mock(`../../src/run`, () => ({
     git: jest.fn().mockImplementation(() => ({
-      code: -1,
-      error: `oops!`,
+      error: { name: ``, message: `oops!`, code: -1 },
       stdout: ``,
       stderr: ``,
     })),
@@ -39,7 +38,6 @@ function mockCliSuccess(): void {
         fsHelpersLocal.touchFile(`${fullDest}${pathLocal.sep}main.tf`);
       }
       return {
-        code: 0,
         error: null,
         stdout: ``,
         stderr: ``,

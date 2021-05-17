@@ -23,11 +23,11 @@ type CliArgs = {
 };
 
 type TestDefinition = {
-  backends: string[];
+  // backends: string[];
   args: string;
   command: string;
   options: CliOptions;
-  code: ExecFileException;
+  error: ExecFileException;
   stdOut: string;
   stdErr: string;
 };

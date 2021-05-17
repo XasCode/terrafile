@@ -2,6 +2,9 @@ import { resolve } from 'path';
 import { readFileSync } from 'fs-extra';
 import { mockAxiosGetTerraformUrl, mockCliSuccess, spy } from './testUtils';
 
+mockAxiosGetTerraformUrl();
+mockCliSuccess();
+
 import { createTargetDirectory } from '../src/venDir';
 import { readFileContents } from '../src/processFile';
 import {
@@ -15,8 +18,25 @@ import {
 
 import { CliOptions } from '../src/types';
 
-mockAxiosGetTerraformUrl();
-mockCliSuccess();
+const testDirs = [
+  `ok_vendor_a`,
+  `ok_vendor_b`,
+  `ok_vendor_c`,
+  `err_vendor`,
+  `err_vendor1`,
+  `err_vendor2`,
+  `err_vendor3`,
+  `err_vendor_lerror`,
+  `err_vendor_2x`,
+];
+const cleanUpTestDirs = () => testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir)));
+
+// expected result when provide bad file path
+async function expectFileIssue(options: CliOptions): Promise<void> {
+  const retVals = await readFileContents(options);
+  expect(retVals.success).toBe(false);
+  expect(retVals.contents).toBe(null);
+}
 
 /* createTargetDirectory({"directory": <path>, ...})
  * Args: Expects an object with the <path> to the "directory" that is needed
@@ -101,26 +121,6 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
     },
   );
 });
-
-const testDirs = [
-  `ok_vendor_a`,
-  `ok_vendor_b`,
-  `ok_vendor_c`,
-  `err_vendor`,
-  `err_vendor1`,
-  `err_vendor2`,
-  `err_vendor3`,
-  `err_vendor_lerror`,
-  `err_vendor_2x`,
-];
-const cleanUpTestDirs = () => testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir)));
-
-// expected result when provide bad file path
-async function expectFileIssue(options: CliOptions): Promise<void> {
-  const retVals = await readFileContents(options);
-  expect(retVals.success).toBe(false);
-  expect(retVals.contents).toBe(null);
-}
 
 describe(`read file contents should read specified json file and validate its contents`, () => {
   beforeEach(() => {
