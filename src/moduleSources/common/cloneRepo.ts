@@ -15,11 +15,9 @@ function determineRef(ref: string): string[] {
 
 function insertGit(source: Path): Path {
   const parts = source.split(`?ref=`);
-  return parts.length < 2
+  return parts.length < 2 || source.includes(`.git`)
     ? source
-    : source.includes(`.git`)
-      ? parts.join(`?ref=`)
-      : [parts[0], `.git`, `?ref=`, ...parts.slice(1)].join(``);
+    : [parts[0], `.git`, `?ref=`, ...parts.slice(1)].join(``);
 }
 
 function sourceParts(source: Path): SourceParts {
