@@ -32,7 +32,7 @@ describe(`read file contents should read specified json file and validate its co
   });
 
   test(`should err on bad terraform registry`, async () => {
-    const configFile = `__tests__/tfRegistryError.json`;
+    const configFile = `__tests__/testFiles/tfRegistryError.json`;
     await expectFileIssue({
       directory: `vendor_tfregistry_error/modules`,
       file: configFile,
