@@ -22,6 +22,7 @@ function getAbsolutePath(dir: Path): Path {
   } catch (err) {
     console.error(`Error resolving path: ${dir}`);
   }
+  return undefined;
 }
 
 function createDir(dir: Path): Path {
@@ -35,6 +36,7 @@ function createDir(dir: Path): Path {
   } catch (err) {
     console.error(`Error creating dir: ${dir}`);
   }
+  return undefined;
 }
 
 function touchFile(filePath: Path, perms?: number): void {
@@ -51,6 +53,11 @@ function rimrafDir(dir: Path): Path {
     return dir;
   }
   console.error(`Error deleting dir: ${dir}`);
+  return undefined;
+}
+
+function rimrafDirs(dirs: Path[]) {
+  return dirs.map((dir) => rimrafDir(getAbsolutePath(dir)));
 }
 
 function abortDirCreation(dir: Path): void {
@@ -82,6 +89,7 @@ export {
   createDir,
   touchFile,
   rimrafDir,
+  rimrafDirs,
   abortDirCreation,
   renameDir,
 };

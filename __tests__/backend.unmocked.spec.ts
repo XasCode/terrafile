@@ -2,7 +2,7 @@ import { readFileSync } from 'fs-extra';
 
 import { readFileContents } from '../src/processFile';
 import {
-  rimrafDir,
+  rimrafDirs,
   getAbsolutePath,
   checkIfFileExists,
 } from '../src/fsHelpers';
@@ -14,16 +14,15 @@ const testDirs = [
   `be_vendor_empty`,
   `be_vendor_live`,
 ];
-const cleanUpTestDirs = () => testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir)));
 
 describe(`read file contents should read specified json file and validate its contents`, () => {
   beforeEach(() => {
-    cleanUpTestDirs();
+    rimrafDirs(testDirs);
     spy.clear();
   });
 
   afterEach(() => {
-    cleanUpTestDirs();
+    rimrafDirs(testDirs);
   });
 
   // expected result when provide bad file path
@@ -33,16 +32,18 @@ describe(`read file contents should read specified json file and validate its co
     expect(retVals.contents).toBe(null);
   }
 
+  // module definition source points to non-existent terraform module
   test(`should err on bad terraform registry`, async () => {
-    const configFile = `__tests__/tfRegistryError.json`;
+    const configFile = `__tests__/testFiles/tfRegistryError.json`;
     await expectFileIssue({
       directory: `be_vendor_tfregistry_error/modules`,
       file: configFile,
     });
   });
 
+  // modude definition source contains empty string (non-existent terraform module)
   test(`should err on empty source`, async () => {
-    const configFile = `__tests__/tfRegistryEmptyError.json`;
+    const configFile = `__tests__/testFiles/tfRegistryEmptyError.json`;
     const options = {
       directory: `be_vendor_empty/modules`,
       file: configFile,
@@ -50,8 +51,9 @@ describe(`read file contents should read specified json file and validate its co
     await expectFileIssue(options);
   });
 
-  test(`run live against teeraform registry`, async () => {
-    const configFile = `__tests__/tfRegistryLive.json`;
+  // perform actual (not mocked) test of fetching module from terraform registry
+  test(`run live against teraform registry`, async () => {
+    const configFile = `__tests__/testFiles/tfRegistryLive.json`;
     const options = {
       directory: `be_vendor_live/modules`,
       file: configFile,
@@ -61,7 +63,7 @@ describe(`read file contents should read specified json file and validate its co
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
     const testJson = JSON.parse(
-      readFileSync(getAbsolutePath(`__tests__/tfRegistryLive.json`), `utf-8`),
+      readFileSync(getAbsolutePath(`__tests__/testFiles/tfRegistryLive.json`), `utf-8`),
     );
     expect(Object.keys(testJson).length).toBe(1);
     for (const modName of Object.keys(testJson)) {
@@ -72,4 +74,8 @@ describe(`read file contents should read specified json file and validate its co
       ).toBe(true);
     }
   });
+
+  // TODO: test live gitSSH
+
+  // TODO: test live gitHTTPS
 });
