@@ -4,8 +4,7 @@ function calcCartesian(...args: unknown[][]): unknown[][] {
   const r: unknown[][] = [];
   const max = args.length - 1;
   function helper(arr: unknown[], i: number) {
-    // eslint-disable-next-line no-plusplus
-    for (let j = 0, l = args[i].length; j < l; j++) {
+    for (let j = 0, l = args[i].length; j < l; j += 1) {
       const a: unknown[] = [...arr, args[i][j]];
       if (i === max) r.push(a);
       else helper(a, i + 1);

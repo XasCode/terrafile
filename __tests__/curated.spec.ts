@@ -52,7 +52,9 @@ describe.each(Object.keys(curatedCliCommands))(
       expect(result.stdout).toBe(curatedCliCommands[cliCommand][0]);
       expect(result.stderr).toBe(curatedCliCommands[cliCommand][1]);
       expect(result.error === null ? result.error : result.error.code)
-        .toBe(curatedCliCommands[cliCommand][2] === null ? curatedCliCommands[cliCommand][2] : curatedCliCommands[cliCommand][2].code);
+        .toBe(curatedCliCommands[cliCommand][2] === null
+          ? curatedCliCommands[cliCommand][2]
+          : curatedCliCommands[cliCommand][2].code);
     });
   },
 );

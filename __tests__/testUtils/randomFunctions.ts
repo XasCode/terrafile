@@ -7,7 +7,7 @@ function getRandomInt(max: number): number {
 function randomizeOrder(incoming: unknown[]): unknown[] {
   let workingCopy = [...incoming];
   const outgoing = [];
-  for (let i = incoming.length; i > 0; i--) {
+  for (let i = incoming.length; i > 0; i -= 1) {
     const selected = getRandomInt(i);
     outgoing.push(workingCopy[selected]);
     workingCopy = [

@@ -1,9 +1,17 @@
 import { randomizeOrder } from './testUtils';
 
+function expectRearranged(inputArray: unknown[], outputArray: unknown[]) {
+  outputArray.map((_, i, outArr) => {
+    expect(inputArray.length).toBe(outArr.length);
+    expect(outArr.includes(inputArray[i])).toBe(true);
+    expect(inputArray.includes(outArr[i])).toBe(true);
+  });
+}
+
 // test randomization of array order
 describe(`should take an array and rearrange the elements randomly`, () => {
   const inputArray: number[] = [];
-  for (let arraylen = 0; arraylen < 10; arraylen++) {
+  for (let arraylen = 0; arraylen < 10; arraylen += 1) {
     inputArray.push(arraylen);
     test(`check random values`, () => {
       const outputArray = randomizeOrder(inputArray);
@@ -34,13 +42,3 @@ describe(`should take an array and rearrange the elements randomly`, () => {
     expect(numberOfMatchingPossibleOutputs).toBe(1);
   });
 });
-
-/// //////// helpers //////////
-
-function expectRearranged(inputArray: unknown[], outputArray: unknown[]) {
-  outputArray.map((_, i, outArr) => {
-    expect(inputArray.length).toBe(outArr.length);
-    expect(outArr.includes(inputArray[i])).toBe(true);
-    expect(inputArray.includes(outArr[i])).toBe(true);
-  });
-}
