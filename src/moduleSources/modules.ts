@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import local from './local';
 import gitHttps from './gitHttps';
 import gitSSH from './gitSSH';

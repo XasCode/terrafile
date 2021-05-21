@@ -1,11 +1,13 @@
 import { randomizeOrder } from './testUtils';
 
 function expectRearranged(inputArray: unknown[], outputArray: unknown[]) {
-  outputArray.map((_, i, outArr) => {
-    expect(inputArray.length).toBe(outArr.length);
-    expect(outArr.includes(inputArray[i])).toBe(true);
-    expect(inputArray.includes(outArr[i])).toBe(true);
-  });
+  expect(inputArray.length).toBe(outputArray.length);
+  if (inputArray.length === outputArray.length) {
+    for (let i = 0; i < outputArray.length; i += 1) {
+      expect(outputArray.includes(inputArray[i])).toBe(true);
+      expect(inputArray.includes(outputArray[i])).toBe(true);
+    }
+  }
 }
 
 // test randomization of array order

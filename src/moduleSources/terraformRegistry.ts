@@ -2,7 +2,7 @@ import axios from 'axios';
 import { startsWith } from '../utils';
 import { Entry, Path, Status } from '../types';
 import { cloneRepoToDest } from './common/cloneRepo';
-import { ModulesKeyType } from './modules';
+import type { ModulesKeyType } from './modules';
 
 function match(source: Path): ModulesKeyType | `` {
   return !startsWith(source, `/`)
@@ -36,6 +36,7 @@ async function getRegRepoUrl(downloadPointerUrl: Path): Promise<Path> {
   } catch (err) {
     console.error(`Error fetching download URL from terraform registry.`);
   }
+  return undefined;
 }
 
 function getRegDownloadPointerUrl(source: Path, version: string): Path {

@@ -1,5 +1,8 @@
-import { Entry, Path, Status } from '../types';
-import { modules, ModulesKeyType } from './modules';
+import {
+  Entry, Path, Status,
+} from '../types';
+import { modules } from './modules';
+import type { ModulesKeyType } from './modules';
 
 function getType(source: Path): ModulesKeyType {
   return source === undefined
@@ -20,7 +23,6 @@ function validateFieldsForEachModuleEntry(params: Entry): boolean {
   if (sourceType === undefined) {
     notFoundOrNotValid = true;
   } else {
-    // const moduleType: ModulesKeyType = getType(params.source);
     notFoundOrNotValid = notFoundOrNotValid || modules[sourceType].validate(params);
   }
   return notFoundOrNotValid;

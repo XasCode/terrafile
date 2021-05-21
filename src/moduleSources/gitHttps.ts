@@ -1,7 +1,7 @@
 import { startsWith } from '../utils';
 import { Entry, Path } from '../types';
 import { fetch } from './common/git';
-import { ModulesKeyType } from './modules';
+import type { ModulesKeyType } from './modules';
 
 const acceptable = [`comment`, `source`, `version`, `path`];
 
