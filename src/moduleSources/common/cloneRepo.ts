@@ -37,20 +37,17 @@ async function cloneRepo([repo, repoDir, branchOrTag]: RepoLocation, fullDest: P
     `${repo}.git`,
     fullDest,
   ];
-  const results = await git(cloneCmd);
-  return results;
+  return git(cloneCmd);
 }
 
 async function scopeRepo([, repoDir]: RepoLocation, fullDest: Path): Promise<ExecResult> {
   const sparseCmd = [`sparse-checkout`, `set`, repoDir];
-  const results = await (repoDir ? git(sparseCmd, fullDest) : ({} as ExecResult));
-  return results;
+  return repoDir ? git(sparseCmd, fullDest) : ({} as ExecResult);
 }
 
 async function checkoutCommit([, , , commit]: RepoLocation, fullDest: Path): Promise<ExecResult> {
   const commitCmd = [`checkout`, commit];
-  const results = await (commit ? git(commitCmd, fullDest) : ({} as ExecResult));
-  return results;
+  return commit ? git(commitCmd, fullDest) : ({} as ExecResult);
 }
 
 async function cloneRepoToDest(repoUrl: Path, fullDest: Path): Promise<Status> {
