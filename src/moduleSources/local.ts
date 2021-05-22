@@ -1,17 +1,11 @@
 import fs from 'fs-extra';
 import { startsWith } from '../utils';
-import {
-  Entry, Path, Status,
-} from '../types';
+import { Entry, Path, Status } from '../types';
 import * as fsHelpers from '../fsHelpers';
 import type { ModulesKeyType } from './modules';
 
 function match(source: Path): ModulesKeyType | `` {
-  return startsWith(source, `/`)
-    || startsWith(source, `./`)
-    || startsWith(source, `../`)
-    ? `local`
-    : ``;
+  return startsWith(source, `/`) || startsWith(source, `./`) || startsWith(source, `../`) ? `local` : ``;
 }
 
 function copyAbs(src: Path, dest: Path): Status {

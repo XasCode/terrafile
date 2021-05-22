@@ -21,7 +21,9 @@
     "quotes": ["error", "backtick"],
     "no-restricted-syntax": "off",
     "import/prefer-default-export": "off",
-    "no-multi-spaces": ["error", { "ignoreEOLComments": true }]
+    "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
+    "@typescript-eslint/comma-dangle": "off",
+    "comma-dangle": ["error", "always-multiline"]
   },
   "overrides": [
     {

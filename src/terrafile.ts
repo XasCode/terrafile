@@ -12,14 +12,8 @@ function main(myargs: string[], be?: Backend): void {
     .command(`install`)
     .description(`Installs the files in your terrafile.json`)
     .action((options) => (be === undefined ? backend.install(options) : be.install(options)))
-    .addOption(
-      new Option(`-d, --directory <string>`, `module directory`).default(
-        `vendor/modules`,
-      ),
-    )
-    .addOption(
-      new Option(`-f, --file <string>`, `config file`).default(`terrafile.json`),
-    );
+    .addOption(new Option(`-d, --directory <string>`, `module directory`).default(`vendor/modules`))
+    .addOption(new Option(`-f, --file <string>`, `config file`).default(`terrafile.json`));
 
   try {
     program.parse(myargs);

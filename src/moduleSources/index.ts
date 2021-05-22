@@ -1,6 +1,4 @@
-import {
-  Entry, Path, Status,
-} from '../types';
+import { Entry, Path, Status } from '../types';
 import { modules } from './modules';
 import type { ModulesKeyType } from './modules';
 
@@ -8,8 +6,8 @@ function getType(source: Path): ModulesKeyType {
   return source === undefined
     ? undefined
     : (Object.values(modules)
-      .map((module) => module.match(source))
-      .join(``) as ModulesKeyType);
+        .map((module) => module.match(source))
+        .join(``) as ModulesKeyType);
 }
 
 async function fetch(params: Entry, dest: Path): Promise<Status> {

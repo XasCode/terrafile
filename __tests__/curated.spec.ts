@@ -4,23 +4,14 @@ import { resolve } from 'path';
 import { cli } from './testUtils';
 import { getAbsolutePath, rimrafDir } from '../src/fsHelpers';
 
-import {
-  helpContent,
-  helpInstallContent,
-  unknownCommand,
-  unknownOptionLong,
-  unknownOptionShort,
-} from '../src/strings';
+import { helpContent, helpInstallContent, unknownCommand, unknownOptionLong, unknownOptionShort } from '../src/strings';
 
 import { version } from '../package.json';
 
 const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
 
 // each of these commands will be execed to test cli output
-const curatedCliCommands: Record<
-string,
-[string, string, ExecFileException]
-> = {
+const curatedCliCommands: Record<string, [string, string, ExecFileException]> = {
   help: [`${helpContent}\n`, ``, null],
   '--version': [`${version}\n`, ``, null],
   install: [`${JSON.stringify(defaultOpts)}\n`, ``, null],
@@ -51,10 +42,11 @@ describe.each(Object.keys(curatedCliCommands))(
       const result = await cli(cliCommand.split(` `), `./dist/src`);
       expect(result.stdout).toBe(curatedCliCommands[cliCommand][0]);
       expect(result.stderr).toBe(curatedCliCommands[cliCommand][1]);
-      expect(result.error === null ? result.error : result.error.code)
-        .toBe(curatedCliCommands[cliCommand][2] === null
+      expect(result.error === null ? result.error : result.error.code).toBe(
+        curatedCliCommands[cliCommand][2] === null
           ? curatedCliCommands[cliCommand][2]
-          : curatedCliCommands[cliCommand][2].code);
+          : curatedCliCommands[cliCommand][2].code,
+      );
     });
   },
 );

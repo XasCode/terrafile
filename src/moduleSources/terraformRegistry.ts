@@ -1,19 +1,17 @@
 import axios from 'axios';
 import { startsWith } from '../utils';
-import {
-  Entry, Path, RetString, Status,
-} from '../types';
+import { Entry, Path, RetString, Status } from '../types';
 import { cloneRepoToDest } from './common/cloneRepo';
 import type { ModulesKeyType } from './modules';
 
 const registryURL = `https://registry.terraform.io/v1/modules`;
 
 function match(source: Path): ModulesKeyType | `` {
-  return !startsWith(source, `/`)
-    && !startsWith(source, `./`)
-    && !startsWith(source, `../`)
-    && !startsWith(source, `git@`)
-    && !startsWith(source, `https://`)
+  return !startsWith(source, `/`) &&
+    !startsWith(source, `./`) &&
+    !startsWith(source, `../`) &&
+    !startsWith(source, `git@`) &&
+    !startsWith(source, `https://`)
     ? `terraformRegistry`
     : ``;
 }
@@ -25,7 +23,7 @@ function stripGitPrefixFromRepoUrl(terraformRegistryGitUrl: Path): RetString {
   return { success: false, error: `Expected location '${terraformRegistryGitUrl}' to begin with 'git::'` };
 }
 
-function getRepoUrl(terraformRegistryGitUrl: Path):RetString {
+function getRepoUrl(terraformRegistryGitUrl: Path): RetString {
   if (terraformRegistryGitUrl !== undefined) {
     return stripGitPrefixFromRepoUrl(terraformRegistryGitUrl);
   }
@@ -53,23 +51,17 @@ function getRegDownloadPointerUrl(source: Path, version: string): Path {
   return `${registryURL}/${ns || ``}/${modName || ``}/${provider || ``}/${version}/download`;
 }
 
-async function copyFromTerraformRegistry(
-  params: Entry,
-  dest: Path,
-): Promise<Status> {
-  const downloadPointerUrl = getRegDownloadPointerUrl(
-    params.source,
-    params.version || ``,
-  );
+async function copyFromTerraformRegistry(params: Entry, dest: Path): Promise<Status> {
+  const downloadPointerUrl = getRegDownloadPointerUrl(params.source, params.version || ``);
   const regRepoUrl = await getRegRepoUrl(downloadPointerUrl);
   return regRepoUrl.success
     ? cloneRepoToDest(regRepoUrl.value, dest)
     : {
-      success: false,
-      contents: null,
-      // eslint-disable-next-line max-len
-      error: `Repo URL not found in Terraform registry. ${dest}`,
-    };
+        success: false,
+        contents: null,
+        // eslint-disable-next-line max-len
+        error: `Repo URL not found in Terraform registry. ${dest}`,
+      };
 }
 
 const acceptable = [`comment`, `source`, `version`];

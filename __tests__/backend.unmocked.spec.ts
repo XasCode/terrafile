@@ -1,19 +1,11 @@
 import { readFileSync } from 'fs-extra';
 
 import { readFileContents } from '../src/processFile';
-import {
-  rimrafDirs,
-  getAbsolutePath,
-  checkIfFileExists,
-} from '../src/fsHelpers';
+import { rimrafDirs, getAbsolutePath, checkIfFileExists } from '../src/fsHelpers';
 import { spy } from './testUtils';
 import { CliOptions } from '../src/types';
 
-const testDirs = [
-  `be_vendor_tfregistry_error`,
-  `be_vendor_empty`,
-  `be_vendor_live`,
-];
+const testDirs = [`be_vendor_tfregistry_error`, `be_vendor_empty`, `be_vendor_live`];
 
 describe(`read file contents should read specified json file and validate its contents`, () => {
   beforeEach(() => {
@@ -62,16 +54,10 @@ describe(`read file contents should read specified json file and validate its co
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
-    const testJson = JSON.parse(
-      readFileSync(getAbsolutePath(`__tests__/testFiles/tfRegistryLive.json`), `utf-8`),
-    );
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(`__tests__/testFiles/tfRegistryLive.json`), `utf-8`));
     expect(Object.keys(testJson).length).toBe(1);
     for (const modName of Object.keys(testJson)) {
-      expect(
-        checkIfFileExists(
-          getAbsolutePath(`${options.directory}/${modName}/main.tf`),
-        ),
-      ).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`))).toBe(true);
     }
   });
 

@@ -6,23 +6,11 @@ mockAxiosGetTerraformUrl();
 mockCliSuccess();
 
 import { readFileContents } from '../src/processFile';
-import {
-  getAbsolutePath,
-  createDir,
-  touchFile,
-  rimrafDirs,
-  checkIfFileExists,
-} from '../src/fsHelpers';
+import { getAbsolutePath, createDir, touchFile, rimrafDirs, checkIfFileExists } from '../src/fsHelpers';
 
 import { CliOptions } from '../src/types';
 
-const testDirs = [
-  `err_vendor1`,
-  `err_vendor2`,
-  `err_vendor3`,
-  `err_vendor_lerror`,
-  `err_vendor_2x`,
-];
+const testDirs = [`err_vendor1`, `err_vendor2`, `err_vendor3`, `err_vendor_lerror`, `err_vendor_2x`];
 
 describe(`read file contents should read specified json file and validate its contents`, () => {
   beforeEach(() => {
@@ -50,16 +38,10 @@ describe(`read file contents should read specified json file and validate its co
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
-    const testJson = JSON.parse(
-      readFileSync(getAbsolutePath(`terrafile.sample.json`), `utf-8`),
-    );
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(`terrafile.sample.json`), `utf-8`));
     expect(Object.keys(testJson).length).toBe(31);
     for (const modName of Object.keys(testJson)) {
-      expect(
-        checkIfFileExists(
-          getAbsolutePath(`err_vendor1/modules/${modName}/main.tf`),
-        ),
-      ).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}/main.tf`))).toBe(true);
     }
   });
 
@@ -82,13 +64,13 @@ describe(`read file contents should read specified json file and validate its co
 
   // test various bad paths and files
   test.each([
-    undefined,                                     // options no provided - no module definition location
-    {},                                            // no file option provided for a module definition
-    { file: `` },                                  // no path provided to a module defintion file
-    { file: getAbsolutePath(`.`) },                // a directory provided as a module defintion file
-    { file: `does_not_exist` },                    // path to module definition file does not exist
-    { file: `__tests__/testFiles/invalid.txt` },   // module definitions are not json
-    { file: `__tests__/testFiles/invalid.json` },  // json - but doesn't provide valid module definitions
+    undefined, // options no provided - no module definition location
+    {}, // no file option provided for a module definition
+    { file: `` }, // no path provided to a module defintion file
+    { file: getAbsolutePath(`.`) }, // a directory provided as a module defintion file
+    { file: `does_not_exist` }, // path to module definition file does not exist
+    { file: `__tests__/testFiles/invalid.txt` }, // module definitions are not json
+    { file: `__tests__/testFiles/invalid.json` }, // json - but doesn't provide valid module definitions
     { file: `__tests__/testFiles/invalid2.json` }, // local module definition includes invalid field
     { file: `__tests__/testFiles/invalid3.json` }, // gitHttps module definition includes invalid field
     { file: `__tests__/testFiles/invalid4.json` }, // terraform module definition includes invalid field
@@ -114,6 +96,6 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
     };
     await readFileContents(options); // 1st call to readFileContents
-    await expectFileIssue(options);  // 2nd call to readFileContents, tries to copy module to same location
+    await expectFileIssue(options); // 2nd call to readFileContents, tries to copy module to same location
   });
 });

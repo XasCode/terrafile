@@ -10,10 +10,7 @@ function randomizeOrder(incoming: unknown[]): unknown[] {
   for (let i = incoming.length; i > 0; i -= 1) {
     const selected = getRandomInt(i);
     outgoing.push(workingCopy[selected]);
-    workingCopy = [
-      ...workingCopy.slice(0, selected),
-      ...workingCopy.slice(selected + 1),
-    ];
+    workingCopy = [...workingCopy.slice(0, selected), ...workingCopy.slice(selected + 1)];
   }
   return outgoing;
 }

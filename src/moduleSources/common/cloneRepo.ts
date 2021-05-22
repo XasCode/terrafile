@@ -1,10 +1,4 @@
-import {
-  ExecResult,
-  Path,
-  RepoLocation,
-  SourceParts,
-  Status,
-} from '../../types';
+import { ExecResult, Path, RepoLocation, SourceParts, Status } from '../../types';
 import { git } from '../../run';
 
 function determineRef(ref: string): string[] {
@@ -15,9 +9,7 @@ function determineRef(ref: string): string[] {
 
 function insertGit(source: Path): Path {
   const parts = source.split(`?ref=`);
-  return parts.length < 2 || source.includes(`.git`)
-    ? source
-    : [parts[0], `.git`, `?ref=`, ...parts.slice(1)].join(``);
+  return parts.length < 2 || source.includes(`.git`) ? source : [parts[0], `.git`, `?ref=`, ...parts.slice(1)].join(``);
 }
 
 function sourceParts(source: Path): SourceParts {
@@ -37,10 +29,7 @@ function getPartsFromHttp(source: Path): RepoLocation {
   return [repo, repoDir, branchOrTag, commit];
 }
 
-async function cloneRepo(
-  [repo, repoDir, branchOrTag]: RepoLocation,
-  fullDest: Path,
-): Promise<ExecResult> {
+async function cloneRepo([repo, repoDir, branchOrTag]: RepoLocation, fullDest: Path): Promise<ExecResult> {
   const cloneCmd = [
     `clone`,
     ...(repoDir ? [`--depth`, `1`, `--filter=blob:none`, `--sparse`] : []),
@@ -52,25 +41,15 @@ async function cloneRepo(
   return results;
 }
 
-async function scopeRepo(
-  [, repoDir]: RepoLocation,
-  fullDest: Path,
-): Promise<ExecResult> {
+async function scopeRepo([, repoDir]: RepoLocation, fullDest: Path): Promise<ExecResult> {
   const sparseCmd = [`sparse-checkout`, `set`, repoDir];
-  const results = await (repoDir
-    ? git(sparseCmd, fullDest)
-    : ({} as ExecResult));
+  const results = await (repoDir ? git(sparseCmd, fullDest) : ({} as ExecResult));
   return results;
 }
 
-async function checkoutCommit(
-  [, , , commit]: RepoLocation,
-  fullDest: Path,
-): Promise<ExecResult> {
+async function checkoutCommit([, , , commit]: RepoLocation, fullDest: Path): Promise<ExecResult> {
   const commitCmd = [`checkout`, commit];
-  const results = await (commit
-    ? git(commitCmd, fullDest)
-    : ({} as ExecResult));
+  const results = await (commit ? git(commitCmd, fullDest) : ({} as ExecResult));
   return results;
 }
 

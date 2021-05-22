@@ -23,13 +23,8 @@ test.each([
     source: `git@github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc`,
     version: `v2.78.0`,
   },
-])(
-  `replaceUrlVersionIfVersionParam should append version - %s`,
-  ({ source, version }) => {
-    expect(replaceUrlVersionIfVersionParam(source, version)).toBe(
-      `${source}?ref=${version}`,
-    );
-  },
-);
+])(`replaceUrlVersionIfVersionParam should append version - %s`, ({ source, version }) => {
+  expect(replaceUrlVersionIfVersionParam(source, version)).toBe(`${source}?ref=${version}`);
+});
 
 export {};

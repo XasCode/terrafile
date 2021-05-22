@@ -1,42 +1,48 @@
 // Mock call to Axios to retrieve Terraform download URL,
 // we don't want to hit the API repeatedly
 function mockAxiosGetTerraformUrl(): void {
-  jest.mock(`axios`, () => jest.fn(() => ({
-    status: 204,
-    headers: {
-      'x-terraform-get':
-            `git::https://github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=2.78.0`,
-    },
-  })));
+  jest.mock(`axios`, () =>
+    jest.fn(() => ({
+      status: 204,
+      headers: {
+        'x-terraform-get': `git::https://github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=2.78.0`,
+      },
+    })),
+  );
 }
 
 // Mock call to Axios to retrieve Terraform download URL,
 // simulate non-204 response
 function mockAxiosGetTerraformUrl500Error(): void {
-  jest.mock(`axios`, () => jest.fn(() => ({
-    status: 500,
-  })));
+  jest.mock(`axios`, () =>
+    jest.fn(() => ({
+      status: 500,
+    })),
+  );
 }
 
 // Mock call to Axious to retrieve Terraform download URL,
 // simulate 204 response, but no 'x-terraform-get' header
 function mockAxiosGetTerraformUrlNoXTFGetError(): void {
-  jest.mock(`axios`, () => jest.fn(() => ({
-    status: 204,
-    headers: {
-    },
-  })));
+  jest.mock(`axios`, () =>
+    jest.fn(() => ({
+      status: 204,
+      headers: {},
+    })),
+  );
 }
 
 // Mock call to Axious to retrieve Terraform download URL,
 // simulate 'x-terraform-get' doesn't contain git::
 function mockAxiosGetTerraformUrlFormatError(): void {
-  jest.mock(`axios`, () => jest.fn(() => ({
-    status: 204,
-    headers: {
-      'x-terraform-get': `unexpectedformat`,
-    },
-  })));
+  jest.mock(`axios`, () =>
+    jest.fn(() => ({
+      status: 204,
+      headers: {
+        'x-terraform-get': `unexpectedformat`,
+      },
+    })),
+  );
 }
 
 // Mock running a cli command and recieving an error
@@ -59,9 +65,7 @@ function mockCliSuccess(): void {
       const fsHelpersLocal = require(`../../src/fsHelpers`);
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const pathLocal = require(`path`);
-      const fullDest = fsHelpersLocal.getAbsolutePath(
-        cwd || args.slice(-1)[0],
-      );
+      const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);
       if (!fsHelpersLocal.checkIfDirExists(fullDest)) {
         fsHelpersLocal.createDir(fullDest);
         fsHelpersLocal.touchFile(`${fullDest}${pathLocal.sep}main.tf`);

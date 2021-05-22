@@ -28,9 +28,7 @@ function getAbsolutePath(dir: Path): Path {
 function createDir(dir: Path): Path {
   try {
     if (dir === undefined || getAbsolutePath(dir) !== dir) {
-      throw Error(
-        `Function "createDir" expected an absolute path. Recieved "${dir}".`,
-      );
+      throw Error(`Function "createDir" expected an absolute path. Recieved "${dir}".`);
     }
     return mkdirp(dir);
   } catch (err) {
@@ -62,11 +60,7 @@ function rimrafDirs(dirs: Path[]) {
 
 function abortDirCreation(dir: Path): void {
   if (dir !== null && checkIfDirExists(dir)) {
-    console.error(
-      `Cleaning up due to abort, directories created starting at: ${JSON.stringify(
-        dir,
-      )}`,
-    );
+    console.error(`Cleaning up due to abort, directories created starting at: ${JSON.stringify(dir)}`);
     rimrafDir(dir);
   } else {
     console.error(`Cleaning up due to abort, no directory to clean up.`);

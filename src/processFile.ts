@@ -2,9 +2,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as fsHelpers from './fsHelpers';
 import { validOptions } from './utils';
-import {
-  CliOptions, Option, Path, Status,
-} from './types';
+import { CliOptions, Option, Path, Status } from './types';
 import modules from './moduleSources';
 
 function TerrafileImplementation(options: CliOptions): Status {
@@ -18,11 +16,7 @@ function TerrafileImplementation(options: CliOptions): Status {
   }
 
   function verifyFile(): Status {
-    if (
-      !fsHelpers.checkIfFileExists(
-        fsHelpers.getAbsolutePath(this.options?.file),
-      )
-    ) {
+    if (!fsHelpers.checkIfFileExists(fsHelpers.getAbsolutePath(this.options?.file))) {
       this.success = false;
       this.contents = null;
       this.error = `Error: ${this.options?.file} does not exist`;
@@ -32,9 +26,7 @@ function TerrafileImplementation(options: CliOptions): Status {
 
   function readFile(): Status {
     try {
-      this.json = JSON.parse(
-        fs.readFileSync(fsHelpers.getAbsolutePath(this.options.file), `utf-8`),
-      );
+      this.json = JSON.parse(fs.readFileSync(fsHelpers.getAbsolutePath(this.options.file), `utf-8`));
     } catch (err) {
       this.success = false;
       this.contents = null;
@@ -66,10 +58,12 @@ function TerrafileImplementation(options: CliOptions): Status {
   }
 
   async function fetchModules(contents: [string, Record<string, string>][], dir: Path): Promise<Status[]> {
-    return Promise.all(contents.map(([key, val]) => {
-      const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);
-      return modules.fetch(val, dest);
-    }));
+    return Promise.all(
+      contents.map(([key, val]) => {
+        const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);
+        return modules.fetch(val, dest);
+      }),
+    );
   }
 
   async function process(): Promise<Status> {
@@ -100,13 +94,7 @@ function TerrafileImplementation(options: CliOptions): Status {
 }
 
 async function Terrafile(options: CliOptions): Promise<Status> {
-  return TerrafileImplementation(options)
-    .validateOptions()
-    .verifyFile()
-    .readFile()
-    .parse()
-    .validateJson()
-    .process();
+  return TerrafileImplementation(options).validateOptions().verifyFile().readFile().parse().validateJson().process();
 }
 
 async function readFileContents(options: CliOptions): Promise<Status> {

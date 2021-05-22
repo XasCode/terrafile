@@ -13,9 +13,7 @@ function replacePathIfPathParam(source: Path, repoPath: Path): Path {
   const [beforePathSep, afterPathSep] = beforeQref.split(`//`);
   const newPathPart = afterPathSep ? `//${afterPathSep}` : ``;
   const newPath = repoPath ? `/${repoPath}` : newPathPart;
-  return `${beforeGit}${
-    source.includes(`.git`) ? `.git` : ``
-  }${beforePathSep}${newPath}${newQrefPart}`;
+  return `${beforeGit}${source.includes(`.git`) ? `.git` : ``}${beforePathSep}${newPath}${newQrefPart}`;
 }
 
 async function fetch(params: Entry, dest: Path): Promise<Status> {

@@ -2,22 +2,11 @@ import { resolve } from 'path';
 import { spy } from './testUtils';
 
 import { createTargetDirectory } from '../src/venDir';
-import {
-  checkIfDirExists,
-  getAbsolutePath,
-  createDir,
-  touchFile,
-  rimrafDirs,
-} from '../src/fsHelpers';
+import { checkIfDirExists, getAbsolutePath, createDir, touchFile, rimrafDirs } from '../src/fsHelpers';
 
 import { CliOptions } from '../src/types';
 
-const testDirs = [
-  `ok_vendor_a`,
-  `ok_vendor_b`,
-  `ok_vendor_c`,
-  `err_vendor`,
-];
+const testDirs = [`ok_vendor_a`, `ok_vendor_b`, `ok_vendor_c`, `err_vendor`];
 
 /* createTargetDirectory({"directory": <path>, ...})
  * Args: Expects an object with the <path> to the "directory" that is needed
@@ -76,9 +65,7 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
       directory: installDir,
     });
     expect(checkIfDirExists(absInstallDir)).toBe(true);
-    expect(
-      checkIfDirExists(resolve(absInstallDir, `..`, `.terrafile.save`)),
-    ).toBe(true);
+    expect(checkIfDirExists(resolve(absInstallDir, `..`, `.terrafile.save`))).toBe(true);
     expect(retVals.success).toBe(true);
     expect(retVals.created).toBe(absInstallDir);
     expect(retVals.saved).toBe(resolve(absInstallDir, `..`, `.terrafile.save`));

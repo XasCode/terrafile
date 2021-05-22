@@ -3,9 +3,7 @@ import { resolve } from 'path';
 
 import { rimrafDir } from '../src/fsHelpers';
 import { main } from '../src/terrafile';
-import {
-  getRandomInt, cli, spy, variations, backendVersions,
-} from './testUtils';
+import { getRandomInt, cli, spy, variations, backendVersions } from './testUtils';
 
 import { TestDefinition } from '../src/types';
 
@@ -50,65 +48,55 @@ describe.each(variations)(
     //      the frontend without actually running the backend. We run the tests against
     //      the default and mocked with the same inputs and expect the same outputs to make
     //      sure that our mock successfully simulates the actual implementation
-    test.each(backends)(
-      `Check BE output (BE="%s", args="${args}")`,
-      (backend) => {
-        const { install } = backendVersions[backend];
-        switch (command) {
-          case `install`: {
-            install(options);
-            expect(console.log).toBeCalledTimes(1);
-            expect(console.log).toHaveBeenLastCalledWith(stdOut);
-            break;
-          }
-          default: {
-            expect(console.log).toBeCalledTimes(0);
-          }
+    test.each(backends)(`Check BE output (BE="%s", args="${args}")`, (backend) => {
+      const { install } = backendVersions[backend];
+      switch (command) {
+        case `install`: {
+          install(options);
+          expect(console.log).toBeCalledTimes(1);
+          expect(console.log).toHaveBeenLastCalledWith(stdOut);
+          break;
         }
-      },
-    );
+        default: {
+          expect(console.log).toBeCalledTimes(0);
+        }
+      }
+    });
 
     // Test the frontend and the backends. Essentially this tests
     // the frontend cli interface to ensure that it processes the
     // cli arguments, executes the commands with the given options,
     // and produces the same results as the backend tests.
-    test.each(backends)(
-      `Check CLI as module (BE="%s", args="${args}")`,
-      (backend) => {
-        const myargs = [
-          process.argv[0],
-          resolve(`./dist/terrafile`),
-          ...(args ? args.split(` `) : []),
-        ];
-        if (backend.length > 0) {
-          main(myargs, backendVersions[backend]);
-        } else {
-          main(myargs);
-        }
+    test.each(backends)(`Check CLI as module (BE="%s", args="${args}")`, (backend) => {
+      const myargs = [process.argv[0], resolve(`./dist/terrafile`), ...(args ? args.split(` `) : [])];
+      if (backend.length > 0) {
+        main(myargs, backendVersions[backend]);
+      } else {
+        main(myargs);
+      }
 
-        // if we successfully are running the installl command,
-        if (command === `install`) {
-          expect(console.log).toHaveBeenLastCalledWith(`${stdOut}`);
-          expect(process.stdout.write).not.toHaveBeenCalled();
-          expect(process.stderr.write).not.toHaveBeenCalled();
-          expect(console.error).not.toHaveBeenCalled();
-          expect(process.exit).not.toHaveBeenCalled();
-        } else {
-          // if the install command is not run
-          [stdOut, stdErr].forEach((cur) => {
-            if (cur !== ``) {
-              expect(
-                cur === stdOut
-                  ? (process.stdout.write as jest.Mock).mock.calls[0][0]
-                  : (process.stderr.write as jest.Mock).mock.calls[0][0],
-              ).toBe(`${cur}${cur.length > 0 ? `\n` : ``}`);
-            }
-          });
-          const exitCode = ((process.exit as unknown) as jest.Mock).mock.calls[0][0];
-          expect(exitCode).toBe(error === null ? 0 : error.code); // no error (null) --> exit(0)
-        }
-      },
-    );
+      // if we successfully are running the installl command,
+      if (command === `install`) {
+        expect(console.log).toHaveBeenLastCalledWith(`${stdOut}`);
+        expect(process.stdout.write).not.toHaveBeenCalled();
+        expect(process.stderr.write).not.toHaveBeenCalled();
+        expect(console.error).not.toHaveBeenCalled();
+        expect(process.exit).not.toHaveBeenCalled();
+      } else {
+        // if the install command is not run
+        [stdOut, stdErr].forEach((cur) => {
+          if (cur !== ``) {
+            expect(
+              cur === stdOut
+                ? (process.stdout.write as jest.Mock).mock.calls[0][0]
+                : (process.stderr.write as jest.Mock).mock.calls[0][0],
+            ).toBe(`${cur}${cur.length > 0 ? `\n` : ``}`);
+          }
+        });
+        const exitCode = (process.exit as unknown as jest.Mock).mock.calls[0][0];
+        expect(exitCode).toBe(error === null ? 0 : error.code); // no error (null) --> exit(0)
+      }
+    });
 
     // Actually executing the CLI commands is time consuming. So we only
     // execute a small sample of the tests.
@@ -120,13 +108,9 @@ describe.each(variations)(
           { actual: result.stdout, expected: stdOut },
           { actual: result.stderr, expected: stdErr },
         ].forEach((cur) => {
-          expect(cur.actual).toBe(
-            `${cur.expected}${cur.expected.length > 0 ? `\n` : ``}`,
-          );
+          expect(cur.actual).toBe(`${cur.expected}${cur.expected.length > 0 ? `\n` : ``}`);
         });
-        expect(result.error === null ? result.error : result.error.code).toBe(
-          error === null ? error : error.code,
-        );
+        expect(result.error === null ? result.error : result.error.code).toBe(error === null ? error : error.code);
       });
     }
   },

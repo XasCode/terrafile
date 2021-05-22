@@ -24,10 +24,4 @@ const unknownCommand = `error: unknown command 'foo'. See 'terrafile --help'.`;
 const unknownOptionShort = `error: unknown option '-b'`;
 const unknownOptionLong = `error: unknown option '--bar'`;
 
-export {
-  helpContent,
-  helpInstallContent,
-  unknownCommand,
-  unknownOptionLong,
-  unknownOptionShort,
-};
+export { helpContent, helpInstallContent, unknownCommand, unknownOptionLong, unknownOptionShort };
