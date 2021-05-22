@@ -16,13 +16,11 @@ test.each([
     version: `v2.78.0`,
   },
   {
-    source:
-      `https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc`,
+    source: `https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc`,
     version: `v2.78.0`,
   },
   {
-    source:
-      `git@github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc`,
+    source: `git@github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc`,
     version: `v2.78.0`,
   },
 ])(

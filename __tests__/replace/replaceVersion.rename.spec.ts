@@ -4,8 +4,7 @@ const { replaceUrlVersionIfVersionParam } = testable;
 
 test.each([
   {
-    source:
-      `https://github.com/terraform-aws-modules/terraform-aws-vpc.git?ref=v2.78.0`,
+    source: `https://github.com/terraform-aws-modules/terraform-aws-vpc.git?ref=v2.78.0`,
     version: `v2.79.0`,
     rewritten:
       `https://github.com/terraform-aws-modules/terraform-aws-vpc.git?ref=v2.79.0`,
