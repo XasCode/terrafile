@@ -23,7 +23,11 @@
     "import/prefer-default-export": "off",
     "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
     "@typescript-eslint/comma-dangle": "off",
-    "comma-dangle": ["error", "always-multiline"]
+    "comma-dangle": ["error", "always-multiline"],
+    "@typescript-eslint/implicit-arrow-linebreak": "off",
+    "implicit-arrow-linebreak": ["error", "below"],
+    "@typescript-eslint/function-paren-newline": "off",
+    "function-paren-newline": ["error", "multiline"]
   },
   "overrides": [
     {
