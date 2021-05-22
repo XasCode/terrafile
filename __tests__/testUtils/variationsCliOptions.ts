@@ -3,7 +3,6 @@ import { readFileSync } from 'fs-extra';
 
 import { getAbsolutePath } from '../../src/fsHelpers';
 import { cartesian } from './cartesian';
-// import { backendVersions } from './variationsBackends';
 
 import {
   CliArgs,
