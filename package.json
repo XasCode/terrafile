@@ -10,9 +10,7 @@
     "test": "npm run build && jest",
     "build": "tsc",
     "install": "npm run build",
-    "format": "prettier-standard '**/*.ts'",
-    "check-eslint-config": "eslint --print-config . | eslint-config-prettier-check",
-    "check-code": "eslint src"
+    "lint": "eslint src"
   },
   "repository": {
     "type": "git",

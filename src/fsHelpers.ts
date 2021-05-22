@@ -54,7 +54,7 @@ function rimrafDir(dir: Path): Path {
   return undefined;
 }
 
-function rimrafDirs(dirs: Path[]) {
+function rimrafDirs(dirs: Path[]): Path[] {
   return dirs.map((dir) => rimrafDir(getAbsolutePath(dir)));
 }
 
