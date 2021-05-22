@@ -24,10 +24,14 @@
     "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
     "@typescript-eslint/comma-dangle": "off",
     "comma-dangle": ["error", "always-multiline"],
-    "@typescript-eslint/implicit-arrow-linebreak": "off",
-    "implicit-arrow-linebreak": ["error", "below"],
     "@typescript-eslint/function-paren-newline": "off",
-    "function-paren-newline": ["error", "multiline"]
+    "function-paren-newline": ["error", "multiline-arguments"],
+    "object-curly-newline": ["error", { "ImportDeclaration": { "minProperties": 6 } }],
+    "@typescript-eslint/operator-linebreak": "off",
+    "operator-linebreak": ["error", "after", { "overrides": { "?": "before", ":": "before" } }],
+    "newline-per-chained-call": "off",
+    "@typescript-eslint/indent": "off",
+    "indent": ["error", 2, { "offsetTernaryExpressions": true}]
   },
   "overrides": [
     {
