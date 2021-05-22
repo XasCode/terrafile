@@ -1,8 +1,12 @@
 import axios from 'axios';
 import { startsWith } from '../utils';
-import { Entry, Path, Status } from '../types';
+import {
+  Entry, Path, RetString, Status,
+} from '../types';
 import { cloneRepoToDest } from './common/cloneRepo';
 import type { ModulesKeyType } from './modules';
+
+const registryURL = `https://registry.terraform.io/v1/modules`;
 
 function match(source: Path): ModulesKeyType | `` {
   return !startsWith(source, `/`)
@@ -14,15 +18,21 @@ function match(source: Path): ModulesKeyType | `` {
     : ``;
 }
 
-/// /////////
-
-const registryURL = `https://registry.terraform.io/v1/modules`;
-
-function getRepoUrl(terraformRegistryGitUrl: Path) {
-  return terraformRegistryGitUrl.split(`git::`)[1];
+function stripGitPrefixFromRepoUrl(terraformRegistryGitUrl: Path): RetString {
+  if (terraformRegistryGitUrl.includes(`git::`)) {
+    return { success: true, value: terraformRegistryGitUrl.split(`git::`)[1] };
+  }
+  return { success: false, error: `Expected location '${terraformRegistryGitUrl}' to begin with 'git::'` };
 }
 
-async function getRegRepoUrl(downloadPointerUrl: Path): Promise<Path> {
+function getRepoUrl(terraformRegistryGitUrl: Path):RetString {
+  if (terraformRegistryGitUrl !== undefined) {
+    return stripGitPrefixFromRepoUrl(terraformRegistryGitUrl);
+  }
+  return { success: false, error: `Attempt to retrieve location of repo from terraform registry returned undefined` };
+}
+
+async function getRegRepoUrl(downloadPointerUrl: Path): Promise<RetString> {
   try {
     const response = await axios({
       method: `get`,
@@ -32,19 +42,15 @@ async function getRegRepoUrl(downloadPointerUrl: Path): Promise<Path> {
       const downloadUrl = response.headers[`x-terraform-get`];
       return getRepoUrl(downloadUrl);
     }
-    console.log(`!204`);
+    return { success: false, error: `Expected status 204 from ${downloadPointerUrl}, recieved ${response.status}` };
   } catch (err) {
-    console.error(`Error fetching download URL from terraform registry.`);
+    return { success: false, error: `Exception ecountered fetching ${downloadPointerUrl} from terraform registry.` };
   }
-  return undefined;
 }
 
 function getRegDownloadPointerUrl(source: Path, version: string): Path {
   const [ns, modName, provider] = source.split(`/`);
-  const registryDownloadUrl = `${registryURL}/${ns || ``}/${modName || ``}/${
-    provider || ``
-  }/${version}/download`;
-  return registryDownloadUrl;
+  return `${registryURL}/${ns || ``}/${modName || ``}/${provider || ``}/${version}/download`;
 }
 
 async function copyFromTerraformRegistry(
@@ -56,8 +62,8 @@ async function copyFromTerraformRegistry(
     params.version || ``,
   );
   const regRepoUrl = await getRegRepoUrl(downloadPointerUrl);
-  return regRepoUrl
-    ? cloneRepoToDest(regRepoUrl, dest)
+  return regRepoUrl.success
+    ? cloneRepoToDest(regRepoUrl.value, dest)
     : {
       success: false,
       contents: null,

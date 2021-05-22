@@ -69,6 +69,15 @@ type RepoLocation = [Path, Path, string, string];
 
 type SourceParts = string[];
 
+type RetVal = {
+  success: boolean;
+  error?: string;
+};
+
+interface RetString extends RetVal {
+  value?: string;
+}
+
 export {
   Backend,
   CliArgs,
@@ -78,6 +87,7 @@ export {
   Option,
   Path,
   RepoLocation,
+  RetString,
   SourceParts,
   Status,
   TestDefinition,

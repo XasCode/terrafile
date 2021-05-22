@@ -1,4 +1,11 @@
-import { mockAxiosGetTerraformUrl, mockCliError, mockCliSuccess } from './mock';
+import {
+  mockAxiosGetTerraformUrl,
+  mockAxiosGetTerraformUrl500Error,
+  mockAxiosGetTerraformUrlNoXTFGetError,
+  mockAxiosGetTerraformUrlFormatError,
+  mockCliError,
+  mockCliSuccess
+} from './mock';
 import * as spy from './spy';
 import { cartesian } from './cartesian';
 import { cli } from './cli';
@@ -13,6 +20,9 @@ export {
   cli,
   getRandomInt,
   mockAxiosGetTerraformUrl,
+  mockAxiosGetTerraformUrl500Error,
+  mockAxiosGetTerraformUrlNoXTFGetError,
+  mockAxiosGetTerraformUrlFormatError,
   mockCliError,
   mockCliSuccess,
   randomizeOrder,
