@@ -5,7 +5,7 @@ import { validOptions } from './utils';
 import { CliOptions, Option, Path, Status } from './types';
 import modules from './moduleSources';
 
-function TerrafileImplementation(options: CliOptions): Status {
+function Terrafile(options: CliOptions): Status {
   function validateOptions(): Status {
     if (!validOptions(this.options, `file` as Option)) {
       this.success = false;
@@ -93,12 +93,8 @@ function TerrafileImplementation(options: CliOptions): Status {
   };
 }
 
-async function Terrafile(options: CliOptions): Promise<Status> {
-  return TerrafileImplementation(options).validateOptions().verifyFile().readFile().parse().validateJson().process();
-}
-
 async function readFileContents(options: CliOptions): Promise<Status> {
-  return Terrafile(options);
+  return Terrafile(options).validateOptions().verifyFile().readFile().parse().validateJson().process();
 }
 
 export { readFileContents };

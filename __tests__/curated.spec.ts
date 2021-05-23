@@ -20,11 +20,7 @@ const curatedCliCommands: Record<string, [string, string, ExecFileException]> = 
   'install --bar': [``, `${unknownOptionLong}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
   'install -b': [``, `${unknownOptionShort}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
   'help install': [`${helpInstallContent}\n`, ``, null],
-  'install -d <abc': [
-    `{"directory":"<abc","file":"terrafile.json"}\n`,
-    `Error resolving path: <abc\nError creating dir: ${getAbsolutePath(`src/<abc`)}\n`,
-    null,
-  ],
+  'install -d <abc': [`{"directory":"<abc","file":"terrafile.json"}\n`, `Error resolving path: <abc\n`, null],
 };
 
 describe.each(Object.keys(curatedCliCommands))(

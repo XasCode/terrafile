@@ -14,7 +14,6 @@ function main(myargs: string[], be?: Backend): void {
     .action((options) => (be === undefined ? backend.install(options) : be.install(options)))
     .addOption(new Option(`-d, --directory <string>`, `module directory`).default(`vendor/modules`))
     .addOption(new Option(`-f, --file <string>`, `config file`).default(`terrafile.json`));
-
   try {
     program.parse(myargs);
   } catch (err) {

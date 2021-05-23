@@ -3,7 +3,7 @@ import { sync as mkdirp } from 'mkdirp';
 import { sync as rimraf } from 'rimraf';
 import { sync as touch } from 'touch';
 import * as path from 'path';
-import { Path } from './types';
+import { Path, RetString } from './types';
 
 function checkIfFileExists(filePath: Path): boolean {
   return fs.existsSync(filePath) && fs.lstatSync(filePath).isFile();
@@ -67,12 +67,13 @@ function abortDirCreation(dir: Path): void {
   }
 }
 
-function renameDir(oldPath: Path, newPath: Path): void {
+function renameDir(oldPath: Path, newPath: Path): RetString {
   try {
     fs.renameSync(oldPath, newPath);
-    console.log(`Successfully renamed the directory.`);
+    return { success: true, value: `Successfully renamed the directory.` };
   } catch (err) {
     console.error(err.code);
+    return { success: false, error: `renameDir from '${oldPath}' to '${newPath} failed.` };
   }
 }
 
