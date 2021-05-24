@@ -4,9 +4,9 @@ const { replacePathIfPathParam } = testable;
 
 test.each([
   {
-    source: `git@github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/replace-me`,
+    source: `git@github.com:terraform-aws-modules/terraform-aws-vpc.git//examples/replace-me`,
     path: `/examples/simple-vpc`,
-    rewritten: `git@github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc`,
+    rewritten: `git@github.com:terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc`,
   },
   {
     source: `https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/replace-me?ref=v2.78.0`,

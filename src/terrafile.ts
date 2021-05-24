@@ -4,7 +4,7 @@ import * as backend from './backend';
 import { version } from '../package.json';
 import { Backend } from './types';
 
-function main(myargs: string[], be?: Backend): void {
+async function main(myargs: string[], be?: Backend): Promise<void> {
   const program = new Command();
   program
     .version(version, `-V, --version`, `Show version information for terrafile`)
@@ -21,9 +21,11 @@ function main(myargs: string[], be?: Backend): void {
   }
 }
 
-/* istanbul ignore if */
-if (require.main === module) {
-  main(process.argv);
-}
+(async () => {
+  /* istanbul ignore if */
+  if (require.main === module) {
+    main(process.argv);
+  }
+})();
 
 export { main };

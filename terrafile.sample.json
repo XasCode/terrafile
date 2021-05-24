@@ -45,34 +45,34 @@
   },
   "xascode-sample31": {
     "comment": "Git module (SSH)",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git"
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git"
   },
   "xascode-sample32": {
     "comment": "Git module (SSH + tag)",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git",
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git",
     "version": "v2.78.0"
   },
   "xascode-sample33": {
     "comment": "Git module (SSH + branch)",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git",
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git",
     "version": "master"
   },
   "xascode-sample34": {
     "comment": "Git module (SSH + commit)",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git",
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git",
     "version": "43edd4400e5e596515f8d787603c37e08b99abd5"
   },
   "xascode-sample35": {
     "comment": "Git module (SSH + tag) alternate syntax",
-    "source": "git@github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=v2.78.0"
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git?ref=v2.78.0"
   },
   "xascode-sample36": {
     "comment": "Git module (SSH + branch) alternate syntax",
-    "source": "git@github.com/xascode/terraform-modules.git?ref=master"
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git?ref=master"
   },
   "xascode-sample37": {
     "comment": "Git module (SSH + commit) alternate syntax",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git?ref=43edd4400e5e596515f8d787603c37e08b99abd5"
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git?ref=43edd4400e5e596515f8d787603c37e08b99abd5"
   },
   "xascode-sample41": {
     "comment": "Git monorepo module (HTTPS)",
@@ -111,37 +111,37 @@
   },
   "xascode-sample51": {
     "comment": "Git monorepo module (SSH)",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git",
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git",
     "path": "/examples/simple-vpc"
   },
   "xascode-sample52": {
     "comment": "Git monorepo module (SSH + tag)",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc",
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc",
     "version": "v2.78.0",
     "path": "/examples/simple-vpc"
   },
   "xascode-sample53": {
     "comment": "Git monorepo module (SSH + branch)",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git",
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git",
     "version": "master",
     "path": "/examples/simple-vpc"
   },
   "xascode-sample54": {
     "comment": "Git monorepo module (SSH + commit)",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git",
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git",
     "version": "43edd4400e5e596515f8d787603c37e08b99abd5",
     "path": "/examples/simple-vpc"
   },
   "xascode-sample55": {
     "comment": "Git monorepo module (SSH + tag) alternate syntax",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=v2.78.0"
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=v2.78.0"
   },
   "xascode-sample56": {
     "comment": "Git monorepo module (SSH + branch) alternate syntax",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=master"
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=master"
   },
   "xascode-sample57": {
     "comment": "Git monorepo module (SSH + commit) alternate syntax",
-    "source": "git@github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=43edd4400e5e596515f8d787603c37e08b99abd5"
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=43edd4400e5e596515f8d787603c37e08b99abd5"
   }
 }

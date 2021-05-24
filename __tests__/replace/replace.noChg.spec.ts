@@ -20,10 +20,10 @@ test.each([
     source: `https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc?ref=v2.78.0`,
   },
   {
-    source: `git@github.com/terraform-aws-modules/terraform-aws-vpc.git`,
+    source: `git@github.com:terraform-aws-modules/terraform-aws-vpc.git`,
   },
   {
-    source: `git@github.com/xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=v2.78.0`,
+    source: `git@github.com:xascode/terraform-aws-modules/terraform-aws-vpc.git?ref=v2.78.0`,
   },
   {
     source: `https://github.com/terraform-aws-modules/terraform-aws-vpc.git//examples/simple-vpc`,

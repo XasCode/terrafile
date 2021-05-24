@@ -67,8 +67,10 @@ function mockCliSuccess(): void {
       const pathLocal = require(`path`);
       const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);
       if (!fsHelpersLocal.checkIfDirExists(fullDest)) {
-        fsHelpersLocal.createDir(fullDest);
-        fsHelpersLocal.touchFile(`${fullDest}${pathLocal.sep}main.tf`);
+        const usePath: string =
+          args.filter((cur: string) => cur === 'sparse-checkout').length > 0 ? args.slice(-1)[0] : '';
+        fsHelpersLocal.createDir(fsHelpersLocal.getAbsolutePath(`${fullDest}${usePath}`));
+        fsHelpersLocal.touchFile(`${fullDest}${usePath}${pathLocal.sep}main.tf`);
       }
       return {
         error: null,

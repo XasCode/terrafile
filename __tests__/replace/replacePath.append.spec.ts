@@ -9,7 +9,7 @@ test.each([
   },
   {
     comment: `Git monorepo module (SSH)`,
-    source: `git@github.com/terraform-aws-modules/terraform-aws-vpc.git`,
+    source: `git@github.com:terraform-aws-modules/terraform-aws-vpc.git`,
     path: `/examples/simple-vpc`,
   },
 ])(`should append path - %s`, ({ source, path }) => {

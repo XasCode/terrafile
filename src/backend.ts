@@ -12,7 +12,7 @@ import { createTargetDirectory } from './venDir';
 //   return createdDirsStartingAt;
 // }
 
-function install(options: CliOptions): void {
+async function install(options: CliOptions): Promise<void> {
   // createInstallDirectory(options.directory);
   const createResult = createTargetDirectory(options);
   console.log(`${JSON.stringify(options)}`);
@@ -22,7 +22,7 @@ function install(options: CliOptions): void {
       return;
     }
   }
-  //readFileContents(options);
+  await readFileContents(options);
   //restoreDirectory(options.directory);
 }
 

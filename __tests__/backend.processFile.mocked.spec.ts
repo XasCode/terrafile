@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs-extra';
 import { mockAxiosGetTerraformUrl, mockCliSuccess, spy } from './testUtils';
+import * as fsHelpers from '../src/fsHelpers';
 
 // mock so that we don't actually fetch from remote locations
 mockAxiosGetTerraformUrl();
@@ -41,7 +42,12 @@ describe(`read file contents should read specified json file and validate its co
     const testJson = JSON.parse(readFileSync(getAbsolutePath(`terrafile.sample.json`), `utf-8`));
     expect(Object.keys(testJson).length).toBe(31);
     for (const modName of Object.keys(testJson)) {
-      expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}/main.tf`))).toBe(true);
+      const usePath = testJson[modName].path !== undefined ? testJson[modName].path : '';
+      expect(
+        checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))
+          ? checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))
+          : fsHelpers.createDir(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}`)),
+      ).toBe(true);
     }
   });
 

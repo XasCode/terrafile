@@ -30,11 +30,12 @@ function getPartsFromHttp(source: Path): RepoLocation {
 }
 
 async function cloneRepo([repo, repoDir, branchOrTag]: RepoLocation, fullDest: Path): Promise<ExecResult> {
+  const httpsRepo = repo.includes('git@github.com:') ? repo.replace('git@github.com:', 'https://github.com/') : repo;
   const cloneCmd = [
     `clone`,
     ...(repoDir ? [`--depth`, `1`, `--filter=blob:none`, `--sparse`] : []),
     ...(branchOrTag ? [`--branch=${branchOrTag}`] : []),
-    `${repo}.git`,
+    `${httpsRepo}`,
     fullDest,
   ];
   return git(cloneCmd);
