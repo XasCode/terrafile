@@ -1,4 +1,4 @@
-import { randomizeOrder } from './testUtils';
+import { randomizeOrder } from '__tests__/testUtils';
 
 function expectRearranged(inputArray: unknown[], outputArray: unknown[]) {
   expect(inputArray.length).toBe(outputArray.length);

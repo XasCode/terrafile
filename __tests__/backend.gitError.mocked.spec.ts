@@ -1,13 +1,13 @@
-import { mockAxiosGetTerraformUrl, mockCliError, spy } from './testUtils';
+import { mockAxiosGetTerraformUrl, mockCliError, spy } from '__tests__/testUtils';
 
 //mockAxiosGetTerraformUrl();
 jest.mock(`axios`, mockAxiosGetTerraformUrl);
-jest.mock(`../src/run`, () => ({ git: mockCliError }));
+jest.mock(`src/run`, () => ({ git: mockCliError }));
 
-import { readFileContents } from '../src/processFile';
-import { rimrafDir, getAbsolutePath } from '../src/fsHelpers';
+import { readFileContents } from 'src/processFile';
+import { rimrafDir, getAbsolutePath } from 'src/fsHelpers';
 
-import { CliOptions } from '../src/types';
+import { CliOptions } from 'src/types';
 
 const testDirs = [`vendor_tfregistry_error`];
 

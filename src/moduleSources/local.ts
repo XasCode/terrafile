@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
-import { startsWith } from '../utils';
-import { Entry, Path, Status } from '../types';
-import * as fsHelpers from '../fsHelpers';
-import type { ModulesKeyType } from './modules';
+import { startsWith } from 'src/utils';
+import { Entry, Path, Status } from 'src/types';
+import * as fsHelpers from 'src/fsHelpers';
+import type { ModulesKeyType } from 'src/moduleSources/modules';
 
 function match(source: Path): ModulesKeyType | `` {
   return startsWith(source, `/`) || startsWith(source, `./`) || startsWith(source, `../`) ? `local` : ``;

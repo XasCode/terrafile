@@ -1,5 +1,5 @@
-import { Entry, Path, Status } from '../../types';
-import { cloneRepoToDest } from './cloneRepo';
+import { Entry, Path, Status } from 'src/types';
+import { cloneRepoToDest } from 'src/moduleSources/common/cloneRepo';
 
 function replaceUrlVersionIfVersionParam(source: Path, version: string): Path {
   return version ? [source.split(`?ref=`)[0], version].join(`?ref=`) : source;

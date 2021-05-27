@@ -3,7 +3,7 @@ import { sync as mkdirp } from 'mkdirp';
 import { sync as rimraf } from 'rimraf';
 import { sync as touch } from 'touch';
 import * as path from 'path';
-import { Path, RetString } from './types';
+import { Path, RetString } from 'src/types';
 
 function checkIfFileExists(filePath: Path): boolean {
   return fs.existsSync(filePath) && fs.lstatSync(filePath).isFile();
@@ -15,12 +15,12 @@ function checkIfDirExists(dir: Path): boolean {
 
 function getAbsolutePath(dir: Path): Path {
   try {
-    if (dir.match(/^[a-zA-Z0-9\-_./:\\]+$/g) === null) {
+    if (dir.match(/^[\.a-zA-Z0-9\-_src/:\\]+$/g) === null) {
       throw Error(`Dir contains unsupported characters. Received ${dir}.`);
     }
     return path.normalize(path.resolve(dir));
   } catch (err) {
-    console.error(`Error resolving path: ${dir}`);
+    console.error(`Error resolving path: ${dir} | ${JSON.stringify(err)}`);
   }
   return undefined;
 }

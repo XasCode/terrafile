@@ -1,9 +1,9 @@
 import { readFileSync } from 'fs-extra';
 
-import { readFileContents } from '../src/processFile';
-import { rimrafDirs, getAbsolutePath, checkIfFileExists } from '../src/fsHelpers';
-import { spy } from './testUtils';
-import { CliOptions } from '../src/types';
+import { readFileContents } from 'src/processFile';
+import { rimrafDirs, getAbsolutePath, checkIfFileExists } from 'src/fsHelpers';
+import { spy } from '__tests__/testUtils';
+import { CliOptions } from 'src/types';
 
 const testDirs = [`be_vendor_tfregistry_error`, `be_vendor_empty`, `be_vendor_live`];
 

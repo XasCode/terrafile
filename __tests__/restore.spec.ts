@@ -1,13 +1,6 @@
-import {
-  rimrafDir,
-  getAbsolutePath,
-  createDir,
-  touchFile,
-  checkIfDirExists,
-  checkIfFileExists,
-} from '../src/fsHelpers';
-import { restoreDirectory } from '../src/restore';
-import { getSaveLocation, createTargetDirectory } from '../src/venDir';
+import { rimrafDir, getAbsolutePath, createDir, touchFile, checkIfDirExists, checkIfFileExists } from 'src/fsHelpers';
+import { restoreDirectory } from 'src/restore';
+import { getSaveLocation, createTargetDirectory } from 'src/venDir';
 
 const testDirs = [`restore`, `restore2`];
 

@@ -1,8 +1,8 @@
-import * as fsHelpers from './fsHelpers';
-import { readFileContents } from './processFile';
-import { restoreDirectory } from './restore';
-import { CliOptions, Path, Status } from './types';
-import { createTargetDirectory } from './venDir';
+import * as fsHelpers from 'src/fsHelpers';
+import { readFileContents } from 'src/processFile';
+import { restoreDirectory } from 'src/restore';
+import { CliOptions, Path, Status } from 'src/types';
+import { createTargetDirectory } from 'src/venDir';
 
 // TODO: stop using this, instead use createTargetDirectory
 // function createInstallDirectory(dir: Path): Path {

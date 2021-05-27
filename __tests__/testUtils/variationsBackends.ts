@@ -1,7 +1,7 @@
-import { install as defaultInstall } from '../../src/backend';
-import { install as mockedInstall } from '../../__mocks__/backend.mock';
+import { install as defaultInstall } from 'src/backend';
+import { install as mockedInstall } from '__mocks__/backend.mock';
 
-import { Backend } from '../../src/types';
+import { Backend } from 'src/types';
 
 const backendVersions: Record<string, Backend> = {
   '': { install: defaultInstall },

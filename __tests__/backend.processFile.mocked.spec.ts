@@ -1,5 +1,5 @@
 /*
-jest.mock(`../src/run`, () => ({
+jest.mock(`src/run`, () => ({
   git: jest.fn().mockImplementation((args, cwd) => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const fsHelpersLocal = require(`../src/fsHelpers`);
@@ -25,18 +25,18 @@ jest.mock(`../src/run`, () => ({
 
 // mock so that we don't actually fetch from remote locations
 //mockAxiosGetTerraformUrl();
-jest.mock(`axios`, require('./testUtils').mockAxiosGetTerraformUrl);
-jest.mock(`../src/run`);
-//jest.mock(`../src/run`, () => ({ git: require('./testUtils').mockCliSuccess }));
+jest.mock(`axios`, require('__tests__/testUtils').mockAxiosGetTerraformUrl);
+//jest.mock(`src/run`);
+jest.mock(`src/run`, () => ({ git: require('__tests__/testUtils').mockCliSuccess }));
 
 import { readFileSync } from 'fs-extra';
-import { /*mockAxiosGetTerraformUrl, mockCliSuccess,*/ spy } from './testUtils';
-import * as fsHelpers from '../src/fsHelpers';
+import { /*mockAxiosGetTerraformUrl, mockCliSuccess,*/ spy } from '__tests__/testUtils';
+import * as fsHelpers from 'src/fsHelpers';
 
-import { readFileContents } from '../src/processFile';
-import { getAbsolutePath, createDir, touchFile, rimrafDirs, checkIfFileExists } from '../src/fsHelpers';
+import { readFileContents } from 'src/processFile';
+import { getAbsolutePath, createDir, touchFile, rimrafDirs, checkIfFileExists } from 'src/fsHelpers';
 
-import { CliOptions } from '../src/types';
+import { CliOptions } from 'src/types';
 
 const testDirs = [`err_vendor1`, `err_vendor2`, `err_vendor3`, `err_vendor_lerror`, `err_vendor_2x`];
 

@@ -1,12 +1,12 @@
-import { mockAxiosGetTerraformUrl500Error, spy } from './testUtils';
+import { mockAxiosGetTerraformUrl500Error, spy } from '__tests__/testUtils';
 
 //mockAxiosGetTerraformUrl500Error();
 jest.mock(`axios`, mockAxiosGetTerraformUrl500Error);
 
-import { readFileContents } from '../src/processFile';
-import { rimrafDir, getAbsolutePath } from '../src/fsHelpers';
+import { readFileContents } from 'src/processFile';
+import { rimrafDir, getAbsolutePath } from 'src/fsHelpers';
 
-import { CliOptions } from '../src/types';
+import { CliOptions } from 'src/types';
 
 const testDirs = [`vendor_tfregistry_500Error`];
 

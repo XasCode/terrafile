@@ -1,6 +1,6 @@
-import { Entry, Path, Status } from '../types';
-import { modules } from './modules';
-import type { ModulesKeyType } from './modules';
+import { Entry, Path, Status } from 'src/types';
+import { modules } from 'src/moduleSources/modules';
+import type { ModulesKeyType } from 'src/moduleSources/modules';
 
 function getType(source: Path): ModulesKeyType {
   return source === undefined

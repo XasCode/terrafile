@@ -1,10 +1,10 @@
 import { resolve } from 'path';
-import { spy } from './testUtils';
+import { spy } from '__tests__/testUtils';
 
-import { createTargetDirectory } from '../src/venDir';
-import { checkIfDirExists, getAbsolutePath, createDir, touchFile, rimrafDirs } from '../src/fsHelpers';
+import { createTargetDirectory } from 'src/venDir';
+import { checkIfDirExists, getAbsolutePath, createDir, touchFile, rimrafDirs } from 'src/fsHelpers';
 
-import { CliOptions } from '../src/types';
+import { CliOptions } from 'src/types';
 
 const testDirs = [`ok_vendor_a`, `ok_vendor_b`, `ok_vendor_c`, `err_vendor`];
 

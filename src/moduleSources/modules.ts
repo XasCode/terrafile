@@ -1,8 +1,8 @@
 /* eslint-disable import/no-cycle */
-import local from './local';
-import gitHttps from './gitHttps';
-import gitSSH from './gitSSH';
-import terraformRegistry from './terraformRegistry';
+import local from 'src/moduleSources/local';
+import gitHttps from 'src/moduleSources/gitHttps';
+import gitSSH from 'src/moduleSources/gitSSH';
+import terraformRegistry from 'src/moduleSources/terraformRegistry';
 
 const modules = {
   local,

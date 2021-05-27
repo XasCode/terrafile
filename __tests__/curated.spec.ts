@@ -1,12 +1,12 @@
 import { ExecFileException } from 'child_process';
 import { resolve } from 'path';
 
-import { cli } from './testUtils';
-import { getAbsolutePath, rimrafDir } from '../src/fsHelpers';
+import { cli } from '__tests__/testUtils';
+import { getAbsolutePath, rimrafDir } from 'src/fsHelpers';
 
-import { helpContent, helpInstallContent, unknownCommand, unknownOptionLong, unknownOptionShort } from '../src/strings';
+import { helpContent, helpInstallContent, unknownCommand, unknownOptionLong, unknownOptionShort } from 'src/strings';
 
-import { version } from '../package.json';
+import { version } from '/package.json';
 
 const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
 

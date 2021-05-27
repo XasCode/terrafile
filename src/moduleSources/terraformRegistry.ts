@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { startsWith } from '../utils';
-import { Entry, Path, RetString, Status } from '../types';
-import { cloneRepoToDest } from './common/cloneRepo';
-import type { ModulesKeyType } from './modules';
+import { startsWith } from 'src/utils';
+import { Entry, Path, RetString, Status } from 'src/types';
+import { cloneRepoToDest } from 'src/moduleSources/common/cloneRepo';
+import type { ModulesKeyType } from 'src/moduleSources/modules';
 
 const registryURL = `https://registry.terraform.io/v1/modules`;
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { Command, Option } from 'commander';
-import * as backend from './backend';
+import * as backend from 'src/backend';
 import { version } from '../package.json';
-import { Backend } from './types';
+import { Backend } from 'src/types';
 
 async function main(myargs: string[], be?: Backend): Promise<void> {
   const program = new Command();

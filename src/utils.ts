@@ -1,5 +1,5 @@
-import * as fsHelpers from './fsHelpers';
-import { CliOptions, Option } from './types';
+import * as fsHelpers from 'src/fsHelpers';
+import { CliOptions, Option } from 'src/types';
 
 function validOptions(options: CliOptions, fileOrFolder: Option): boolean {
   return (

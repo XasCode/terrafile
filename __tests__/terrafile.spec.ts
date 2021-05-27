@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 import { resolve } from 'path';
 
-import { rimrafDir } from '../src/fsHelpers';
-import { main } from '../src/terrafile';
-import { getRandomInt, cli, spy, variations, backendVersions } from './testUtils';
+import { rimrafDir } from 'src/fsHelpers';
+import { main } from 'src/terrafile';
+import { getRandomInt, cli, spy, variations, backendVersions } from '__tests__/testUtils';
 
-import { TestDefinition } from '../src/types';
+import { TestDefinition } from 'src/types';
 
 const backends = Object.keys(backendVersions);
 

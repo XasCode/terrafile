@@ -2,19 +2,26 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "pretty": true,
     "sourceMap": true,
     "target": "es6",
-    "resolveJsonModule": true,
     "outDir": "./dist",
     "noImplicitAny": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["./src/*"],
+      "__tests__/*": ["./__tests__/*"],
+      "__mocks__/*": ["./__mocks__/*"],
+      "/*": ["./*"]
+    }
   },
   "include": [
-    "**/*.ts", "node_modules/@types"
+    "**/*.ts", "__tests__/**/*ts", "node_modules/@types"
   ],
   "exclude": [
-    "node_modules", "__tests__/**/*.ts", "__mocks__/**/*.ts", "dist"
+    "node_modules", "__mocks__/**/*.ts", "dist"
   ],
   "typeRoots": [
     "node_modules/@types", "src"

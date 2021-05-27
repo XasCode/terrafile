@@ -1,9 +1,9 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as fsHelpers from './fsHelpers';
-import { validOptions } from './utils';
-import { CliOptions, Option, Path, Status } from './types';
-import modules from './moduleSources';
+import * as fsHelpers from 'src/fsHelpers';
+import { validOptions } from 'src/utils';
+import { CliOptions, Option, Path, Status } from 'src/types';
+import modules from 'src/moduleSources';
 
 function Terrafile(options: CliOptions): Status {
   function validateOptions(): Status {
@@ -58,6 +58,13 @@ function Terrafile(options: CliOptions): Status {
   }
 
   async function fetchModules(contents: [string, Record<string, string>][], dir: Path): Promise<Status[]> {
+    const retVals = [];
+    for (const [key, val] of contents) {
+      const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);
+      const retVal = await modules.fetch(val, dest);
+      retVals.push(retVal);
+    }
+    return retVals;
     return Promise.all(
       contents.map(([key, val]) => {
         const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);

@@ -1,12 +1,12 @@
-import { mockAxiosGetTerraformUrlFormatError, spy } from './testUtils';
+import { mockAxiosGetTerraformUrlFormatError, spy } from '__tests__/testUtils';
 
 //mockAxiosGetTerraformUrlFormatError();
 jest.mock(`axios`, mockAxiosGetTerraformUrlFormatError);
 
-import { readFileContents } from '../src/processFile';
-import { rimrafDir, getAbsolutePath } from '../src/fsHelpers';
+import { readFileContents } from 'src/processFile';
+import { rimrafDir, getAbsolutePath } from 'src/fsHelpers';
 
-import { CliOptions } from '../src/types';
+import { CliOptions } from 'src/types';
 
 const testDirs = [`vendor_tfregistry_FormatError`];
 

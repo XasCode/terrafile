@@ -11,4 +11,10 @@ module.exports = {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
   modulePathIgnorePatterns: ['<rootDir>/dist'],
+  moduleNameMapper: {
+    "src/(.*)": "<rootDir>/src/$1",
+    "__tests__/(.*)": "<rootDir>/__tests__/$1",
+    "__mocks__/(.*)": "<rootDir>/__mocks__/$1",
+    "^/(.*)": "<rootDir>/$1"
+  },
 };
