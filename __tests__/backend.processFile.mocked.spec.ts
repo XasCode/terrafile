@@ -1,10 +1,37 @@
-import { readFileSync } from 'fs-extra';
-import { mockAxiosGetTerraformUrl, mockCliSuccess, spy } from './testUtils';
-import * as fsHelpers from '../src/fsHelpers';
+/*
+jest.mock(`../src/run`, () => ({
+  git: jest.fn().mockImplementation((args, cwd) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const fsHelpersLocal = require(`../src/fsHelpers`);
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const pathLocal = require(`path`);
+    const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);
+    const usePath: string =
+      args.filter((cur: string) => cur === 'sparse-checkout').length > 0
+        ? pathLocal.resolve(fsHelpersLocal.getAbsolutePath(fullDest), args.slice(-1)[0].slice(1))
+        : fullDest;
+    if (!fsHelpersLocal.checkIfDirExists(usePath)) {
+      fsHelpersLocal.createDir(fsHelpersLocal.getAbsolutePath(usePath));
+      fsHelpersLocal.touchFile(`${usePath}${pathLocal.sep}main.tf`);
+    }
+    return {
+      error: null,
+      stdout: ``,
+      stderr: ``,
+    };
+  }),
+}));
+*/
 
 // mock so that we don't actually fetch from remote locations
-mockAxiosGetTerraformUrl();
-mockCliSuccess();
+//mockAxiosGetTerraformUrl();
+jest.mock(`axios`, require('./testUtils').mockAxiosGetTerraformUrl);
+jest.mock(`../src/run`);
+//jest.mock(`../src/run`, () => ({ git: require('./testUtils').mockCliSuccess }));
+
+import { readFileSync } from 'fs-extra';
+import { /*mockAxiosGetTerraformUrl, mockCliSuccess,*/ spy } from './testUtils';
+import * as fsHelpers from '../src/fsHelpers';
 
 import { readFileContents } from '../src/processFile';
 import { getAbsolutePath, createDir, touchFile, rimrafDirs, checkIfFileExists } from '../src/fsHelpers';
@@ -14,12 +41,15 @@ import { CliOptions } from '../src/types';
 const testDirs = [`err_vendor1`, `err_vendor2`, `err_vendor3`, `err_vendor_lerror`, `err_vendor_2x`];
 
 describe(`read file contents should read specified json file and validate its contents`, () => {
-  beforeEach(() => {
+  beforeAll(() => {
     rimrafDirs(testDirs);
+  });
+
+  beforeEach(() => {
     spy.clear();
   });
 
-  afterEach(() => {
+  afterAll(() => {
     rimrafDirs(testDirs);
   });
 
@@ -47,6 +77,9 @@ describe(`read file contents should read specified json file and validate its co
         checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))
           ? checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))
           : fsHelpers.createDir(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}`)),
+        // : `${JSON.stringify(testJson[modName])}, ${getAbsolutePath(
+        //   `err_vendor1/modules/${modName}${usePath}/main.tf`,
+        //  )}`,
       ).toBe(true);
     }
   });

@@ -1,6 +1,7 @@
 import { mockAxiosGetTerraformUrlFormatError, spy } from './testUtils';
 
-mockAxiosGetTerraformUrlFormatError();
+//mockAxiosGetTerraformUrlFormatError();
+jest.mock(`axios`, mockAxiosGetTerraformUrlFormatError);
 
 import { readFileContents } from '../src/processFile';
 import { rimrafDir, getAbsolutePath } from '../src/fsHelpers';

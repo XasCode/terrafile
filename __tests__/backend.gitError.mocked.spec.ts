@@ -1,7 +1,8 @@
 import { mockAxiosGetTerraformUrl, mockCliError, spy } from './testUtils';
 
-mockAxiosGetTerraformUrl();
-mockCliError();
+//mockAxiosGetTerraformUrl();
+jest.mock(`axios`, mockAxiosGetTerraformUrl);
+jest.mock(`../src/run`, () => ({ git: mockCliError }));
 
 import { readFileContents } from '../src/processFile';
 import { rimrafDir, getAbsolutePath } from '../src/fsHelpers';

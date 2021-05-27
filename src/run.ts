@@ -2,6 +2,8 @@ import { execFile } from 'child_process';
 import { ExecResult, Path } from './types';
 
 async function git(args: string[], cwd?: Path): Promise<ExecResult> {
+  console.error(JSON.stringify(args));
+  console.error(JSON.stringify(cwd));
   return new Promise((resolve) => {
     execFile(
       `git`,
