@@ -1,4 +1,3 @@
-import * as fsHelpers from 'src/fsHelpers';
 import { readFileContents } from 'src/processFile';
 import { restoreDirectory } from 'src/restore';
 import { CliOptions, Path, Status } from 'src/types';
@@ -13,7 +12,6 @@ import { createTargetDirectory } from 'src/venDir';
 // }
 
 async function install(options: CliOptions): Promise<void> {
-  // createInstallDirectory(options.directory);
   const createResult = createTargetDirectory(options);
   console.log(`${JSON.stringify(options)}`);
   if (!createResult.success) {
@@ -23,7 +21,6 @@ async function install(options: CliOptions): Promise<void> {
     }
   }
   await readFileContents(options);
-  //restoreDirectory(options.directory);
 }
 
 export { install };

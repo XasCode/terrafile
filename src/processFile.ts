@@ -58,6 +58,7 @@ function Terrafile(options: CliOptions): Status {
   }
 
   async function fetchModules(contents: [string, Record<string, string>][], dir: Path): Promise<Status[]> {
+    /*
     const retVals = [];
     for (const [key, val] of contents) {
       const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);
@@ -65,6 +66,7 @@ function Terrafile(options: CliOptions): Status {
       retVals.push(retVal);
     }
     return retVals;
+    */
     return Promise.all(
       contents.map(([key, val]) => {
         const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);

@@ -27,7 +27,7 @@ jest.mock(`src/run`, () => ({
 //mockAxiosGetTerraformUrl();
 jest.mock(`axios`, require('__tests__/testUtils').mockAxiosGetTerraformUrl);
 //jest.mock(`src/run`);
-jest.mock(`src/run`, () => ({ git: require('__tests__/testUtils').mockCliSuccess }));
+//jest.mock(`src/run`, () => ({ git: require('__tests__/testUtils').mockCliSuccess }));
 
 import { readFileSync } from 'fs-extra';
 import { /*mockAxiosGetTerraformUrl, mockCliSuccess,*/ spy } from '__tests__/testUtils';
