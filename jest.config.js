@@ -16,7 +16,8 @@ module.exports = {
   modulePathIgnorePatterns: ['<rootDir>/dist'],
   moduleFileExtensions: ['ts','tsx', 'js', 'jsx', 'json'],
   moduleNameMapper: {
-    "src/run": "<rootDir>/__mocks__/src/run",
+    // "src/run": "<rootDir>/__mocks__/src/run",
+    // "axios": "<rootDir>/__mocks__/src/axios",
     "src/(.*)": "<rootDir>/src/$1",
     "__tests__/(.*)": "<rootDir>/__tests__/$1",
     "__mocks__/(.*)": "<rootDir>/__mocks__/$1",

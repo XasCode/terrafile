@@ -31,6 +31,7 @@ function getRepoUrl(terraformRegistryGitUrl: Path): RetString {
 }
 
 async function getRegRepoUrl(downloadPointerUrl: Path): Promise<RetString> {
+  console.log(`getRegRepoUrl: ${downloadPointerUrl}`);
   try {
     const response = await axios({
       method: `get`,
@@ -42,7 +43,10 @@ async function getRegRepoUrl(downloadPointerUrl: Path): Promise<RetString> {
     }
     return { success: false, error: `Expected status 204 from ${downloadPointerUrl}, recieved ${response.status}` };
   } catch (err) {
-    return { success: false, error: `Exception ecountered fetching ${downloadPointerUrl} from terraform registry.` };
+    return {
+      success: false,
+      error: `Exception ecountered fetching ${downloadPointerUrl} from terraform registry. ${JSON.stringify(err)}`,
+    };
   }
 }
 
@@ -52,16 +56,26 @@ function getRegDownloadPointerUrl(source: Path, version: string): Path {
 }
 
 async function copyFromTerraformRegistry(params: Entry, dest: Path): Promise<Status> {
+  if (params.source.length === 0) {
+    return Promise.resolve({
+      success: false,
+      contents: null,
+      error: `Repo URL empty string`,
+    });
+  }
   const downloadPointerUrl = getRegDownloadPointerUrl(params.source, params.version || ``);
+  console.log(`downloadPointerUrl: ${downloadPointerUrl} | ${dest}`);
   const regRepoUrl = await getRegRepoUrl(downloadPointerUrl);
-  return regRepoUrl.success
-    ? cloneRepoToDest(regRepoUrl.value, dest)
-    : {
-        success: false,
-        contents: null,
-        // eslint-disable-next-line max-len
-        error: `Repo URL not found in Terraform registry. ${dest}`,
-      };
+  console.log(`regRepoUrl: ${JSON.stringify(regRepoUrl)} | ${dest}`);
+  if (regRepoUrl.success) {
+    return cloneRepoToDest(regRepoUrl.value, dest);
+  } else {
+    return {
+      success: false,
+      contents: null,
+      error: `Repo URL not found in Terraform registry. ${dest}`,
+    };
+  }
 }
 
 const acceptable = [`comment`, `source`, `version`];

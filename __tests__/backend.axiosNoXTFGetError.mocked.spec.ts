@@ -1,7 +1,4 @@
-import { mockAxiosGetTerraformUrlNoXTFGetError, spy } from '__tests__/testUtils';
-
-//mockAxiosGetTerraformUrlNoXTFGetError();
-jest.mock(`axios`, mockAxiosGetTerraformUrlNoXTFGetError);
+import { spy } from '__tests__/testUtils';
 
 import { readFileContents } from 'src/processFile';
 import { rimrafDir, getAbsolutePath } from 'src/fsHelpers';

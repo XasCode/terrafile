@@ -1,7 +1,5 @@
-import { mockAxiosGetTerraformUrl, mockCliError, spy } from '__tests__/testUtils';
+import { mockCliError, spy } from '__tests__/testUtils';
 
-//mockAxiosGetTerraformUrl();
-jest.mock(`axios`, mockAxiosGetTerraformUrl);
 jest.mock(`src/run`, () => ({ git: mockCliError }));
 
 import { readFileContents } from 'src/processFile';

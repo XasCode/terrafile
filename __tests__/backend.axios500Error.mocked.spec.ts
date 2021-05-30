@@ -1,7 +1,4 @@
-import { mockAxiosGetTerraformUrl500Error, spy } from '__tests__/testUtils';
-
-//mockAxiosGetTerraformUrl500Error();
-jest.mock(`axios`, mockAxiosGetTerraformUrl500Error);
+import { spy } from '__tests__/testUtils';
 
 import { readFileContents } from 'src/processFile';
 import { rimrafDir, getAbsolutePath } from 'src/fsHelpers';

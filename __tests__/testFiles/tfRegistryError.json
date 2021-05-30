@@ -1,6 +1,6 @@
 {
   "xascode-sample-err-02": {
     "comment": "Terraform registry module",
-    "source": "terraform-err/err/aws"
+    "source": "terraform/Error/aws"
   }
 }

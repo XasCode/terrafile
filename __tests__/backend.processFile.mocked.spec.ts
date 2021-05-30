@@ -1,35 +1,3 @@
-/*
-jest.mock(`src/run`, () => ({
-  git: jest.fn().mockImplementation((args, cwd) => {
-    console.error(`mockImplementation src/run.ts`);
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const fsHelpersLocal = require(`src/fsHelpers`);
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const pathLocal = require(`path`);
-    const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);
-    const usePath: string =
-      args.filter((cur: string) => cur === 'sparse-checkout').length > 0
-        ? pathLocal.resolve(fsHelpersLocal.getAbsolutePath(fullDest), args.slice(-1)[0].slice(1))
-        : fullDest;
-    if (!fsHelpersLocal.checkIfDirExists(usePath)) {
-      fsHelpersLocal.createDir(fsHelpersLocal.getAbsolutePath(usePath));
-      fsHelpersLocal.touchFile(`${usePath}${pathLocal.sep}main.tf`);
-    }
-    return {
-      error: null,
-      stdout: ``,
-      stderr: ``,
-    };
-  }),
-}));
-*/
-// mock so that we don't actually fetch from remote locations
-jest.mock(`axios`, require('__tests__/testUtils').mockAxiosGetTerraformUrl);
-jest.mock(`src/run`);
-// jest.mock(`src/run.ts`, () => ({
-//   git: require('__tests__/testUtils').mockCliSuccess,
-// }));
-
 import { readFileSync } from 'fs-extra';
 import { spy } from '__tests__/testUtils';
 

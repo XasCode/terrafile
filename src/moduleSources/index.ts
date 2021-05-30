@@ -12,7 +12,10 @@ function getType(source: Path): ModulesKeyType {
 
 async function fetch(params: Entry, dest: Path): Promise<Status> {
   const moduleType: ModulesKeyType = getType(params.source);
-  return modules[moduleType].fetch(params, dest);
+  console.log(`moduleType: ${params.source} | ${dest} | ${moduleType}`);
+  const fetchResults = await modules[moduleType].fetch(params, dest);
+  console.log(`fetchResults: ${JSON.stringify(fetchResults)} | ${dest} | ${moduleType}`);
+  return fetchResults;
 }
 
 function validateFieldsForEachModuleEntry(params: Entry): boolean {

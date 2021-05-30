@@ -7,7 +7,7 @@
     "terrafile": "./dist/terrafile"
   },
   "scripts": {
-    "test": "npm run build && jest",
+    "test": "npm run build && tscpaths -p tsconfig.json -s ./ -o ./dist && jest",
     "build": "tsc",
     "install": "npm run build",
     "lint": "eslint src"
@@ -53,6 +53,7 @@
     "ts-jest": "^26.5.6",
     "ts-node": "^9.1.1",
     "tsc": "^2.0.3",
+    "tscpaths": "^0.0.9",
     "typescript": "^4.2.4"
   },
   "husky": {
