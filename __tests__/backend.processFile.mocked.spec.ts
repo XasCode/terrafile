@@ -1,8 +1,9 @@
 /*
 jest.mock(`src/run`, () => ({
   git: jest.fn().mockImplementation((args, cwd) => {
+    console.error(`mockImplementation src/run.ts`);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const fsHelpersLocal = require(`../src/fsHelpers`);
+    const fsHelpersLocal = require(`src/fsHelpers`);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const pathLocal = require(`path`);
     const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);
@@ -22,19 +23,20 @@ jest.mock(`src/run`, () => ({
   }),
 }));
 */
-
 // mock so that we don't actually fetch from remote locations
-//mockAxiosGetTerraformUrl();
 jest.mock(`axios`, require('__tests__/testUtils').mockAxiosGetTerraformUrl);
-//jest.mock(`src/run`);
-//jest.mock(`src/run`, () => ({ git: require('__tests__/testUtils').mockCliSuccess }));
+jest.mock(`src/run`);
+// jest.mock(`src/run.ts`, () => ({
+//   git: require('__tests__/testUtils').mockCliSuccess,
+// }));
 
 import { readFileSync } from 'fs-extra';
-import { /*mockAxiosGetTerraformUrl, mockCliSuccess,*/ spy } from '__tests__/testUtils';
-import * as fsHelpers from 'src/fsHelpers';
+import { spy } from '__tests__/testUtils';
 
 import { readFileContents } from 'src/processFile';
 import { getAbsolutePath, createDir, touchFile, rimrafDirs, checkIfFileExists } from 'src/fsHelpers';
+import { getPartsFromHttp } from 'src/moduleSources/common/cloneRepo';
+import { replacePathIfPathParam, replaceUrlVersionIfVersionParam } from 'src/moduleSources/common/git';
 
 import { CliOptions } from 'src/types';
 
@@ -72,11 +74,22 @@ describe(`read file contents should read specified json file and validate its co
     const testJson = JSON.parse(readFileSync(getAbsolutePath(`terrafile.sample.json`), `utf-8`));
     expect(Object.keys(testJson).length).toBe(31);
     for (const modName of Object.keys(testJson)) {
-      const usePath = testJson[modName].path !== undefined ? testJson[modName].path : '';
+      const params = testJson[modName];
+      const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
+      const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
+      const [repo, repoDir, branchOrTag, commit] = getPartsFromHttp(regRepoUrl);
+      const usePath = repoDir ? repoDir.slice(1) : '';
+      console.warn(
+        `${JSON.stringify(modName)} | path:${
+          params.path
+        } | repoDir:${repoDir} | usePath:${usePath} | err_vendor1/modules/${modName}${usePath}/main.tf | ${getAbsolutePath(
+          `err_vendor1/modules/${modName}${usePath}/main.tf`,
+        )} | ${checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))}`,
+      );
       expect(
         checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))
           ? checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))
-          : fsHelpers.createDir(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}`)),
+          : createDir(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}`)),
         // : `${JSON.stringify(testJson[modName])}, ${getAbsolutePath(
         //   `err_vendor1/modules/${modName}${usePath}/main.tf`,
         //  )}`,

@@ -9,7 +9,7 @@
     "outDir": "./dist",
     "noImplicitAny": true,
     "esModuleInterop": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "src/*": ["./src/*"],
       "__tests__/*": ["./__tests__/*"],

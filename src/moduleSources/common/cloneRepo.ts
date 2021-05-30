@@ -64,9 +64,9 @@ async function cloneRepoToDest(repoUrl: Path, fullDest: Path): Promise<Status> {
     contents: null,
     error: `Error copying from terraform registry ${repoUrl} - ${fullDest}`,
   } as Status;
-  console.error(`before getPartsFromHttp: ${repoUrl} ${fullDest}`);
+  // console.error(`before getPartsFromHttp: ${repoUrl} ${fullDest}`);
   const [a, b, c, d]: RepoLocation = getPartsFromHttp(repoUrl);
-  console.error(`after getPartsFromHttp: ${a}, ${b}, ${c}, ${d} - ${fullDest}`);
+  // console.error(`after getPartsFromHttp: ${a}, ${b}, ${c}, ${d} - ${fullDest}`);
   const results1 = await cloneRepo([a, b, c, d], fullDest);
   const results2 = await scopeRepo([a, b, c, d], fullDest);
   const results3 = await checkoutCommit([a, b, c, d], fullDest);
@@ -79,4 +79,4 @@ async function cloneRepoToDest(repoUrl: Path, fullDest: Path): Promise<Status> {
   return retVal;
 }
 
-export { cloneRepoToDest };
+export { cloneRepoToDest, getPartsFromHttp };

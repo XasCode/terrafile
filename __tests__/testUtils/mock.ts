@@ -57,7 +57,8 @@ const mockCliError = jest.fn().mockImplementation(() => ({
 // Mock running cli command and successfully fetching a module
 const mockCliSuccess = jest.fn().mockImplementation((args, cwd) => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const fsHelpersLocal = require(`../../src/fsHelpers`);
+  console.error(`mockCliSuccess`);
+  const fsHelpersLocal = require(`src/fsHelpers`);
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const pathLocal = require(`path`);
   const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);

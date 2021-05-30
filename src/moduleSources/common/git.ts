@@ -27,4 +27,4 @@ const testable = {
   replaceUrlVersionIfVersionParam,
 };
 
-export { fetch, testable };
+export { fetch, testable, replaceUrlVersionIfVersionParam, replacePathIfPathParam };
