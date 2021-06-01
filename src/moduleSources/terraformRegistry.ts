@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { startsWith } from 'src/utils';
-import { Entry, Path, RetString, Status } from 'src/types';
+import { Entry, Path, RetString, Status, Config, Response } from 'src/types';
 import { cloneRepoToDest } from 'src/moduleSources/common/cloneRepo';
 import type { ModulesKeyType } from 'src/moduleSources/modules';
 
@@ -30,10 +30,11 @@ function getRepoUrl(terraformRegistryGitUrl: Path): RetString {
   return { success: false, error: `Attempt to retrieve location of repo from terraform registry returned undefined` };
 }
 
-async function getRegRepoUrl(downloadPointerUrl: Path): Promise<RetString> {
-  console.log(`getRegRepoUrl: ${downloadPointerUrl}`);
+async function getRegRepoUrl(downloadPointerUrl: Path, fetcher: (_: Config) => Response): Promise<RetString> {
+  console.log(`getRegRepoUrl: ${downloadPointerUrl} | ${__dirname} ${fetcher}`);
+  const useAxios = fetcher !== undefined ? fetcher : axios;
   try {
-    const response = await axios({
+    const response = await useAxios({
       method: `get`,
       url: downloadPointerUrl,
     });
@@ -55,7 +56,7 @@ function getRegDownloadPointerUrl(source: Path, version: string): Path {
   return `${registryURL}/${ns || ``}/${modName || ``}/${provider || ``}/${version}/download`;
 }
 
-async function copyFromTerraformRegistry(params: Entry, dest: Path): Promise<Status> {
+async function copyFromTerraformRegistry(params: Entry, dest: Path, fetcher: (_: Config) => Response): Promise<Status> {
   if (params.source.length === 0) {
     return Promise.resolve({
       success: false,
@@ -65,7 +66,7 @@ async function copyFromTerraformRegistry(params: Entry, dest: Path): Promise<Sta
   }
   const downloadPointerUrl = getRegDownloadPointerUrl(params.source, params.version || ``);
   console.log(`downloadPointerUrl: ${downloadPointerUrl} | ${dest}`);
-  const regRepoUrl = await getRegRepoUrl(downloadPointerUrl);
+  const regRepoUrl = await getRegRepoUrl(downloadPointerUrl, fetcher);
   console.log(`regRepoUrl: ${JSON.stringify(regRepoUrl)} | ${dest}`);
   if (regRepoUrl.success) {
     return cloneRepoToDest(regRepoUrl.value, dest);

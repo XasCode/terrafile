@@ -2,10 +2,10 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as fsHelpers from 'src/fsHelpers';
 import { validOptions } from 'src/utils';
-import { CliOptions, Option, Path, Status } from 'src/types';
+import { CliOptions, Option, Path, Status, Config, Response } from 'src/types';
 import modules from 'src/moduleSources';
 
-function Terrafile(options: CliOptions): Status {
+function Terrafile(options: CliOptions, altFetcher: (_: Config) => Response): Status {
   function validateOptions(): Status {
     if (!validOptions(this.options, `file` as Option)) {
       this.success = false;
@@ -57,7 +57,11 @@ function Terrafile(options: CliOptions): Status {
     return this;
   }
 
-  async function fetchModules(contents: [string, Record<string, string>][], dir: Path): Promise<Status[]> {
+  async function fetchModules(
+    contents: [string, Record<string, string>][],
+    dir: Path,
+    fetcher: (_: Config) => Response,
+  ): Promise<Status[]> {
     /*
     const retVals = [];
     for (const [key, val] of contents) {
@@ -70,7 +74,7 @@ function Terrafile(options: CliOptions): Status {
     return Promise.all(
       contents.map(([key, val]) => {
         const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);
-        return modules.fetch(val, dest);
+        return modules.fetch(val, dest, fetcher);
       }),
     );
   }
@@ -78,7 +82,7 @@ function Terrafile(options: CliOptions): Status {
   async function process(): Promise<Status> {
     const retVal = { ...this };
     if (this.success) {
-      const fetchResults = await fetchModules(this.contents, options.directory);
+      const fetchResults = await fetchModules(this.contents, options.directory, this.fetcher);
       fetchResults.forEach((currentModuleRetVal) => {
         retVal.success = this.success && currentModuleRetVal.success;
         retVal.contents = currentModuleRetVal.contents;
@@ -99,11 +103,12 @@ function Terrafile(options: CliOptions): Status {
     parse,
     validateJson,
     process,
+    fetcher: altFetcher,
   };
 }
 
-async function readFileContents(options: CliOptions): Promise<Status> {
-  return Terrafile(options).validateOptions().verifyFile().readFile().parse().validateJson().process();
+async function readFileContents(options: CliOptions, fetcher?: (_: Config) => Response): Promise<Status> {
+  return Terrafile(options, fetcher).validateOptions().verifyFile().readFile().parse().validateJson().process();
 }
 
 export { readFileContents };

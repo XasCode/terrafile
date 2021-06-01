@@ -1,5 +1,5 @@
-// const { pathsToModuleNameMapper } = require('ts-jest/utils');
-// const { compilerOptions } = require('./tsconfig');
+const { pathsToModuleNameMapper } = require('ts-jest/utils');
+const { compilerOptions } = require('./tsconfig');
 
 module.exports = {
   verbose: true,
@@ -15,7 +15,8 @@ module.exports = {
   },
   modulePathIgnorePatterns: ['<rootDir>/dist'],
   moduleFileExtensions: ['ts','tsx', 'js', 'jsx', 'json'],
-  moduleNameMapper: {
+  /*
+    moduleNameMapper: {
     // "src/run": "<rootDir>/__mocks__/src/run",
     // "axios": "<rootDir>/__mocks__/src/axios",
     "src/(.*)": "<rootDir>/src/$1",
@@ -23,5 +24,6 @@ module.exports = {
     "__mocks__/(.*)": "<rootDir>/__mocks__/$1",
     "^/(.*)": "<rootDir>/$1"
   },
-  //moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' } )
+  */
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' } )
 };

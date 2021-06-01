@@ -101,7 +101,6 @@ describe.each(variations)(
     // Actually executing the CLI commands is time consuming. So we only
     // execute a small sample of the tests.
     if (getRandomInt(200) === 0) {
-      // if (true) {
       test(`Sample CLI (BE="%s", args="${args}")`, async () => {
         const result = await cli(args ? args.split(` `) : []);
         [

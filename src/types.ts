@@ -52,6 +52,7 @@ type Status = {
   parse?: () => Status;
   validateJson?: () => Status;
   proces?: () => Status;
+  fetcher?: (_: Config) => Response;
 };
 
 enum Option {
@@ -78,15 +79,24 @@ interface RetString extends RetVal {
   value?: string;
 }
 
+type Response = {
+  status: number;
+  headers: Record<string, string>;
+};
+
+type Config = Record<string, string>;
+
 export {
   Backend,
   CliArgs,
   CliOptions,
+  Config,
   Entry,
   ExecResult,
   Option,
   Path,
   RepoLocation,
+  Response,
   RetString,
   SourceParts,
   Status,

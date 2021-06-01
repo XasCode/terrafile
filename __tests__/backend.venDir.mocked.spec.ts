@@ -39,7 +39,6 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
     const retVals = createTargetDirectory({
       directory: installDir,
     });
-    // expect(console.error).toHaveBeenCalledWith("");
     expect(checkIfDirExists(getAbsolutePath(installDir))).toBe(true);
     expect(retVals.success).toBe(true);
     expect(retVals.created).toBe(getAbsolutePath(`ok_vendor_a`));

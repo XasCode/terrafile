@@ -8,6 +8,8 @@ import { replacePathIfPathParam, replaceUrlVersionIfVersionParam } from 'src/mod
 
 import { CliOptions } from 'src/types';
 
+const realAxios = jest.requireActual('axios');
+
 const testDirs = [`err_vendor1`, `err_vendor2`, `err_vendor3`, `err_vendor_lerror`, `err_vendor_2x`];
 
 describe(`read file contents should read specified json file and validate its contents`, () => {
@@ -45,23 +47,9 @@ describe(`read file contents should read specified json file and validate its co
       const params = testJson[modName];
       const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
-      const [repo, repoDir, branchOrTag, commit] = getPartsFromHttp(regRepoUrl);
+      const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      console.warn(
-        `${JSON.stringify(modName)} | path:${
-          params.path
-        } | repoDir:${repoDir} | usePath:${usePath} | err_vendor1/modules/${modName}${usePath}/main.tf | ${getAbsolutePath(
-          `err_vendor1/modules/${modName}${usePath}/main.tf`,
-        )} | ${checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))}`,
-      );
-      expect(
-        checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))
-          ? checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))
-          : createDir(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}`)),
-        // : `${JSON.stringify(testJson[modName])}, ${getAbsolutePath(
-        //   `err_vendor1/modules/${modName}${usePath}/main.tf`,
-        //  )}`,
-      ).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))).toBe(true);
     }
   });
 

@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import { startsWith } from 'src/utils';
-import { Entry, Path, Status } from 'src/types';
+import { Entry, Path, Status, Config, Response } from 'src/types';
 import * as fsHelpers from 'src/fsHelpers';
 import type { ModulesKeyType } from 'src/moduleSources/modules';
 
@@ -20,7 +20,7 @@ function copyAbs(src: Path, dest: Path): Status {
   return retVal;
 }
 
-function copyFromLocalDir(params: Entry, dest: Path): Status {
+function copyFromLocalDir(params: Entry, dest: Path, _fetcher: (_: Config) => Response): Status {
   const retVal = {
     success: false,
     contents: null,

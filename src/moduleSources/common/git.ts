@@ -1,4 +1,4 @@
-import { Entry, Path, Status } from 'src/types';
+import { Entry, Path, Status, Config, Response } from 'src/types';
 import { cloneRepoToDest } from 'src/moduleSources/common/cloneRepo';
 
 function replaceUrlVersionIfVersionParam(source: Path, version: string): Path {
@@ -16,7 +16,7 @@ function replacePathIfPathParam(source: Path, repoPath: Path): Path {
   return `${beforeGit}${source.includes(`.git`) ? `.git` : ``}${beforePathSep}${newPath}${newQrefPart}`;
 }
 
-async function fetch(params: Entry, dest: Path): Promise<Status> {
+async function fetch(params: Entry, dest: Path, _fetcher: (_: Config) => Response): Promise<Status> {
   const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
   const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
   return cloneRepoToDest(regRepoUrl, dest);

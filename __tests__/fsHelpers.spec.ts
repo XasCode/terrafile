@@ -15,12 +15,6 @@ describe(`checkIfDirExists checks for the existence of a directory`, () => {
   test(`should return false if directory doesn't exist`, () => {
     expect(fsHelpers.checkIfDirExists(path.resolve(`./SoMeThInG/uNuSuAl`))).toBe(false);
   });
-
-  /* validated by type
-  test("should return false if not a valid path", () => {
-    expect(fsHelpers.checkIfDirExists(-1)).toBe(false);
-  });
-  */
 });
 
 describe(`getAbsolutePath returns an absolute path from relative or abs path`, () => {
@@ -35,15 +29,6 @@ describe(`getAbsolutePath returns an absolute path from relative or abs path`, (
   test(`should return path if valid relative path`, () => {
     expect(fsHelpers.getAbsolutePath(path.resolve(`.`, `sOmEtHiNg/UnUsUaL`))).toBe(path.resolve(`./sOmEtHiNg/UnUsUaL`));
   });
-
-  /* validated by type
-  test("should output error if invalid path", () => {
-    fsHelpers.getAbsolutePath(-1);
-    expect(console.error).toHaveBeenLastCalledWith(
-      `Error resolving path: ${-1}`
-    );
-  });
-  */
 });
 
 describe(`createDir should create a directory at the provided location`, () => {
@@ -74,16 +59,6 @@ describe(`createDir should create a directory at the provided location`, () => {
     expect(console.error).toHaveBeenLastCalledWith(`Error creating dir: ${`bar`}`);
     expect(createdDirsStartingLocation).toBe(undefined);
   });
-
-  /* validated by type
-  test("should raise error when attempting to create a directory with bad path", () => {
-    const createdDirsStartingLocation = fsHelpers.createDir(-1);
-    expect(fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePath(-1))).toBe(
-      false
-    );
-    expect(createdDirsStartingLocation).toBe(undefined);
-  });
-  */
 });
 
 describe(`rimrafDir should delete a dir and its contents`, () => {
@@ -110,14 +85,6 @@ describe(`rimrafDir should delete a dir and its contents`, () => {
     expect(console.error).not.toHaveBeenLastCalledWith(`Error deleting dir: ${`sOmEtHiNg`}`);
     expect(fsHelpers.checkIfDirExists(`sOmEtHiNg`)).toBe(false);
   });
-
-  /* validated by type
-  test("should error when attempting to delete a directory with bad path", () => {
-    const deletedDir = fsHelpers.rimrafDir(-1);
-    expect(deletedDir).toBe(undefined);
-    expect(console.error).toHaveBeenLastCalledWith(`Error deleting dir: ${-1}`);
-  });
-  */
 
   test(`should error when attempting to delete a directory that is not a dir`, () => {
     const deletedDir = fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(`LICENSE`));

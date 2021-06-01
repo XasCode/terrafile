@@ -46,50 +46,55 @@ function noVerNoHelpValidCommandCheckOptions(args: CliArgs): ExecResult {
 }
 
 function noVerNoHelpCheckCommand(args: CliArgs): ExecResult {
-  // eslint-disable-next-line no-nested-ternary
-  return args.command === ``
-    ? {
-        error: { name: ``, message: ``, code: 1 } as ExecFileException,
-        stdout: ``,
-        stderr: helpContent,
-      }
-    : args.command !== `install`
-    ? {
-        error: { name: ``, message: ``, code: 1 } as ExecFileException,
-        stdout: ``,
-        stderr: unknownCommand,
-      }
-    : noVerNoHelpValidCommandCheckOptions(args);
+  if (args.command === ``) {
+    return {
+      error: { name: ``, message: ``, code: 1 } as ExecFileException,
+      stdout: ``,
+      stderr: helpContent,
+    };
+  } else if (args.command !== `install`) {
+    return {
+      error: { name: ``, message: ``, code: 1 } as ExecFileException,
+      stdout: ``,
+      stderr: unknownCommand,
+    };
+  } else {
+    return noVerNoHelpValidCommandCheckOptions(args);
+  }
 }
 
 function noVerYesHelpInvalidCommand(args: CliArgs): ExecResult {
-  return args.helpCommand !== ``
-    ? {
-        error: { name: ``, message: ``, code: 1 } as ExecFileException,
-        stdout: ``,
-        stderr: helpContent,
-      }
-    : {
-        error: null,
-        stdout: helpContent,
-        stderr: ``,
-      };
+  if (args.helpCommand !== ``) {
+    return {
+      error: { name: ``, message: ``, code: 1 } as ExecFileException,
+      stdout: ``,
+      stderr: helpContent,
+    };
+  } else {
+    return {
+      error: null,
+      stdout: helpContent,
+      stderr: ``,
+    };
+  }
 }
+
 function noVerYesHelpCheckCommand(args: CliArgs): ExecResult {
-  // eslint-disable-next-line no-nested-ternary
-  return args.command === `install`
-    ? {
-        error: null,
-        stdout: helpInstallContent,
-        stderr: ``,
-      }
-    : args.command === ``
-    ? {
-        error: null,
-        stdout: helpContent,
-        stderr: ``,
-      }
-    : noVerYesHelpInvalidCommand(args);
+  if (args.command === `install`) {
+    return {
+      error: null,
+      stdout: helpInstallContent,
+      stderr: ``,
+    };
+  } else if (args.command === ``) {
+    return {
+      error: null,
+      stdout: helpContent,
+      stderr: ``,
+    };
+  } else {
+    return noVerYesHelpInvalidCommand(args);
+  }
 }
 
 function noVerCheckHelp(args: CliArgs): ExecResult {

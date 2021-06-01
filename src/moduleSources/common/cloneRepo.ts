@@ -13,7 +13,6 @@ function insertGit(source: Path): Path {
 }
 
 function sourceParts(source: Path): SourceParts {
-  console.error(`Source parts: ${source}`);
   const tempSource = insertGit(source);
   const [beforeGit, afterGit] = tempSource.split(`.git`);
   const newSource = `${beforeGit}${source.includes(`.git`) ? `.git` : ``}`;
@@ -64,9 +63,7 @@ async function cloneRepoToDest(repoUrl: Path, fullDest: Path): Promise<Status> {
     contents: null,
     error: `Error copying from terraform registry ${repoUrl} - ${fullDest}`,
   } as Status;
-  // console.error(`before getPartsFromHttp: ${repoUrl} ${fullDest}`);
   const [a, b, c, d]: RepoLocation = getPartsFromHttp(repoUrl);
-  // console.error(`after getPartsFromHttp: ${a}, ${b}, ${c}, ${d} - ${fullDest}`);
   const results1 = await cloneRepo([a, b, c, d], fullDest);
   const results2 = await scopeRepo([a, b, c, d], fullDest);
   const results3 = await checkoutCommit([a, b, c, d], fullDest);
@@ -75,7 +72,6 @@ async function cloneRepoToDest(repoUrl: Path, fullDest: Path): Promise<Status> {
     retVal.error = null;
     delete retVal.contents;
   }
-  // retVal.error = `${results1.error}, ${results2.error}, ${results3.error}`;
   return retVal;
 }
 
