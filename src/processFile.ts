@@ -2,10 +2,10 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as fsHelpers from 'src/fsHelpers';
 import { validOptions } from 'src/utils';
-import { CliOptions, Option, Path, Status, Config, Response } from 'src/types';
+import { CliOptions, Option, Path, Status, Config, RetVal, RetString } from 'src/types';
 import modules from 'src/moduleSources';
 
-function Terrafile(options: CliOptions, altFetcher: (_: Config) => Response): Status {
+function Terrafile(options: CliOptions): Status {
   function validateOptions(): Status {
     if (!validOptions(this.options, `file` as Option)) {
       this.success = false;
@@ -60,21 +60,13 @@ function Terrafile(options: CliOptions, altFetcher: (_: Config) => Response): St
   async function fetchModules(
     contents: [string, Record<string, string>][],
     dir: Path,
-    fetcher: (_: Config) => Response,
+    fetcher: (_: Config) => Promise<RetString>,
+    cloner: (_: Config) => Promise<RetVal>,
   ): Promise<Status[]> {
-    /*
-    const retVals = [];
-    for (const [key, val] of contents) {
-      const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);
-      const retVal = await modules.fetch(val, dest);
-      retVals.push(retVal);
-    }
-    return retVals;
-    */
     return Promise.all(
       contents.map(([key, val]) => {
         const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);
-        return modules.fetch(val, dest, fetcher);
+        return modules.fetch(val, dest, fetcher, cloner);
       }),
     );
   }
@@ -82,7 +74,7 @@ function Terrafile(options: CliOptions, altFetcher: (_: Config) => Response): St
   async function process(): Promise<Status> {
     const retVal = { ...this };
     if (this.success) {
-      const fetchResults = await fetchModules(this.contents, options.directory, this.fetcher);
+      const fetchResults = await fetchModules(this.contents, options.directory, options.fetcher, options.cloner);
       fetchResults.forEach((currentModuleRetVal) => {
         retVal.success = this.success && currentModuleRetVal.success;
         retVal.contents = currentModuleRetVal.contents;
@@ -103,12 +95,11 @@ function Terrafile(options: CliOptions, altFetcher: (_: Config) => Response): St
     parse,
     validateJson,
     process,
-    fetcher: altFetcher,
   };
 }
 
-async function readFileContents(options: CliOptions, fetcher?: (_: Config) => Response): Promise<Status> {
-  return Terrafile(options, fetcher).validateOptions().verifyFile().readFile().parse().validateJson().process();
+async function readFileContents(options: CliOptions): Promise<Status> {
+  return Terrafile(options).validateOptions().verifyFile().readFile().parse().validateJson().process();
 }
 
 export { readFileContents };

@@ -7,8 +7,10 @@ import { getPartsFromHttp } from 'src/moduleSources/common/cloneRepo';
 import { replacePathIfPathParam, replaceUrlVersionIfVersionParam } from 'src/moduleSources/common/git';
 
 import { CliOptions } from 'src/types';
+import axios from 'axios';
 
 const realAxios = jest.requireActual('axios');
+const realClone = jest.requireActual('src/run.ts');
 
 const testDirs = [`err_vendor1`, `err_vendor2`, `err_vendor3`, `err_vendor_lerror`, `err_vendor_2x`];
 
@@ -37,6 +39,8 @@ describe(`read file contents should read specified json file and validate its co
     const retVals = await readFileContents({
       directory: `err_vendor1/modules`,
       file: configFile,
+      fetcher: realAxios,
+      cloner: realClone,
     });
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);

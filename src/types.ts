@@ -35,6 +35,8 @@ type TestDefinition = {
 type CliOptions = {
   directory?: Path;
   file?: Path;
+  fetcher?: (_: Config) => Promise<RetString>;
+  cloner?: (_: Config) => Promise<RetVal>;
 };
 
 type Status = {
@@ -51,8 +53,8 @@ type Status = {
   readFile?: () => Status;
   parse?: () => Status;
   validateJson?: () => Status;
-  proces?: () => Status;
-  fetcher?: (_: Config) => Response;
+  fetcher?: (_: Config) => Promise<RetString>;
+  cloner?: (_: Config) => Promise<RetVal>;
 };
 
 enum Option {
@@ -98,6 +100,7 @@ export {
   RepoLocation,
   Response,
   RetString,
+  RetVal,
   SourceParts,
   Status,
   TestDefinition,

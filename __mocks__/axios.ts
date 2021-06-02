@@ -1,3 +1,4 @@
+/*
 const axios = jest.fn(({ _method, url }) => {
   console.error(`axios url: ${url}`);
   switch (true) {
@@ -39,5 +40,6 @@ const axios = jest.fn(({ _method, url }) => {
     }
   }
 });
+*/
 
 export default axios;

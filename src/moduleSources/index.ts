@@ -1,4 +1,4 @@
-import { Entry, Path, Status, Config, Response } from 'src/types';
+import { Entry, Path, Status, Config, RetVal, RetString } from 'src/types';
 import { modules } from 'src/moduleSources/modules';
 import type { ModulesKeyType } from 'src/moduleSources/modules';
 
@@ -10,10 +10,15 @@ function getType(source: Path): ModulesKeyType {
         .join(``) as ModulesKeyType);
 }
 
-async function fetch(params: Entry, dest: Path, fetcher: (_: Config) => Response): Promise<Status> {
+async function fetch(
+  params: Entry,
+  dest: Path,
+  fetcher: (_: Config) => Promise<RetString>,
+  cloner: (_: Config) => Promise<RetVal>,
+): Promise<Status> {
   const moduleType: ModulesKeyType = getType(params.source);
   console.log(`moduleType: ${params.source} | ${dest} | ${moduleType}`);
-  const fetchResults = await modules[moduleType].fetch(params, dest, fetcher);
+  const fetchResults = await modules[moduleType].fetch(params, dest, fetcher, cloner);
   console.log(`fetchResults: ${JSON.stringify(fetchResults)} | ${dest} | ${moduleType}`);
   return fetchResults;
 }
