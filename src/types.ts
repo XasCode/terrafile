@@ -36,7 +36,7 @@ type CliOptions = {
   directory?: Path;
   file?: Path;
   fetcher?: (_: Config) => Promise<RetString>;
-  cloner?: (_: Config) => Promise<RetVal>;
+  cloner?: (_: string[], __?: Path) => Promise<ExecResult>;
 };
 
 type Status = {
@@ -54,7 +54,7 @@ type Status = {
   parse?: () => Status;
   validateJson?: () => Status;
   fetcher?: (_: Config) => Promise<RetString>;
-  cloner?: (_: Config) => Promise<RetVal>;
+  cloner?: (_: string[], __?: Path) => Promise<ExecResult>;
 };
 
 enum Option {

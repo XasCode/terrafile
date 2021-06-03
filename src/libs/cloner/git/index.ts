@@ -3,20 +3,9 @@ import { ExecResult, Path } from 'src/types';
 
 async function git(args: string[], cwd?: Path): Promise<ExecResult> {
   return new Promise((resolve) => {
-    execFile(
-      `git`,
-      [...args],
-      {
-        cwd,
-      },
-      (error, stdout, stderr) => {
-        resolve({
-          error,
-          stdout,
-          stderr,
-        });
-      },
-    );
+    execFile(`git`, [...args], { cwd }, (error, stdout, stderr) => {
+      resolve({ error, stdout, stderr });
+    });
   });
 }
 
@@ -28,7 +17,7 @@ function use(
   };
 }
 
-const mock = jest.fn().mockImplementation(async (args, cwd) => {
+const mock = jest.fn().mockImplementation(async (args: string[], cwd?: Path): Promise<ExecResult> => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const fsHelpersLocal = require(`src/fsHelpers`);
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -42,11 +31,11 @@ const mock = jest.fn().mockImplementation(async (args, cwd) => {
     await fsHelpersLocal.createDir(fsHelpersLocal.getAbsolutePath(usePath));
     await fsHelpersLocal.touchFile(`${usePath}${pathLocal.sep}main.tf`);
   }
-  return {
+  return Promise.resolve({
     error: null,
     stdout: ``,
     stderr: ``,
-  };
+  });
 });
 
 export default { use, mock, default: git };

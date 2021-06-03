@@ -1,4 +1,4 @@
-import { Entry, Path, Status, Config, RetVal, RetString } from 'src/types';
+import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/types';
 import { cloneRepoToDest } from 'src/moduleSources/common/cloneRepo';
 
 function replaceUrlVersionIfVersionParam(source: Path, version: string): Path {
@@ -20,7 +20,7 @@ async function fetch(
   params: Entry,
   dest: Path,
   _fetcher: (_: Config) => Promise<RetString>,
-  _cloner: (_: Config) => Promise<RetVal>,
+  _cloner: (_: string[], __?: Path) => Promise<ExecResult>,
 ): Promise<Status> {
   const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
   const regRepoUrl = replacePathIfPathParam(newUrl, params.path);

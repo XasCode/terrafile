@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import { startsWith } from 'src/utils';
-import { Entry, Path, Status, Config, RetVal, RetString } from 'src/types';
+import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/types';
 import * as fsHelpers from 'src/fsHelpers';
 import type { ModulesKeyType } from 'src/moduleSources/modules';
 
@@ -24,7 +24,7 @@ function copyFromLocalDir(
   params: Entry,
   dest: Path,
   _fetcher: (_: Config) => Promise<RetString>,
-  _cloner: (_: Config) => Promise<RetVal>,
+  _cloner: (_: string[], __?: Path) => Promise<ExecResult>,
 ): Status {
   const retVal = {
     success: false,

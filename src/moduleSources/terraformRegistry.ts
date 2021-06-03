@@ -1,5 +1,5 @@
 import { startsWith } from 'src/utils';
-import { Entry, Path, RetString, Status, Config, RetVal } from 'src/types';
+import { Entry, Path, RetString, Status, Config, ExecResult } from 'src/types';
 import { cloneRepoToDest } from 'src/moduleSources/common/cloneRepo';
 import type { ModulesKeyType } from 'src/moduleSources/modules';
 
@@ -47,7 +47,7 @@ async function copyFromTerraformRegistry(
   params: Entry,
   dest: Path,
   fetcher: (_: Config) => Promise<RetString>,
-  _cloner: (_: Config) => Promise<RetVal>,
+  _cloner: (_: string[], __?: Path) => Promise<ExecResult>,
 ): Promise<Status> {
   if (params.source.length === 0) {
     return Promise.resolve({

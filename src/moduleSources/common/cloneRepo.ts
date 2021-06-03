@@ -1,5 +1,4 @@
 import { ExecResult, Path, RepoLocation, SourceParts, Status } from 'src/types';
-import { git } from 'src/run';
 
 function determineRef(ref: string): string[] {
   const commit = ref;

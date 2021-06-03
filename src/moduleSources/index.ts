@@ -1,4 +1,4 @@
-import { Entry, Path, Status, Config, RetVal, RetString } from 'src/types';
+import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/types';
 import { modules } from 'src/moduleSources/modules';
 import type { ModulesKeyType } from 'src/moduleSources/modules';
 
@@ -14,7 +14,7 @@ async function fetch(
   params: Entry,
   dest: Path,
   fetcher: (_: Config) => Promise<RetString>,
-  cloner: (_: Config) => Promise<RetVal>,
+  cloner: (_: string[], __?: Path) => Promise<ExecResult>,
 ): Promise<Status> {
   const moduleType: ModulesKeyType = getType(params.source);
   console.log(`moduleType: ${params.source} | ${dest} | ${moduleType}`);

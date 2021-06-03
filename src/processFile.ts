@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as fsHelpers from 'src/fsHelpers';
 import { validOptions } from 'src/utils';
-import { CliOptions, Option, Path, Status, Config, RetVal, RetString } from 'src/types';
+import { CliOptions, Option, Path, Status, Config, ExecResult, RetString } from 'src/types';
 import modules from 'src/moduleSources';
 
 function Terrafile(options: CliOptions): Status {
@@ -61,7 +61,7 @@ function Terrafile(options: CliOptions): Status {
     contents: [string, Record<string, string>][],
     dir: Path,
     fetcher: (_: Config) => Promise<RetString>,
-    cloner: (_: Config) => Promise<RetVal>,
+    cloner: (_: string[], __?: Path) => Promise<ExecResult>,
   ): Promise<Status[]> {
     return Promise.all(
       contents.map(([key, val]) => {
