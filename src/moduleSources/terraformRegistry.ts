@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { startsWith } from 'src/utils';
 import { Entry, Path, RetString, Status, Config, RetVal } from 'src/types';
 import { cloneRepoToDest } from 'src/moduleSources/common/cloneRepo';
@@ -30,33 +29,13 @@ function getRepoUrl(terraformRegistryGitUrl: Path): RetString {
   return { success: false, error: `Attempt to retrieve location of repo from terraform registry returned undefined` };
 }
 
-async function myFetcher({ url }: Record<string, string>): Promise<RetString> {
-  let response;
-  try {
-    response = await useAxios({
-      method: `get`,
-      url,
-    });
-    if (response.status !== 204) {
-      return { success: false, error: `Expected status 204 from ${url}, recieved ${response.status}` };
-    } else if (response.headers === undefined || response.headers[`x-terraform-get`] === undefined) {
-      return { success: false, error: `Response from ${url} did not include 'x-terraform-get' header.` };
-    }
-    return { success: true, error: null, value: response.headers[`x-terraform-get`] };
-  } catch (err) {
-    return {
-      success: false,
-      error: `Exception ecountered fetching ${url} from terraform registry. ${JSON.stringify(err)}`,
-    };
-  }
-}
-
 async function getRegRepoUrl(downloadPointerUrl: Path, fetcher: (_: Config) => Promise<RetString>): Promise<RetString> {
-  console.log(`getRegRepoUrl: ${downloadPointerUrl} | ${__dirname} ${fetcher}`);
-  const fetcherResult = await myFetcher({ url: downloadPointerUrl });
+  console.log(`getRegRepoUrl: ${downloadPointerUrl} | ${__dirname}`);
+  const fetcherResult = await fetcher({ url: downloadPointerUrl });
   if (fetcherResult.success) {
     return getRepoUrl(fetcherResult.value);
   }
+  return fetcherResult;
 }
 
 function getRegDownloadPointerUrl(source: Path, version: string): Path {

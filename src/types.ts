@@ -81,11 +81,6 @@ interface RetString extends RetVal {
   value?: string;
 }
 
-type Response = {
-  status: number;
-  headers: Record<string, string>;
-};
-
 type Config = Record<string, string>;
 
 export {
@@ -98,7 +93,6 @@ export {
   Option,
   Path,
   RepoLocation,
-  Response,
   RetString,
   RetVal,
   SourceParts,
