@@ -61,6 +61,8 @@ describe(`read file contents should read specified json file and validate its co
     const retVals = await readFileContents({
       directory: `err_vendor2/modules`,
       file: configFile,
+      fetcher: fetcher.use(fetcher.mock),
+      cloner: cloner.use(cloner.mock),
     });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
@@ -96,6 +98,8 @@ describe(`read file contents should read specified json file and validate its co
     await expectFileIssue({
       directory: `err_vendor_lerror/testFiles/modules`,
       file: configFile,
+      fetcher: fetcher.use(fetcher.mock),
+      cloner: cloner.use(cloner.mock),
     });
   });
 
@@ -105,6 +109,8 @@ describe(`read file contents should read specified json file and validate its co
     const options = {
       directory: `err_vendor_2x/modules`,
       file: configFile,
+      fetcher: fetcher.use(fetcher.mock),
+      cloner: cloner.use(cloner.mock),
     };
     await readFileContents(options); // 1st call to readFileContents
     await expectFileIssue(options); // 2nd call to readFileContents, tries to copy module to same location

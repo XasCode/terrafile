@@ -47,7 +47,7 @@ async function copyFromTerraformRegistry(
   params: Entry,
   dest: Path,
   fetcher: (_: Config) => Promise<RetString>,
-  _cloner: (_: string[], __?: Path) => Promise<ExecResult>,
+  cloner: (_: string[], __?: Path) => Promise<ExecResult>,
 ): Promise<Status> {
   if (params.source.length === 0) {
     return Promise.resolve({
@@ -61,7 +61,7 @@ async function copyFromTerraformRegistry(
   const regRepoUrl = await getRegRepoUrl(downloadPointerUrl, fetcher);
   console.log(`regRepoUrl: ${JSON.stringify(regRepoUrl)} | ${dest}`);
   if (regRepoUrl.success) {
-    return cloneRepoToDest(regRepoUrl.value, dest);
+    return cloneRepoToDest(regRepoUrl.value, dest, cloner);
   } else {
     return {
       success: false,

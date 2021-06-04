@@ -28,7 +28,11 @@ function getPartsFromHttp(source: Path): RepoLocation {
   return [repo, repoDir, branchOrTag, commit];
 }
 
-async function cloneRepo([repo, repoDir, branchOrTag]: RepoLocation, fullDest: Path): Promise<ExecResult> {
+async function cloneRepo(
+  [repo, repoDir, branchOrTag]: RepoLocation,
+  fullDest: Path,
+  cloner: (_: string[], __?: Path) => Promise<ExecResult>,
+): Promise<ExecResult> {
   const httpsRepo = repo.includes('git@github.com:') ? repo.replace('git@github.com:', 'https://github.com/') : repo;
   const cloneCmd = [
     `clone`,
@@ -37,35 +41,47 @@ async function cloneRepo([repo, repoDir, branchOrTag]: RepoLocation, fullDest: P
     `${httpsRepo}`,
     fullDest,
   ];
-  return git(cloneCmd);
+  return cloner(cloneCmd);
 }
 
-async function scopeRepo([, repoDir]: RepoLocation, fullDest: Path): Promise<ExecResult> {
+async function scopeRepo(
+  [, repoDir]: RepoLocation,
+  fullDest: Path,
+  cloner: (_: string[], __?: Path) => Promise<ExecResult>,
+): Promise<ExecResult> {
   const sparseCmd = [`sparse-checkout`, `set`, repoDir.slice(1)];
   if (repoDir) {
-    return git(sparseCmd, fullDest);
+    return cloner(sparseCmd, fullDest);
   }
   return {} as ExecResult;
 }
 
-async function checkoutCommit([, , , commit]: RepoLocation, fullDest: Path): Promise<ExecResult> {
+async function checkoutCommit(
+  [, , , commit]: RepoLocation,
+  fullDest: Path,
+  cloner: (_: string[], __?: Path) => Promise<ExecResult>,
+): Promise<ExecResult> {
   const commitCmd = [`checkout`, commit];
   if (commit) {
-    return git(commitCmd, fullDest);
+    return cloner(commitCmd, fullDest);
   }
   return {} as ExecResult;
 }
 
-async function cloneRepoToDest(repoUrl: Path, fullDest: Path): Promise<Status> {
+async function cloneRepoToDest(
+  repoUrl: Path,
+  fullDest: Path,
+  cloner: (_: string[], __?: Path) => Promise<ExecResult>,
+): Promise<Status> {
   const retVal = {
     success: false,
     contents: null,
     error: `Error copying from terraform registry ${repoUrl} - ${fullDest}`,
   } as Status;
   const [a, b, c, d]: RepoLocation = getPartsFromHttp(repoUrl);
-  const results1 = await cloneRepo([a, b, c, d], fullDest);
-  const results2 = await scopeRepo([a, b, c, d], fullDest);
-  const results3 = await checkoutCommit([a, b, c, d], fullDest);
+  const results1 = await cloneRepo([a, b, c, d], fullDest, cloner);
+  const results2 = await scopeRepo([a, b, c, d], fullDest, cloner);
+  const results3 = await checkoutCommit([a, b, c, d], fullDest, cloner);
   if (!results1.error && !results2.error && !results3.error) {
     retVal.success = true;
     retVal.error = null;
