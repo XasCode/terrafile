@@ -5,6 +5,9 @@ import { rimrafDir, getAbsolutePath } from 'src/fsHelpers';
 
 import { CliOptions } from 'src/types';
 
+import fetcher from 'src/libs/fetcher/axios';
+import cloner from 'src/libs/cloner/git';
+
 const testDirs = [`vendor_tfregistry_FormatError`];
 
 const cleanUpTestDirs = () => testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir)));
@@ -31,6 +34,8 @@ describe(`read file contents should read specified json file and validate its co
     await expectFileIssue({
       directory: `vendor_tfregistry_FormatError/modules`,
       file: configFile,
+      fetcher: fetcher.use(fetcher.mock),
+      cloner: cloner.use(cloner.mock),
     });
   });
 });

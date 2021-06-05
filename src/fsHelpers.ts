@@ -20,7 +20,7 @@ function getAbsolutePath(dir: Path): Path {
     }
     return path.normalize(path.resolve(dir));
   } catch (err) {
-    console.error(`Error resolving path: ${dir} | ${JSON.stringify(err)}`);
+    console.error(`Error resolving path: ${dir}`);
   }
   return undefined;
 }

@@ -5,6 +5,9 @@ import { rimrafDirs, getAbsolutePath, checkIfFileExists } from 'src/fsHelpers';
 import { spy } from '__tests__/testUtils';
 import { CliOptions } from 'src/types';
 
+import fetcher from 'src/libs/fetcher/axios';
+import cloner from 'src/libs/cloner/git';
+
 const testDirs = [`be_vendor_tfregistry_error`, `be_vendor_empty`, `be_vendor_live`];
 
 describe(`read file contents should read specified json file and validate its contents`, () => {
@@ -30,6 +33,8 @@ describe(`read file contents should read specified json file and validate its co
     await expectFileIssue({
       directory: `be_vendor_tfregistry_error/modules`,
       file: configFile,
+      fetcher: fetcher.use(fetcher.default),
+      cloner: cloner.use(cloner.default),
     });
   });
 
@@ -39,6 +44,8 @@ describe(`read file contents should read specified json file and validate its co
     const options = {
       directory: `be_vendor_empty/modules`,
       file: configFile,
+      fetcher: fetcher.use(fetcher.default),
+      cloner: cloner.use(cloner.default),
     };
     await expectFileIssue(options);
   });
@@ -49,6 +56,8 @@ describe(`read file contents should read specified json file and validate its co
     const options = {
       directory: `be_vendor_live/modules`,
       file: configFile,
+      fetcher: fetcher.use(fetcher.default),
+      cloner: cloner.use(cloner.default),
     };
     const retVals = await readFileContents(options);
     expect(retVals.error).toBe(null);

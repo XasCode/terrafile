@@ -1,4 +1,4 @@
-import { execFile } from 'child_process';
+import { execFile, ExecFileException } from 'child_process';
 import { ExecResult, Path } from 'src/types';
 
 async function git(args: string[], cwd?: Path): Promise<ExecResult> {
@@ -38,4 +38,14 @@ const mock = jest.fn().mockImplementation(async (args: string[], cwd?: Path): Pr
   });
 });
 
-export default { use, mock, default: git };
+//Mock running a cli command and recieving an error
+// useful for actions like `git clone`, etc...
+const mockError = jest.fn().mockImplementation(async (args: string[], cwd?: Path): Promise<ExecResult> => {
+  return Promise.resolve({
+    error: { name: ``, message: `oops!`, code: -1 } as ExecFileException,
+    stdout: ``,
+    stderr: ``,
+  });
+});
+
+export default { use, mock, mockError, default: git };
