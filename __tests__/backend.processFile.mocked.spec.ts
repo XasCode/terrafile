@@ -14,7 +14,7 @@ import cloner from 'src/libs/cloner/git';
 const useFetcher = fetcher.use(fetcher.mock);
 const useCloner = cloner.use(cloner.mock);
 
-const testDirs = [`err_vendor1`, `err_vendor2`, `error_vendor3`, `err_vendor4`, `err_vendor_lerror`, `err_vendor_2x`];
+const testDirs = [`err_vendor1`, `err_vendor2`, `err_vendor3`, `err_vendor4`, `err_vendor_lerror`, `err_vendor_2x`];
 
 describe(`read file contents should read specified json file and validate its contents`, () => {
   beforeAll(() => {
