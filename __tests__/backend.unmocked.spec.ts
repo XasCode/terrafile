@@ -70,7 +70,7 @@ describe(`read file contents should read specified json file and validate its co
     }
   });
 
-  // test live source specified as gitSSH - actually translates source to https
+  // test live source specified as git SSH
   test(`fetch module from git SSH source definition`, async () => {
     const configFile = `__tests__/testFiles/gitSSHLive.json`;
     const options = {

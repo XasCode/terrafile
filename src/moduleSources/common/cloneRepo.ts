@@ -33,7 +33,6 @@ async function cloneRepo(
   fullDest: Path,
   cloner: (_: string[], __?: Path) => Promise<ExecResult>,
 ): Promise<ExecResult> {
-  // const httpsRepo = repo.includes('git@github.com:') ? repo.replace('git@github.com:', 'https://github.com/') : repo;
   const cloneCmd = [
     `clone`,
     ...(repoDir ? [`--depth`, `1`, `--filter=blob:none`, `--sparse`] : []),
