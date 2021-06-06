@@ -1,0 +1,6 @@
+{
+  "xascode-live-git-https-01": {
+    "comment": "Git https module",
+    "source": "https://github.com/terraform-aws-modules/terraform-aws-vpc"
+  }
+}

@@ -63,14 +63,50 @@ describe(`read file contents should read specified json file and validate its co
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
-    const testJson = JSON.parse(readFileSync(getAbsolutePath(`__tests__/testFiles/tfRegistryLive.json`), `utf-8`));
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
     expect(Object.keys(testJson).length).toBe(1);
     for (const modName of Object.keys(testJson)) {
       expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`))).toBe(true);
     }
   });
 
-  // TODO: test live gitSSH
+  // test live source specified as gitSSH - actually translates source to https
+  test(`fetch module from git SSH source definition`, async () => {
+    const configFile = `__tests__/testFiles/gitSSHLive.json`;
+    const options = {
+      directory: `be_vendor_live/modules`,
+      file: configFile,
+      fetcher: fetcher.use(fetcher.default),
+      cloner: cloner.use(cloner.default),
+    };
+    const retVals = await readFileContents(options);
+    expect(retVals.error).toBe(null);
+    expect(retVals.success).toBe(true);
+    expect(retVals.contents).not.toBe(null);
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
+    expect(Object.keys(testJson).length).toBe(1);
+    for (const modName of Object.keys(testJson)) {
+      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`))).toBe(true);
+    }
+  });
 
-  // TODO: test live gitHTTPS
+  // test live source specified as gitHTTPS
+  test(`fetch module from git HTTPS source definition`, async () => {
+    const configFile = `__tests__/testFiles/gitHTTPSLive.json`;
+    const options = {
+      directory: `be_vendor_live/modules`,
+      file: configFile,
+      fetcher: fetcher.use(fetcher.default),
+      cloner: cloner.use(cloner.default),
+    };
+    const retVals = await readFileContents(options);
+    expect(retVals.error).toBe(null);
+    expect(retVals.success).toBe(true);
+    expect(retVals.contents).not.toBe(null);
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
+    expect(Object.keys(testJson).length).toBe(1);
+    for (const modName of Object.keys(testJson)) {
+      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`))).toBe(true);
+    }
+  });
 });

@@ -1,0 +1,6 @@
+{
+  "xascode-live-git-ssh-01": {
+    "comment": "Git SSH module",
+    "source": "git@github.com:terraform-aws-modules/terraform-aws-vpc.git"
+  }
+}
