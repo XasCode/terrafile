@@ -37,7 +37,7 @@ describe(`read file contents should read specified json file and validate its co
   }
 
   test(`should successfully read a valid terrafile when provided a relative path`, async () => {
-    const configFile = `terrafile.sample.json`;
+    const configFile = `__tests__/testFiles/terrafile.sample.json`;
     const retVals = await readFileContents({
       directory: `err_vendor1/modules`,
       file: configFile,
@@ -47,7 +47,7 @@ describe(`read file contents should read specified json file and validate its co
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
-    const testJson = JSON.parse(readFileSync(getAbsolutePath(`terrafile.sample.json`), `utf-8`));
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
     expect(Object.keys(testJson).length).toBe(31);
     for (const modName of Object.keys(testJson)) {
       const params = testJson[modName];
@@ -60,7 +60,7 @@ describe(`read file contents should read specified json file and validate its co
   });
 
   test(`should successfully read a valid terrafile when provided an absolute path`, async () => {
-    const configFile = getAbsolutePath(`terrafile.sample.json`);
+    const configFile = getAbsolutePath(`__tests__/testFiles/terrafile.sample.json`);
     const retVals = await readFileContents({
       directory: `err_vendor2/modules`,
       file: configFile,
@@ -69,6 +69,16 @@ describe(`read file contents should read specified json file and validate its co
     });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
+    expect(Object.keys(testJson).length).toBe(31);
+    for (const modName of Object.keys(testJson)) {
+      const params = testJson[modName];
+      const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
+      const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
+      const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
+      const usePath = repoDir ? repoDir.slice(1) : '';
+      expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))).toBe(true);
+    }
   });
 
   test(`should err on lack read access to file`, async () => {

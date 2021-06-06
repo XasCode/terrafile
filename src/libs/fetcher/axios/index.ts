@@ -20,8 +20,8 @@ function use(fetchLibrary: (_: Request) => Promise<Response>): (_: Record<string
       } as Request);
       if (response.status !== 204) {
         return { success: false, error: `Expected status 204 from ${url}, recieved ${response.status}` };
-      } else if (response.headers === undefined || response.headers[`x-terraform-get`] === undefined) {
-        return { success: false, error: `Response from ${url} did not include 'x-terraform-get' header.` };
+      } else if (response.headers === undefined) {
+        return { success: false, error: `Response from ${url} did not include headers.` };
       }
       return { success: true, error: null, value: response.headers[`x-terraform-get`] };
     } catch (err) {
@@ -42,14 +42,19 @@ const mock = jest.fn(({ _method, url }): Promise<Response> => {
       return Promise.resolve({ status: 500 });
     }
     case /terraform\/formatError\/aws/.test(url): {
-      // Mock call to Axious to retrieve Terraform download URL,
+      // Mock call to Axios to retrieve Terraform download URL,
       // simulate 'x-terraform-get' doesn't contain git::
       return Promise.resolve({ status: 204, headers: { 'x-terraform-get': `unexpectedformat` } });
     }
     case /terraform\/noXTFGetError\/aws/.test(url): {
-      // Mock call to Axious to retrieve Terraform download URL,
+      // Mock call to Axios to retrieve Terraform download URL,
       // simulate 204 response, but no 'x-terraform-get' header
       return Promise.resolve({ status: 204, headers: {} });
+    }
+    case /terraform\/undefError\/aws/.test(url): {
+      // Mock call to Axios to retrieve Terraform download URL,
+      // simulate 204 response, but no headers
+      return Promise.resolve({ status: 204 });
     }
     case /terraform\/Error\/aws/.test(url):
     default: {

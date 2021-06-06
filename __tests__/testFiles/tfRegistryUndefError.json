@@ -1,0 +1,6 @@
+{
+  "xascode-sample-undef-err-01": {
+    "comment": "Terraform registry module",
+    "source": "terraform/undefError/aws"
+  }
+}

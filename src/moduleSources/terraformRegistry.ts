@@ -26,7 +26,10 @@ function getRepoUrl(terraformRegistryGitUrl: Path): RetString {
   if (terraformRegistryGitUrl !== undefined) {
     return stripGitPrefixFromRepoUrl(terraformRegistryGitUrl);
   }
-  return { success: false, error: `Attempt to retrieve location of repo from terraform registry returned undefined` };
+  return {
+    success: false,
+    error: `Attempt to retrieve location of repo from terraform registry returned undefined, may be missing 'x-terraform-get' header.`,
+  };
 }
 
 async function getRegRepoUrl(downloadPointerUrl: Path, fetcher: (_: Config) => Promise<RetString>): Promise<RetString> {
@@ -40,7 +43,7 @@ async function getRegRepoUrl(downloadPointerUrl: Path, fetcher: (_: Config) => P
 
 function getRegDownloadPointerUrl(source: Path, version: string): Path {
   const [ns, modName, provider] = source.split(`/`);
-  return `${registryURL}/${ns || ``}/${modName || ``}/${provider || ``}/${version}/download`;
+  return `${registryURL}/${ns}/${modName}/${provider}/${version}/download`;
 }
 
 async function copyFromTerraformRegistry(
