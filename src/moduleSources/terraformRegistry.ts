@@ -42,8 +42,9 @@ async function getRegRepoUrl(downloadPointerUrl: Path, fetcher: (_: Config) => P
 }
 
 function getRegDownloadPointerUrl(source: Path, version: string): Path {
-  const [ns, modName, provider] = source.split(`/`);
-  return `${registryURL}/${ns}/${modName}/${provider}/${version}/download`;
+  // https://www.terraform.io/docs/internals/module-registry-protocol.html
+  const [namespace, name, system] = source.split(`/`);
+  return `${registryURL}/${namespace}/${name}/${system}/${version}/download`;
 }
 
 async function copyFromTerraformRegistry(
