@@ -1,6 +1,6 @@
 import { readFileContents } from 'src/processFile';
 import { restoreDirectory } from 'src/restore';
-import { CliOptions, Path, Status } from 'src/types';
+import { CliOptions } from 'src/types';
 import { createTargetDirectory } from 'src/venDir';
 
 async function install(options: CliOptions): Promise<void> {

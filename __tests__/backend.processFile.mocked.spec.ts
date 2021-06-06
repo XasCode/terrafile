@@ -14,7 +14,7 @@ import cloner from 'src/libs/cloner/git';
 const useFetcher = fetcher.use(fetcher.mock);
 const useCloner = cloner.use(cloner.mock);
 
-const testDirs = [`err_vendor1`, `err_vendor2`, `err_vendor3`, `err_vendor_lerror`, `err_vendor_2x`];
+const testDirs = [`err_vendor1`, `err_vendor2`, `error_vendor3`, `err_vendor4`, `err_vendor_lerror`, `err_vendor_2x`];
 
 describe(`read file contents should read specified json file and validate its contents`, () => {
   beforeAll(() => {
@@ -37,7 +37,7 @@ describe(`read file contents should read specified json file and validate its co
   }
 
   test(`should successfully read a valid terrafile when provided a relative path`, async () => {
-    const configFile = `__tests__/testFiles/terrafile.sample.json`;
+    const configFile = `__tests__/testFiles/terrafile.test.json`;
     const retVals = await readFileContents({
       directory: `err_vendor1/modules`,
       file: configFile,
@@ -60,7 +60,7 @@ describe(`read file contents should read specified json file and validate its co
   });
 
   test(`should successfully read a valid terrafile when provided an absolute path`, async () => {
-    const configFile = getAbsolutePath(`__tests__/testFiles/terrafile.sample.json`);
+    const configFile = getAbsolutePath(`__tests__/testFiles/terrafile.test.json`);
     const retVals = await readFileContents({
       directory: `err_vendor2/modules`,
       file: configFile,
@@ -77,12 +77,36 @@ describe(`read file contents should read specified json file and validate its co
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`err_vendor2/modules/${modName}${usePath}/main.tf`))).toBe(true);
+    }
+  });
+
+  test(`ensure our sample file passes tests`, async () => {
+    const configFile = `terrafile.sample.json`;
+    const destination = `err_vendor3/modules`;
+    const retVals = await readFileContents({
+      directory: destination,
+      file: configFile,
+      fetcher: useFetcher,
+      cloner: useCloner,
+    });
+    expect(retVals.error).toBe(null);
+    expect(retVals.success).toBe(true);
+    expect(retVals.contents).not.toBe(null);
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
+    expect(Object.keys(testJson).length).toBe(7);
+    for (const modName of Object.keys(testJson)) {
+      const params = testJson[modName];
+      const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
+      const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
+      const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
+      const usePath = repoDir ? repoDir.slice(1) : '';
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`))).toBe(true);
     }
   });
 
   test(`should err on lack read access to file`, async () => {
-    const configFile = `err_vendor3/no_access_file`;
+    const configFile = `err_vendor4/no_access_file`;
     createDir(getAbsolutePath(`${configFile}/..`));
     touchFile(getAbsolutePath(configFile), 0);
     await expectFileIssue({ file: configFile });
