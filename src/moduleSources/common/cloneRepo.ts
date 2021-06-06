@@ -75,13 +75,14 @@ async function cloneRepoToDest(
   const retVal = {
     success: false,
     contents: null,
-    error: `Error copying from terraform registry ${repoUrl} - ${fullDest}`,
+    error: `Error cloning repo to destination ${repoUrl} - ${fullDest}`,
   } as Status;
   const [a, b, c, d]: RepoLocation = getPartsFromHttp(repoUrl);
-  const results1 = await cloneRepo([a, b, c, d], fullDest, cloner);
-  const results2 = await scopeRepo([a, b, c, d], fullDest, cloner);
-  const results3 = await checkoutCommit([a, b, c, d], fullDest, cloner);
-  if (!results1.error && !results2.error && !results3.error) {
+  const successful =
+    !(await cloneRepo([a, b, c, d], fullDest, cloner)).error &&
+    !(await scopeRepo([a, b, c, d], fullDest, cloner)).error &&
+    !(await checkoutCommit([a, b, c, d], fullDest, cloner)).error;
+  if (successful) {
     retVal.success = true;
     retVal.error = null;
     delete retVal.contents;
