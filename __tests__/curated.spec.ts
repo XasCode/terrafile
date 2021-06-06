@@ -23,6 +23,7 @@ const curatedCliCommands: Record<string, [string, string, ExecFileException]> = 
   'install -d <abc': [`{"directory":"<abc","file":"terrafile.json"}\n`, `Error resolving path: <abc\n`, null],
 };
 
+// TODO: run tests synchronously
 describe.each(Object.keys(curatedCliCommands))(
   `should execute 'terrafile' with a set of commands/options and verify the output`,
   (cliCommand) => {
