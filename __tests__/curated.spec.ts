@@ -23,19 +23,17 @@ const curatedCliCommands: Record<string, [string, string, ExecFileException]> = 
   'install -d <abc': [`{"directory":"<abc","file":"terrafile.json"}\n`, `Error resolving path: <abc\n`, null],
 };
 
-// TODO: run tests synchronously
-describe.each(Object.keys(curatedCliCommands))(
-  `should execute 'terrafile' with a set of commands/options and verify the output`,
-  (cliCommand) => {
-    beforeEach(() => {
-      rimrafDir(resolve(`.`, `./dist/vendor`));
-    });
+describe(`should execute 'terrafile' with a set of commands/options and verify the output`, () => {
+  beforeEach(() => {
+    rimrafDir(resolve(`.`, `./dist/vendor`));
+  });
 
-    afterEach(() => {
-      rimrafDir(resolve(`.`, `./dist/vendor`));
-    });
+  afterEach(() => {
+    rimrafDir(resolve(`.`, `./dist/vendor`));
+  });
 
-    test(`check cli: ${cliCommand}`, async () => {
+  test(`test currated set of cli commands synchronously`, async () => {
+    for (const cliCommand of Object.keys(curatedCliCommands)) {
       const result = await cli(cliCommand.split(` `), `./dist/src`);
       expect(result.stdout).toBe(curatedCliCommands[cliCommand][0]);
       expect(result.stderr).toBe(curatedCliCommands[cliCommand][1]);
@@ -44,6 +42,6 @@ describe.each(Object.keys(curatedCliCommands))(
           ? curatedCliCommands[cliCommand][2]
           : curatedCliCommands[cliCommand][2].code,
       );
-    });
-  },
-);
+    }
+  });
+});
