@@ -1,6 +1,5 @@
 import { readFileSync } from 'fs-extra';
-import { rimrafDir } from 'src/fsHelpers';
-import { getAbsolutePath, createDir, touchFile, rimrafDirs, checkIfFileExists } from 'src/fsHelpers';
+import { rimrafDir, getAbsolutePath, checkIfFileExists } from 'src/fsHelpers';
 import { getPartsFromHttp } from 'src/moduleSources/common/cloneRepo';
 import { replacePathIfPathParam, replaceUrlVersionIfVersionParam } from 'src/moduleSources/common/git';
 import { Path } from 'src/types';
