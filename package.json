@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xascode/terrafile.git"
+    "url": "git+https://github.com/XasCode/terrafile.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/xascode/terrafile/issues"
+    "url": "https://github.com/XasCode/terrafile/issues"
   },
-  "homepage": "https://github.com/xascode/terrafile#readme",
+  "homepage": "https://github.com/XasCode/terrafile#readme",
   "dependencies": {
     "axios": "^0.21.1",
     "commander": "^7.2.0",
