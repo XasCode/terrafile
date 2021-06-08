@@ -2,7 +2,7 @@ import { ExecFileException } from 'child_process';
 import { resolve } from 'path';
 
 import { cli } from '__tests__/testUtils';
-import { getAbsolutePath, rimrafDir } from 'src/fsHelpers';
+import { rimrafDir } from 'src/fsHelpers';
 
 import { helpContent, helpInstallContent, unknownCommand, unknownOptionLong, unknownOptionShort } from 'src/strings';
 
