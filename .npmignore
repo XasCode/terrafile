@@ -1,2 +1,17 @@
+__mocks__/
+__tests__/
+.github/
 .vscode/
+coverage/
+node_modules/
+src/
+.eslintrc
 .gitattributes
+.gitignore
+.npmignore
+.npmrc
+.prettierrc
+jest.config.js
+terrafile.sample.json
+tsconfig.eslint.json
+tsconfig.json
