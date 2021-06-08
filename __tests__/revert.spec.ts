@@ -21,7 +21,7 @@ describe("test backend's ability to revert on error", () => {
   });
 
   afterAll(() => {
-    //    rimrafDir(`vendor`);
+    rimrafDir(`vendor`);
   });
 
   test(`should install successfull, then second install to same location should fail processing file and revert dir`, async () => {
