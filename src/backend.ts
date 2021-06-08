@@ -9,10 +9,16 @@ async function install(options: CliOptions): Promise<void> {
   if (!createResult.success) {
     if (createResult.saved !== null) {
       restoreDirectory(options.directory);
-      return;
     }
+    return;
   }
-  await readFileContents(options);
+  const retVals = await readFileContents(options);
+  if (!retVals.success) {
+    if (createResult.saved !== null) {
+      restoreDirectory(options.directory);
+    }
+    return;
+  }
 }
 
 export { install };

@@ -7,6 +7,8 @@ import { CliOptions } from 'src/types';
 
 import fetcher from 'src/libs/fetcher/axios';
 import cloner from 'src/libs/cloner/git';
+import mockedFetcher from 'src/libs/fetcher/axios/mock';
+import mockedCloner from 'src/libs/cloner/git/mock';
 
 const testDirs = [`vendor_tfregistry_FormatError`];
 
@@ -34,8 +36,8 @@ describe(`read file contents should read specified json file and validate its co
     await expectFileIssue({
       directory: `vendor_tfregistry_FormatError/modules`,
       file: configFile,
-      fetcher: fetcher.use(fetcher.mock),
-      cloner: cloner.use(cloner.mock),
+      fetcher: fetcher.use(mockedFetcher.mock),
+      cloner: cloner.use(mockedCloner.mock),
     });
   });
 });

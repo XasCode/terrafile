@@ -29,10 +29,11 @@ function createNewDir(installDir: Path): Path {
 
 function createTargetDirectory(options: CliOptions): Status {
   const retVals: Status = { success: false, saved: null, created: null };
+  const useCreateDir = options && options.createDir ? options.createDir : createNewDir;
   if (validOptions(options, `directory` as Option)) {
     const installDir = fsHelpers.getAbsolutePath(options.directory);
     retVals.saved = renameExistingDir(installDir);
-    retVals.created = createNewDir(installDir);
+    retVals.created = useCreateDir(installDir);
     retVals.success = fsHelpers.checkIfDirExists(installDir);
   }
   return retVals;

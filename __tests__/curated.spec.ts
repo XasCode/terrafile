@@ -25,11 +25,11 @@ const curatedCliCommands: Record<string, [string, string, ExecFileException]> = 
 
 describe(`should execute 'terrafile' with a set of commands/options and verify the output`, () => {
   beforeEach(() => {
-    rimrafDir(resolve(`.`, `./dist/vendor`));
+    rimrafDir(resolve(`.`, `dist/src/vendor`));
   });
 
   afterEach(() => {
-    rimrafDir(resolve(`.`, `./dist/vendor`));
+    rimrafDir(resolve(`.`, `dist/src/vendor`));
   });
 
   test(`test currated set of cli commands synchronously`, async () => {

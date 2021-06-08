@@ -37,6 +37,7 @@ type CliOptions = {
   file?: Path;
   fetcher?: (_: Config) => Promise<RetString>;
   cloner?: (_: string[], __?: Path) => Promise<ExecResult>;
+  createDir?: (_: Path) => Path;
 };
 
 type Status = {
@@ -83,6 +84,16 @@ interface RetString extends RetVal {
 
 type Config = Record<string, string>;
 
+type Request = {
+  method: `get`;
+  url: string;
+};
+
+type Response = {
+  status: number;
+  headers?: Record<string, string>;
+};
+
 export {
   Backend,
   CliArgs,
@@ -93,6 +104,8 @@ export {
   Option,
   Path,
   RepoLocation,
+  Request,
+  Response,
   RetString,
   RetVal,
   SourceParts,

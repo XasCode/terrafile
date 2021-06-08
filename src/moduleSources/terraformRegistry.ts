@@ -2,6 +2,9 @@ import { startsWith } from 'src/utils';
 import { Entry, Path, RetString, Status, Config, ExecResult } from 'src/types';
 import { cloneRepoToDest } from 'src/moduleSources/common/cloneRepo';
 import type { ModulesKeyType } from 'src/moduleSources/modules';
+import axiosFetcher from 'src/libs/fetcher/axios';
+
+const defaultAxiosFetcher = axiosFetcher.use(axiosFetcher.default);
 
 const registryURL = `https://registry.terraform.io/v1/modules`;
 
@@ -34,7 +37,8 @@ function getRepoUrl(terraformRegistryGitUrl: Path): RetString {
 
 async function getRegRepoUrl(downloadPointerUrl: Path, fetcher: (_: Config) => Promise<RetString>): Promise<RetString> {
   console.log(`getRegRepoUrl: ${downloadPointerUrl} | ${__dirname}`);
-  const fetcherResult = await fetcher({ url: downloadPointerUrl });
+  const useFetcher = fetcher ? fetcher : defaultAxiosFetcher;
+  const fetcherResult = await useFetcher({ url: downloadPointerUrl });
   if (fetcherResult.success) {
     return getRepoUrl(fetcherResult.value);
   }

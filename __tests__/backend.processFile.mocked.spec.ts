@@ -10,9 +10,11 @@ import { CliOptions } from 'src/types';
 
 import fetcher from 'src/libs/fetcher/axios';
 import cloner from 'src/libs/cloner/git';
+import mockedFetcher from 'src/libs/fetcher/axios/mock';
+import mockedCloner from 'src/libs/cloner/git/mock';
 
-const useFetcher = fetcher.use(fetcher.mock);
-const useCloner = cloner.use(cloner.mock);
+const useFetcher = fetcher.use(mockedFetcher.mock);
+const useCloner = cloner.use(mockedCloner.mock);
 
 const testDirs = [`err_vendor1`, `err_vendor2`, `err_vendor3`, `err_vendor4`, `err_vendor_lerror`, `err_vendor_2x`];
 

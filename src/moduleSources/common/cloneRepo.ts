@@ -1,4 +1,7 @@
 import { ExecResult, Path, RepoLocation, SourceParts, Status } from 'src/types';
+import gitCloner from 'src/libs/cloner/git';
+
+const defaultGitCloner = gitCloner.use(gitCloner.default);
 
 function determineRef(ref: string): string[] {
   const commit = ref;
@@ -77,11 +80,12 @@ async function cloneRepoToDest(
     contents: null,
     error: `Error cloning repo to destination ${repoUrl} - ${fullDest}`,
   } as Status;
+  const useCloner = cloner ? cloner : defaultGitCloner;
   const [a, b, c, d]: RepoLocation = getPartsFromHttp(repoUrl);
   const successful =
-    !(await cloneRepo([a, b, c, d], fullDest, cloner)).error &&
-    !(await scopeRepo([a, b, c, d], fullDest, cloner)).error &&
-    !(await checkoutCommit([a, b, c, d], fullDest, cloner)).error;
+    !(await cloneRepo([a, b, c, d], fullDest, useCloner)).error &&
+    !(await scopeRepo([a, b, c, d], fullDest, useCloner)).error &&
+    !(await checkoutCommit([a, b, c, d], fullDest, useCloner)).error;
   if (successful) {
     retVal.success = true;
     retVal.error = null;

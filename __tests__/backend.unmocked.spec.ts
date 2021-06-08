@@ -8,7 +8,7 @@ import { CliOptions } from 'src/types';
 import fetcher from 'src/libs/fetcher/axios';
 import cloner from 'src/libs/cloner/git';
 
-const testDirs = [`be_vendor_tfregistry_error`, `be_vendor_empty`, `be_vendor_live`];
+const testDirs = [`be_vendor_tfregistry_error`, `be_vendor_empty`, `be_vendor_live`, `be_vendor_live2`];
 
 describe(`read file contents should read specified json file and validate its contents`, () => {
   beforeEach(() => {
@@ -98,6 +98,24 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
       fetcher: fetcher.use(fetcher.default),
       cloner: cloner.use(cloner.default),
+    };
+    const retVals = await readFileContents(options);
+    expect(retVals.error).toBe(null);
+    expect(retVals.success).toBe(true);
+    expect(retVals.contents).not.toBe(null);
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
+    expect(Object.keys(testJson).length).toBe(1);
+    for (const modName of Object.keys(testJson)) {
+      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`))).toBe(true);
+    }
+  });
+
+  // test live source specified as gitHTTPS again w/o specifying fetcher or cloner
+  test(`fetch module from git HTTPS source definition2`, async () => {
+    const configFile = `__tests__/testFiles/gitHTTPSLive.json`;
+    const options = {
+      directory: `be_vendor_live2/modules`,
+      file: configFile,
     };
     const retVals = await readFileContents(options);
     expect(retVals.error).toBe(null);
