@@ -17,7 +17,6 @@ async function install(options: CliOptions): Promise<void> {
     if (createResult.saved !== null) {
       restoreDirectory(options.directory);
     }
-    return;
   }
 }
 
