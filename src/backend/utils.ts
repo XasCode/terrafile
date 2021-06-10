@@ -1,5 +1,5 @@
-import * as fsHelpers from 'src/fsHelpers';
-import { CliOptions, Option } from 'src/types';
+import * as fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+import { CliOptions, Option } from 'src/shared/types';
 
 function validOptions(options: CliOptions, fileOrFolder: Option): boolean {
   return (
@@ -10,8 +10,4 @@ function validOptions(options: CliOptions, fileOrFolder: Option): boolean {
   );
 }
 
-function startsWith(str: string, start: string): boolean {
-  return start === str.slice(0, start.length);
-}
-
-export { validOptions, startsWith };
+export { validOptions };

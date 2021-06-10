@@ -1,7 +1,7 @@
-import { readFileContents } from 'src/processFile';
-import { restoreDirectory } from 'src/restore';
-import { CliOptions } from 'src/types';
-import { createTargetDirectory } from 'src/venDir';
+import { readFileContents } from 'src/backend/processFile';
+import { restoreDirectory } from 'src/backend/restore';
+import { CliOptions } from 'src/shared/types';
+import { createTargetDirectory } from 'src/backend/venDir';
 
 async function install(options: CliOptions): Promise<void> {
   const createResult = createTargetDirectory(options);

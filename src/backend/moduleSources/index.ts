@@ -1,6 +1,6 @@
-import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/types';
-import { modules } from 'src/moduleSources/modules';
-import type { ModulesKeyType } from 'src/moduleSources/modules';
+import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/shared/types';
+import { modules } from 'src/backend/moduleSources/modules';
+import type { ModulesKeyType } from 'src/backend/moduleSources/modules';
 
 function getType(source: Path): ModulesKeyType {
   return source === undefined

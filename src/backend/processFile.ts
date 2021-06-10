@@ -1,9 +1,8 @@
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import * as fsHelpers from 'src/fsHelpers';
-import { validOptions } from 'src/utils';
-import { CliOptions, Option, Path, Status, Config, ExecResult, RetString } from 'src/types';
-import modules from 'src/moduleSources';
+import path from 'path';
+import fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+import { validOptions } from 'src/backend/utils';
+import { CliOptions, Option, Path, Status, Config, ExecResult, RetString } from 'src/shared/types';
+import modules from 'src/backend/moduleSources';
 
 function Terrafile(options: CliOptions): Status {
   function validateOptions(): Status {
@@ -26,7 +25,7 @@ function Terrafile(options: CliOptions): Status {
 
   function readFile(): Status {
     try {
-      this.json = JSON.parse(fs.readFileSync(fsHelpers.getAbsolutePath(this.options.file), `utf-8`));
+      this.json = JSON.parse(fsHelpers.readFile(this.options.file));
     } catch (err) {
       this.success = false;
       this.contents = null;

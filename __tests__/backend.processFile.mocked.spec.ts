@@ -1,17 +1,23 @@
 import { readFileSync } from 'fs-extra';
 import { spy } from '__tests__/testUtils';
 
-import { readFileContents } from 'src/processFile';
-import { getAbsolutePath, createDir, touchFile, rimrafDirs, checkIfFileExists } from 'src/fsHelpers';
-import { getPartsFromHttp } from 'src/moduleSources/common/cloneRepo';
-import { replacePathIfPathParam, replaceUrlVersionIfVersionParam } from 'src/moduleSources/common/git';
+import { readFileContents } from 'src/backend/processFile';
+import {
+  getAbsolutePath,
+  createDir,
+  touchFile,
+  rimrafDirs,
+  checkIfFileExists,
+} from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+import { getPartsFromHttp } from 'src/backend/moduleSources/common/cloneRepo';
+import { replacePathIfPathParam, replaceUrlVersionIfVersionParam } from 'src/backend/moduleSources/common/git';
 
-import { CliOptions } from 'src/types';
+import { CliOptions } from 'src/shared/types';
 
-import fetcher from 'src/libs/fetcher/axios';
-import cloner from 'src/libs/cloner/git';
-import mockedFetcher from 'src/libs/fetcher/axios/mock';
-import mockedCloner from 'src/libs/cloner/git/mock';
+import fetcher from 'src/backend/extInterfaces/fetcher/axios';
+import cloner from 'src/backend/extInterfaces/cloner/git';
+import mockedFetcher from 'src/backend/extInterfaces/fetcher/axios/mock';
+import mockedCloner from 'src/backend/extInterfaces/cloner/git/mock';
 
 const useFetcher = fetcher.use(mockedFetcher.mock);
 const useCloner = cloner.use(mockedCloner.mock);

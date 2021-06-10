@@ -1,9 +1,9 @@
 import { ExecFileException } from 'child_process';
-import { ExecResult, Path } from 'src/types';
+import { ExecResult, Path } from 'src/shared/types';
 
 const mock = jest.fn().mockImplementation(async (args: string[], cwd?: Path): Promise<ExecResult> => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const fsHelpersLocal = require(`src/fsHelpers`);
+  const fsHelpersLocal = require(`src/backend/extInterfaces/fs/fs-extra/fsHelpers`);
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const pathLocal = require(`path`);
   const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);

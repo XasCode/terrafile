@@ -1,6 +1,6 @@
-import * as fsHelpers from 'src/fsHelpers';
-import { getSaveLocation } from 'src/venDir';
-import { Path, Status } from 'src/types';
+import * as fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+import { getSaveLocation } from 'src/backend/venDir';
+import { Path, Status } from 'src/shared/types';
 
 function restoreExistingDir(installDir: Path): Path {
   let retVal = null;

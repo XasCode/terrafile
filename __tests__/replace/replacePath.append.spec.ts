@@ -1,4 +1,4 @@
-import { testable } from 'src/moduleSources/common/git';
+import { testable } from 'src/backend/moduleSources/common/git';
 
 const { replacePathIfPathParam } = testable;
 

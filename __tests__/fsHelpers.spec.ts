@@ -1,6 +1,6 @@
-import * as path from 'path';
-import * as fs from 'fs-extra';
-import * as fsHelpers from 'src/fsHelpers';
+import path from 'path';
+import fs from 'fs-extra';
+import fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 import { spy } from '__tests__/testUtils';
 
 describe(`checkIfDirExists checks for the existence of a directory`, () => {

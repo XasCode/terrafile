@@ -1,5 +1,5 @@
 import { execFile } from 'child_process';
-import { ExecResult, Path } from 'src/types';
+import { ExecResult, Path } from 'src/shared/types';
 
 async function git(args: string[], cwd?: Path): Promise<ExecResult> {
   return new Promise((resolve) => {

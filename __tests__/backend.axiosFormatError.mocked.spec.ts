@@ -1,14 +1,14 @@
 import { spy } from '__tests__/testUtils';
 
-import { readFileContents } from 'src/processFile';
-import { rimrafDir, getAbsolutePath } from 'src/fsHelpers';
+import { readFileContents } from 'src/backend/processFile';
+import { rimrafDir, getAbsolutePath } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 
-import { CliOptions } from 'src/types';
+import { CliOptions } from 'src/shared/types';
 
-import fetcher from 'src/libs/fetcher/axios';
-import cloner from 'src/libs/cloner/git';
-import mockedFetcher from 'src/libs/fetcher/axios/mock';
-import mockedCloner from 'src/libs/cloner/git/mock';
+import fetcher from 'src/backend/extInterfaces/fetcher/axios';
+import cloner from 'src/backend/extInterfaces/cloner/git';
+import mockedFetcher from 'src/backend/extInterfaces/fetcher/axios/mock';
+import mockedCloner from 'src/backend/extInterfaces/cloner/git/mock';
 
 const testDirs = [`vendor_tfregistry_FormatError`];
 

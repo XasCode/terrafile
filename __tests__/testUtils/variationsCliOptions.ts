@@ -1,12 +1,18 @@
 import { ExecFileException } from 'child_process';
 import { readFileSync } from 'fs-extra';
 
-import { getAbsolutePath } from 'src/fsHelpers';
+import { getAbsolutePath } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 import { cartesian } from '__tests__/testUtils/cartesian';
 
-import { CliArgs, CliOptions, ExecResult, TestDefinition } from 'src/types';
+import { CliArgs, CliOptions, ExecResult, TestDefinition } from 'src/shared/types';
 
-import { helpContent, helpInstallContent, unknownCommand, unknownOptionLong, unknownOptionShort } from 'src/strings';
+import {
+  helpContent,
+  helpInstallContent,
+  unknownCommand,
+  unknownOptionLong,
+  unknownOptionShort,
+} from 'src/cli/strings';
 
 const helpCommands = [``, `help`];
 const commands = [``, `install`, `foo`];

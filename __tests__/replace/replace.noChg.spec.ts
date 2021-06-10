@@ -1,5 +1,5 @@
-import { Entry } from 'src/types';
-import { testable } from 'src/moduleSources/common/git';
+import { Entry } from 'src/shared/types';
+import { testable } from 'src/backend/moduleSources/common/git';
 
 const { replacePathIfPathParam, replaceUrlVersionIfVersionParam } = testable;
 

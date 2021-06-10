@@ -1,5 +1,5 @@
-import { ExecResult, Path, RepoLocation, SourceParts, Status } from 'src/types';
-import gitCloner from 'src/libs/cloner/git';
+import { ExecResult, Path, RepoLocation, SourceParts, Status } from 'src/shared/types';
+import gitCloner from 'src/backend/extInterfaces/cloner/git';
 
 const defaultGitCloner = gitCloner.use(gitCloner.default);
 

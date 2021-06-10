@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Request, Response, RetString } from 'src/types';
+import { Request, Response, RetString } from 'src/shared/types';
 
 function use(fetchLibrary: (_: Request) => Promise<Response>): (_: Record<string, string>) => Promise<RetString> {
   return async function fetcher({ url }: Record<string, string>): Promise<RetString> {

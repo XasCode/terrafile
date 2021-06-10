@@ -2,9 +2,15 @@ import { ExecFileException } from 'child_process';
 import { resolve } from 'path';
 
 import { cli } from '__tests__/testUtils';
-import { rimrafDir } from 'src/fsHelpers';
+import { rimrafDir } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 
-import { helpContent, helpInstallContent, unknownCommand, unknownOptionLong, unknownOptionShort } from 'src/strings';
+import {
+  helpContent,
+  helpInstallContent,
+  unknownCommand,
+  unknownOptionLong,
+  unknownOptionShort,
+} from 'src/cli/strings';
 
 import { version } from '/package.json';
 

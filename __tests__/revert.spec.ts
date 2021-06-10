@@ -1,15 +1,15 @@
 import { readFileSync } from 'fs-extra';
-import { rimrafDir, getAbsolutePath, checkIfFileExists } from 'src/fsHelpers';
-import { getPartsFromHttp } from 'src/moduleSources/common/cloneRepo';
-import { replacePathIfPathParam, replaceUrlVersionIfVersionParam } from 'src/moduleSources/common/git';
-import { Path } from 'src/types';
+import { rimrafDir, getAbsolutePath, checkIfFileExists } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+import { getPartsFromHttp } from 'src/backend/moduleSources/common/cloneRepo';
+import { replacePathIfPathParam, replaceUrlVersionIfVersionParam } from 'src/backend/moduleSources/common/git';
+import { Path } from 'src/shared/types';
 
 import { install } from 'src/backend';
 
-import fetcher from 'src/libs/fetcher/axios';
-import cloner from 'src/libs/cloner/git';
-import mockedFetcher from 'src/libs/fetcher/axios/mock';
-import mockedCloner from 'src/libs/cloner/git/mock';
+import fetcher from 'src/backend/extInterfaces/fetcher/axios';
+import cloner from 'src/backend/extInterfaces/cloner/git';
+import mockedFetcher from 'src/backend/extInterfaces/fetcher/axios/mock';
+import mockedCloner from 'src/backend/extInterfaces/cloner/git/mock';
 
 const useFetcher = fetcher.use(mockedFetcher.mock);
 const useCloner = cloner.use(mockedCloner.mock);

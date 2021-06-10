@@ -1,19 +1,17 @@
-import * as fs from 'fs';
-import { sync as mkdirp } from 'mkdirp';
-import { sync as rimraf } from 'rimraf';
-import { sync as touch } from 'touch';
-import * as path from 'path';
-import { Path, RetString } from 'src/types';
+import fs from 'src/backend/extInterfaces/fs/fs-extra';
 
-function checkIfFileExists(filePath: Path): boolean {
+import path from 'path';
+import { Path, RetString, Status } from 'src/shared/types';
+
+export function checkIfFileExists(filePath: Path): boolean {
   return fs.existsSync(filePath) && fs.lstatSync(filePath).isFile();
 }
 
-function checkIfDirExists(dir: Path): boolean {
+export function checkIfDirExists(dir: Path): boolean {
   return fs.existsSync(dir) && fs.lstatSync(dir).isDirectory();
 }
 
-function getAbsolutePath(dir: Path): Path {
+export function getAbsolutePath(dir: Path): Path {
   try {
     if (dir.match(/^[\.a-zA-Z0-9\-_src/:\\]+$/g) === null) {
       throw Error(`Dir contains unsupported characters. Received ${dir}.`);
@@ -25,40 +23,40 @@ function getAbsolutePath(dir: Path): Path {
   return undefined;
 }
 
-function createDir(dir: Path): Path {
+export function createDir(dir: Path): Path {
   try {
     if (dir === undefined || getAbsolutePath(dir) !== dir) {
       throw Error(`Function "createDir" expected an absolute path. Recieved "${dir}".`);
     }
-    return mkdirp(dir);
+    return fs.mkdirp(dir);
   } catch (err) {
     console.error(`Error creating dir: ${dir}`);
   }
   return undefined;
 }
 
-function touchFile(filePath: Path, perms?: number): void {
-  touch(filePath);
+export function touchFile(filePath: Path, perms?: number): void {
+  fs.touch(filePath);
   if (perms !== undefined) {
     fs.chmodSync(filePath, perms);
   }
 }
 
-function rimrafDir(dir: Path): Path {
+export function rimrafDir(dir: Path): Path {
   const absPath = getAbsolutePath(dir);
   if (absPath !== undefined && checkIfDirExists(dir)) {
-    rimraf(dir, { maxBusyTries: 3000 });
+    fs.rimraf(dir, { maxBusyTries: 3000 });
     return dir;
   }
   console.error(`Error deleting dir: ${dir}`);
   return undefined;
 }
 
-function rimrafDirs(dirs: Path[]): Path[] {
+export function rimrafDirs(dirs: Path[]): Path[] {
   return dirs.map((dir) => rimrafDir(getAbsolutePath(dir)));
 }
 
-function abortDirCreation(dir: Path): void {
+export function abortDirCreation(dir: Path): void {
   if (dir !== null && checkIfDirExists(dir)) {
     console.error(`Cleaning up due to abort, directories created starting at: ${JSON.stringify(dir)}`);
     rimrafDir(dir);
@@ -67,7 +65,7 @@ function abortDirCreation(dir: Path): void {
   }
 }
 
-function renameDir(oldPath: Path, newPath: Path): RetString {
+export function renameDir(oldPath: Path, newPath: Path): RetString {
   try {
     fs.renameSync(oldPath, newPath);
     return { success: true, value: `Successfully renamed the directory.` };
@@ -77,14 +75,32 @@ function renameDir(oldPath: Path, newPath: Path): RetString {
   }
 }
 
-export {
-  checkIfFileExists,
-  checkIfDirExists,
+export function readFile(dir: Path): string {
+  return fs.readFileSync(getAbsolutePath(dir), `utf-8`);
+}
+
+export function copyDirAbs(src: Path, dest: Path): Status {
+  const retVal = { success: true, contents: undefined, error: null } as Status;
+  try {
+    fs.copySync(src, dest, { overwrite: false, errorOnExist: true });
+  } catch (err) {
+    retVal.success = false;
+    retVal.contents = null;
+    retVal.error = `Error copying absolute from '${src}' to '${dest}'`;
+  }
+  return retVal;
+}
+
+export default {
   getAbsolutePath,
+  abortDirCreation,
+  checkIfDirExists,
+  copyDirAbs,
   createDir,
-  touchFile,
+  renameDir,
   rimrafDir,
   rimrafDirs,
-  abortDirCreation,
-  renameDir,
+  checkIfFileExists,
+  readFile,
+  touchFile,
 };

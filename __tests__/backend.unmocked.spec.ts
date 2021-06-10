@@ -1,12 +1,12 @@
 import { readFileSync } from 'fs-extra';
 
-import { readFileContents } from 'src/processFile';
-import { rimrafDirs, getAbsolutePath, checkIfFileExists } from 'src/fsHelpers';
+import { readFileContents } from 'src/backend/processFile';
+import { rimrafDirs, getAbsolutePath, checkIfFileExists } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 import { spy } from '__tests__/testUtils';
-import { CliOptions } from 'src/types';
+import { CliOptions } from 'src/shared/types';
 
-import fetcher from 'src/libs/fetcher/axios';
-import cloner from 'src/libs/cloner/git';
+import fetcher from 'src/backend/extInterfaces/fetcher/axios';
+import cloner from 'src/backend/extInterfaces/cloner/git';
 
 const testDirs = [`be_vendor_tfregistry_error`, `be_vendor_empty`, `be_vendor_live`, `be_vendor_live2`];
 

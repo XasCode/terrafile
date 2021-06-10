@@ -1,4 +1,4 @@
-import { Response } from 'src/types';
+import { Response } from 'src/shared/types';
 
 const mock = jest.fn(({ _method, url }): Promise<Response> => {
   console.error(`axios url: ${url}`);

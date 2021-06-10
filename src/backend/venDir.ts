@@ -1,7 +1,7 @@
 import * as path from 'path';
-import * as fsHelpers from 'src/fsHelpers';
-import { validOptions } from 'src/utils';
-import { CliOptions, Option, Path, Status } from 'src/types';
+import * as fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+import { validOptions } from 'src/backend/utils';
+import { CliOptions, Option, Path, Status } from 'src/shared/types';
 
 function cleanUpOldSaveLocation(dir: Path): void {
   fsHelpers.rimrafDir(dir);

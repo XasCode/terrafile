@@ -1,23 +1,10 @@
-import fs from 'fs-extra';
-import { startsWith } from 'src/utils';
-import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/types';
-import * as fsHelpers from 'src/fsHelpers';
-import type { ModulesKeyType } from 'src/moduleSources/modules';
+import { startsWith } from 'src/backend/moduleSources/common/startsWith';
+import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/shared/types';
+import fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+import type { ModulesKeyType } from 'src/backend/moduleSources/modules';
 
 function match(source: Path): ModulesKeyType | `` {
   return startsWith(source, `/`) || startsWith(source, `./`) || startsWith(source, `../`) ? `local` : ``;
-}
-
-function copyAbs(src: Path, dest: Path): Status {
-  const retVal = { success: true, contents: undefined, error: null } as Status;
-  try {
-    fs.copySync(src, dest, { overwrite: false, errorOnExist: true });
-  } catch (err) {
-    retVal.success = false;
-    retVal.contents = null;
-    retVal.error = `Error copying absolute from '${src}' to '${dest}'`;
-  }
-  return retVal;
 }
 
 function copyFromLocalDir(
@@ -33,7 +20,7 @@ function copyFromLocalDir(
   } as Status;
   const src = fsHelpers.getAbsolutePath(params.source);
   if (fsHelpers.checkIfDirExists(src)) {
-    return copyAbs(src, dest);
+    return fsHelpers.copyDirAbs(src, dest);
   }
   return retVal;
 }
