@@ -2,7 +2,7 @@ import path from 'path';
 import fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 import { validOptions } from 'src/backend/utils';
 import { CliOptions, Option, Path, Status, Config, ExecResult, RetString } from 'src/shared/types';
-import modules from 'src/backend/moduleSources';
+import { validate, fetch } from 'src/backend/moduleSources';
 
 function Terrafile(options: CliOptions): Status {
   function validateOptions(): Status {
@@ -47,7 +47,7 @@ function Terrafile(options: CliOptions): Status {
 
   function validateJson(): Status {
     const valid = this.contents.reduce(
-      (acc: boolean, [, val]: [string, Record<string, string>]) => acc && !modules.validate(val),
+      (acc: boolean, [, val]: [string, Record<string, string>]) => acc && !validate(val),
       this.success,
     );
     this.success = valid;
@@ -65,7 +65,7 @@ function Terrafile(options: CliOptions): Status {
     return Promise.all(
       contents.map(([key, val]) => {
         const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);
-        return modules.fetch(val, dest, fetcher, cloner);
+        return fetch(val, dest, fetcher, cloner);
       }),
     );
   }

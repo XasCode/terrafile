@@ -1,7 +1,7 @@
 import { startsWith } from 'src/backend/moduleSources/common/startsWith';
 import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/shared/types';
 import fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
-import type { ModulesKeyType } from 'src/backend/moduleSources/modules';
+import type { ModulesKeyType } from 'src/backend/moduleSources';
 
 function match(source: Path): ModulesKeyType | `` {
   return startsWith(source, `/`) || startsWith(source, `./`) || startsWith(source, `../`) ? `local` : ``;

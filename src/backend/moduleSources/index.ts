@@ -1,6 +1,18 @@
 import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/shared/types';
-import { modules } from 'src/backend/moduleSources/modules';
-import type { ModulesKeyType } from 'src/backend/moduleSources/modules';
+
+import local from 'src/backend/moduleSources/local';
+import gitHttps from 'src/backend/moduleSources/gitHttps';
+import gitSSH from 'src/backend/moduleSources/gitSSH';
+import terraformRegistry from 'src/backend/moduleSources/terraformRegistry';
+
+const modules = {
+  local,
+  gitHttps,
+  gitSSH,
+  terraformRegistry,
+};
+
+type ModulesKeyType = keyof typeof modules;
 
 function getType(source: Path): ModulesKeyType {
   return source === undefined
@@ -23,7 +35,7 @@ async function fetch(
   return fetchResults;
 }
 
-function validateFieldsForEachModuleEntry(params: Entry): boolean {
+function validate(params: Entry): boolean {
   let notFoundOrNotValid = false;
   const sourceType = getType(params.source);
   if (sourceType === undefined) {
@@ -34,9 +46,4 @@ function validateFieldsForEachModuleEntry(params: Entry): boolean {
   return notFoundOrNotValid;
 }
 
-export default {
-  getType,
-  fetch,
-  modules,
-  validate: validateFieldsForEachModuleEntry,
-};
+export { getType, fetch, modules, ModulesKeyType, validate };

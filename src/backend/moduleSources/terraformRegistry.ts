@@ -1,7 +1,7 @@
 import { startsWith } from 'src/backend/moduleSources/common/startsWith';
 import { Entry, Path, RetString, Status, Config, ExecResult } from 'src/shared/types';
 import { cloneRepoToDest } from 'src/backend/moduleSources/common/cloneRepo';
-import type { ModulesKeyType } from 'src/backend/moduleSources/modules';
+import type { ModulesKeyType } from 'src/backend/moduleSources';
 import axiosFetcher from 'src/backend/extInterfaces/fetcher/axios';
 
 const defaultAxiosFetcher = axiosFetcher.use(axiosFetcher.default);
