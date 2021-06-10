@@ -11,7 +11,11 @@
     "test-all": "npm run test -- --skipFilter",
     "build": "tsc",
     "install": "npm run build",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "bump": "npm version patch",
+    "bump-minor": "npm version minor",
+    "bump-major": "npm version major",
+    "publish": "git push --tags && npm publish"
   },
   "repository": {
     "type": "git",
