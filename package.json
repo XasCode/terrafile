@@ -2,9 +2,9 @@
   "name": "terrafile",
   "version": "0.1.7",
   "description": "",
-  "main": "dist/cli/terrafile.ts",
+  "main": "dist/src/cli/terrafile.ts",
   "bin": {
-    "terrafile": "dist/cli/terrafile"
+    "terrafile": "dist/src/cli/terrafile"
   },
   "scripts": {
     "test": "npm run build && tscpaths -p tsconfig.json -s ./ -o ./dist && jest --filter=\"./dist/__tests__/testUtils/testFilter.js\"",
