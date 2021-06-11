@@ -5,6 +5,9 @@ __tests__/
 coverage/
 node_modules/
 src/
+dist/__mocks__/
+dist/__tests__/
+dist/package.json
 .eslintrc
 .gitattributes
 .gitignore
