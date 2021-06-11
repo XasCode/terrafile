@@ -66,7 +66,7 @@ describe(`read file contents should read specified json file and validate its co
     const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
     expect(Object.keys(testJson).length).toBe(1);
     for (const modName of Object.keys(testJson)) {
-      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`)).value).toBe(true);
     }
   });
 
@@ -84,7 +84,7 @@ describe(`read file contents should read specified json file and validate its co
     const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
     expect(Object.keys(testJson).length).toBe(1);
     for (const modName of Object.keys(testJson)) {
-      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`)).value).toBe(true);
     }
   });
 
@@ -104,7 +104,7 @@ describe(`read file contents should read specified json file and validate its co
     const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
     expect(Object.keys(testJson).length).toBe(1);
     for (const modName of Object.keys(testJson)) {
-      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`)).value).toBe(true);
     }
   });
 
@@ -124,7 +124,7 @@ describe(`read file contents should read specified json file and validate its co
     const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
     expect(Object.keys(testJson).length).toBe(1);
     for (const modName of Object.keys(testJson)) {
-      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${options.directory}/${modName}/main.tf`)).value).toBe(true);
     }
   });
 });

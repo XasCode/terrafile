@@ -9,11 +9,11 @@ describe(`checkIfDirExists checks for the existence of a directory`, () => {
   });
 
   test(`should return true if directory exists`, () => {
-    expect(fsHelpers.checkIfDirExists(path.resolve(`.`))).toBe(true);
+    expect(fsHelpers.checkIfDirExists(path.resolve(`.`)).value).toBe(true);
   });
 
   test(`should return false if directory doesn't exist`, () => {
-    expect(fsHelpers.checkIfDirExists(path.resolve(`./SoMeThInG/uNuSuAl`))).toBe(false);
+    expect(fsHelpers.checkIfDirExists(path.resolve(`./SoMeThInG/uNuSuAl`)).value).toBe(false);
   });
 });
 
@@ -43,7 +43,7 @@ describe(`createDir should create a directory at the provided location`, () => {
 
   test(`should create a directory if provided an absolute path`, () => {
     const createdDirsStartingLocation = fsHelpers.createDir(fsHelpers.getAbsolutePath(`bar`));
-    expect(fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePath(`bar`))).toBe(true);
+    expect(fsHelpers.checkIfDirExists(fsHelpers.getAbsolutePath(`bar`)).value).toBe(true);
     expect(createdDirsStartingLocation).toBe(path.resolve(`.`, `bar`));
   });
 
@@ -76,14 +76,14 @@ describe(`rimrafDir should delete a dir and its contents`, () => {
     const deletedDir = fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(`vendor`));
     expect(deletedDir).toBe(fsHelpers.getAbsolutePath(`vendor`));
     expect(console.error).not.toHaveBeenCalled();
-    expect(fsHelpers.checkIfDirExists(`vendor`)).toBe(false);
+    expect(fsHelpers.checkIfDirExists(`vendor`).value).toBe(false);
   });
 
   test(`should error when attempting to delete a directory that doesn't exist`, () => {
     const deletedDir = fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(`sOmEtHiNg`));
     expect(deletedDir).toBe(undefined);
     expect(console.error).not.toHaveBeenLastCalledWith(`Error deleting dir: ${`sOmEtHiNg`}`);
-    expect(fsHelpers.checkIfDirExists(`sOmEtHiNg`)).toBe(false);
+    expect(fsHelpers.checkIfDirExists(`sOmEtHiNg`).value).toBe(false);
   });
 
   test(`should error when attempting to delete a directory that is not a dir`, () => {

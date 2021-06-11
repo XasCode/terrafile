@@ -36,17 +36,17 @@ describe(`unit test restoreDirectory`, () => {
     createTargetDirectory({ directory: installDir });
     // expect directory at install location
     const saveLocation = getSaveLocation(installDir);
-    expect(checkIfDirExists(saveLocation)).toBe(true);
+    expect(checkIfDirExists(saveLocation).value).toBe(true);
     // expect file at save location
-    expect(checkIfFileExists(`${getAbsolutePath(saveLocation)}/main.tf`)).toBe(true);
+    expect(checkIfFileExists(`${getAbsolutePath(saveLocation)}/main.tf`).value).toBe(true);
     // expect file not to be at install location
-    expect(checkIfFileExists(`${getAbsolutePath(installDir)}/main.tf`)).toBe(false);
+    expect(checkIfFileExists(`${getAbsolutePath(installDir)}/main.tf`).value).toBe(false);
     // restore install location
     restoreDirectory(installDir);
     // expect file at isntall directory
-    expect(checkIfFileExists(`${getAbsolutePath(installDir)}/main.tf`)).toBe(true);
+    expect(checkIfFileExists(`${getAbsolutePath(installDir)}/main.tf`).value).toBe(true);
     // expect save location to be not found
-    expect(checkIfDirExists(saveLocation)).toBe(false);
+    expect(checkIfDirExists(saveLocation).value).toBe(false);
   });
 
   test(`should err if attempting to restore non-saved file`, () => {

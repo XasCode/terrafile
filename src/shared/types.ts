@@ -82,6 +82,10 @@ interface RetString extends RetVal {
   value?: string;
 }
 
+interface RetBool extends RetVal {
+  value?: boolean;
+}
+
 type Config = Record<string, string>;
 
 type Request = {
@@ -106,6 +110,7 @@ export {
   RepoLocation,
   Request,
   Response,
+  RetBool,
   RetString,
   RetVal,
   SourceParts,

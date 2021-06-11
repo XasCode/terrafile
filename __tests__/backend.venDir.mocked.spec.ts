@@ -45,7 +45,7 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
     const retVals = createTargetDirectory({
       directory: installDir,
     });
-    expect(checkIfDirExists(getAbsolutePath(installDir))).toBe(true);
+    expect(checkIfDirExists(getAbsolutePath(installDir)).value).toBe(true);
     expect(retVals.success).toBe(true);
     expect(retVals.created).toBe(getAbsolutePath(`ok_vendor_a`));
     expect(retVals.saved).toBe(null);
@@ -56,7 +56,7 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
     const retVals = createTargetDirectory({
       directory: installDir,
     });
-    expect(checkIfDirExists(installDir)).toBe(true);
+    expect(checkIfDirExists(installDir).value).toBe(true);
     expect(retVals.success).toBe(true);
     expect(retVals.created).toBe(resolve(installDir, `..`));
     expect(retVals.saved).toBe(null);
@@ -69,8 +69,8 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
     const retVals = createTargetDirectory({
       directory: installDir,
     });
-    expect(checkIfDirExists(absInstallDir)).toBe(true);
-    expect(checkIfDirExists(resolve(absInstallDir, `..`, `.terrafile.save`))).toBe(true);
+    expect(checkIfDirExists(absInstallDir).value).toBe(true);
+    expect(checkIfDirExists(resolve(absInstallDir, `..`, `.terrafile.save`)).value).toBe(true);
     expect(retVals.success).toBe(true);
     expect(retVals.created).toBe(absInstallDir);
     expect(retVals.saved).toBe(resolve(absInstallDir, `..`, `.terrafile.save`));

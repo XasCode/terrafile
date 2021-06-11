@@ -11,7 +11,7 @@ const mock = jest.fn().mockImplementation(async (args: string[], cwd?: Path): Pr
     args.filter((cur: string) => cur === 'sparse-checkout').length > 0
       ? pathLocal.resolve(fsHelpersLocal.getAbsolutePath(fullDest), args.slice(-1)[0].slice(1))
       : fullDest;
-  if (!fsHelpersLocal.checkIfDirExists(usePath)) {
+  if (!fsHelpersLocal.checkIfDirExists(usePath).value) {
     await fsHelpersLocal.createDir(fsHelpersLocal.getAbsolutePath(usePath));
     await fsHelpersLocal.touchFile(`${usePath}${pathLocal.sep}main.tf`);
   }

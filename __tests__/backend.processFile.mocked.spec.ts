@@ -63,7 +63,7 @@ describe(`read file contents should read specified json file and validate its co
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`)).value).toBe(true);
     }
   });
 
@@ -85,7 +85,7 @@ describe(`read file contents should read specified json file and validate its co
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`err_vendor2/modules/${modName}${usePath}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`err_vendor2/modules/${modName}${usePath}/main.tf`)).value).toBe(true);
     }
   });
 
@@ -109,7 +109,7 @@ describe(`read file contents should read specified json file and validate its co
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(true);
     }
   });
 

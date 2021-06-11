@@ -44,7 +44,7 @@ describe("test backend's ability to revert on error", () => {
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(true);
     }
 
     // 2nd install, w/ error
@@ -63,7 +63,7 @@ describe("test backend's ability to revert on error", () => {
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(true);
     }
   });
 
@@ -89,7 +89,7 @@ describe("test backend's ability to revert on error", () => {
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`))).toBe(false);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(false);
     }
   });
 
@@ -114,7 +114,7 @@ describe("test backend's ability to revert on error", () => {
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(true);
     }
 
     // 2nd install, w/ error
@@ -134,7 +134,7 @@ describe("test backend's ability to revert on error", () => {
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`))).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(true);
     }
   });
 });

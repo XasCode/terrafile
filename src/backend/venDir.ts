@@ -13,7 +13,7 @@ function getSaveLocation(dir: Path): Path {
 
 function renameExistingDir(installDir: Path): Path {
   let retVal = null;
-  if (fsHelpers.checkIfDirExists(installDir)) {
+  if (fsHelpers.checkIfDirExists(installDir).value) {
     const saveLocation = getSaveLocation(installDir);
     cleanUpOldSaveLocation(saveLocation);
     fsHelpers.renameDir(installDir, saveLocation);
@@ -34,7 +34,7 @@ function createTargetDirectory(options: CliOptions): Status {
     const installDir = fsHelpers.getAbsolutePath(options.directory);
     retVals.saved = renameExistingDir(installDir);
     retVals.created = useCreateDir(installDir);
-    retVals.success = fsHelpers.checkIfDirExists(installDir);
+    retVals.success = fsHelpers.checkIfDirExists(installDir).value;
   }
   return retVals;
 }

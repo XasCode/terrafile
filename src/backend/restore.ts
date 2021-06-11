@@ -5,7 +5,7 @@ import { Path, Status } from 'src/shared/types';
 function restoreExistingDir(installDir: Path): Path {
   let retVal = null;
   const saveLocation = getSaveLocation(installDir);
-  if (fsHelpers.checkIfDirExists(saveLocation)) {
+  if (fsHelpers.checkIfDirExists(saveLocation).value) {
     fsHelpers.rimrafDir(installDir);
     fsHelpers.renameDir(saveLocation, installDir);
     retVal = installDir;
@@ -18,7 +18,7 @@ function restoreDirectory(installDir: Path): Status {
   const absInstallDir = fsHelpers.getAbsolutePath(installDir);
   const restored = restoreExistingDir(absInstallDir);
   if (restored !== null) {
-    retVals.success = fsHelpers.checkIfDirExists(absInstallDir);
+    retVals.success = fsHelpers.checkIfDirExists(absInstallDir).value;
   }
   return retVals;
 }

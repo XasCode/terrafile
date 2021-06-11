@@ -1,14 +1,49 @@
 import fs from 'src/backend/extInterfaces/fs/fs-extra';
-
 import path from 'path';
-import { Path, RetString, Status } from 'src/shared/types';
+import { Path, RetBool, RetString, Status } from 'src/shared/types';
 
-export function checkIfFileExists(filePath: Path): boolean {
-  return fs.existsSync(filePath) && fs.lstatSync(filePath).isFile();
+export function checkIfFileExists(filePath: Path): RetBool {
+  if (!fs.existsSync(filePath)) {
+    return {
+      success: true,
+      value: false,
+      error: null,
+    };
+  } else if (!fs.lstatSync(filePath).isFile()) {
+    return {
+      success: false,
+      value: false,
+      error: `checkIfFileExists: '${filePath}' is not a file.`,
+    };
+  } else {
+    return {
+      success: true,
+      value: true,
+      error: null,
+    };
+  }
 }
 
-export function checkIfDirExists(dir: Path): boolean {
-  return fs.existsSync(dir) && fs.lstatSync(dir).isDirectory();
+export function checkIfDirExists(dir: Path): RetBool {
+  if (!fs.existsSync(dir)) {
+    return {
+      success: true,
+      value: false,
+      error: null,
+    };
+  } else if (!fs.lstatSync(dir).isDirectory()) {
+    return {
+      success: false,
+      value: false,
+      error: `checkIfDirExists: '${dir}' is not a directory.`,
+    };
+  } else {
+    return {
+      success: true,
+      value: true,
+      error: null,
+    };
+  }
 }
 
 export function getAbsolutePath(dir: Path): Path {
@@ -44,7 +79,7 @@ export function touchFile(filePath: Path, perms?: number): void {
 
 export function rimrafDir(dir: Path): Path {
   const absPath = getAbsolutePath(dir);
-  if (absPath !== undefined && checkIfDirExists(dir)) {
+  if (absPath !== undefined && checkIfDirExists(dir).value) {
     fs.rimraf(dir, { maxBusyTries: 3000 });
     return dir;
   }
@@ -57,7 +92,7 @@ export function rimrafDirs(dirs: Path[]): Path[] {
 }
 
 export function abortDirCreation(dir: Path): void {
-  if (dir !== null && checkIfDirExists(dir)) {
+  if (dir !== null && checkIfDirExists(dir).value) {
     console.error(`Cleaning up due to abort, directories created starting at: ${JSON.stringify(dir)}`);
     rimrafDir(dir);
   } else {

@@ -19,7 +19,7 @@ function copyFromLocalDir(
     error: `Error copying from local dir`,
   } as Status;
   const src = fsHelpers.getAbsolutePath(params.source);
-  if (fsHelpers.checkIfDirExists(src)) {
+  if (fsHelpers.checkIfDirExists(src).value) {
     return fsHelpers.copyDirAbs(src, dest);
   }
   return retVal;
