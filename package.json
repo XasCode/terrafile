@@ -15,7 +15,7 @@
     "bump": "npm version patch",
     "bump-minor": "npm version minor",
     "bump-major": "npm version major",
-    "publish": "git push --tags && npm publish"
+    "release": "git push --tags && npm publish"
   },
   "repository": {
     "type": "git",
