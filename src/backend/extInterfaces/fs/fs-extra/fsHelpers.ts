@@ -147,8 +147,11 @@ export function renameDir(oldPath: Path, newPath: Path): RetString {
   }
 }
 
-export function readFile(dir: Path): string {
-  return fs.readFileSync(getAbsolutePath(dir).value, `utf-8`);
+export function readFile(dir: Path): RetString {
+  return {
+    success: true,
+    value: fs.readFileSync(getAbsolutePath(dir).value, `utf-8`),
+  };
 }
 
 export function copyDirAbs(src: Path, dest: Path): Status {

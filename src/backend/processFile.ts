@@ -25,7 +25,7 @@ function Terrafile(options: CliOptions): Status {
 
   function readFile(): Status {
     try {
-      this.json = JSON.parse(fsHelpers.readFile(this.options.file));
+      this.json = JSON.parse(fsHelpers.readFile(this.options.file).value);
     } catch (err) {
       this.success = false;
       this.contents = null;
