@@ -15,7 +15,7 @@ function restoreExistingDir(installDir: Path): Path {
 
 function restoreDirectory(installDir: Path): Status {
   const retVals = { success: false, saved: null, created: null } as Status;
-  const absInstallDir = fsHelpers.getAbsolutePath(installDir);
+  const absInstallDir = fsHelpers.getAbsolutePath(installDir).value;
   const restored = restoreExistingDir(absInstallDir);
   if (restored !== null) {
     retVals.success = fsHelpers.checkIfDirExists(absInstallDir).value;

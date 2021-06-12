@@ -22,7 +22,7 @@ const directories = [``, `-d bar`, `--directory bar`];
 const files = [``, `-f foobar`, `--file foobar`];
 const badOptions = [``, `-b`, `--bar`];
 
-const { version } = JSON.parse(readFileSync(getAbsolutePath(`./package.json`), `utf-8`));
+const { version } = JSON.parse(readFileSync(getAbsolutePath(`./package.json`).value, `utf-8`));
 
 const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
 

@@ -13,7 +13,7 @@ const testDirs = [`restore`, `restore2`];
 
 const cleanUpTestDirs = () =>
   testDirs.map((testDir) => {
-    rimrafDir(getAbsolutePath(testDir));
+    rimrafDir(getAbsolutePath(testDir).value);
     getSaveLocation(testDir);
   });
 
@@ -29,22 +29,22 @@ describe(`unit test restoreDirectory`, () => {
   test(`should restore saved directory`, () => {
     const installDir = `restore/modules`;
     // create a directory at install location
-    createDir(getAbsolutePath(installDir));
+    createDir(getAbsolutePath(installDir).value);
     // touch file in the install location
-    touchFile(getAbsolutePath(`${installDir}/main.tf`));
+    touchFile(getAbsolutePath(`${installDir}/main.tf`).value);
     // create install location
     createTargetDirectory({ directory: installDir });
     // expect directory at install location
     const saveLocation = getSaveLocation(installDir);
     expect(checkIfDirExists(saveLocation).value).toBe(true);
     // expect file at save location
-    expect(checkIfFileExists(`${getAbsolutePath(saveLocation)}/main.tf`).value).toBe(true);
+    expect(checkIfFileExists(`${getAbsolutePath(saveLocation).value}/main.tf`).value).toBe(true);
     // expect file not to be at install location
-    expect(checkIfFileExists(`${getAbsolutePath(installDir)}/main.tf`).value).toBe(false);
+    expect(checkIfFileExists(`${getAbsolutePath(installDir).value}/main.tf`).value).toBe(false);
     // restore install location
     restoreDirectory(installDir);
     // expect file at isntall directory
-    expect(checkIfFileExists(`${getAbsolutePath(installDir)}/main.tf`).value).toBe(true);
+    expect(checkIfFileExists(`${getAbsolutePath(installDir).value}/main.tf`).value).toBe(true);
     // expect save location to be not found
     expect(checkIfDirExists(saveLocation).value).toBe(false);
   });

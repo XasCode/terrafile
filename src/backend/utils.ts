@@ -6,7 +6,7 @@ function validOptions(options: CliOptions, fileOrFolder: Option): boolean {
     typeof options === `object` &&
     options !== null &&
     Object.keys(options).includes(fileOrFolder) &&
-    fsHelpers.getAbsolutePath(options[fileOrFolder]) !== undefined
+    fsHelpers.getAbsolutePath(options[fileOrFolder]).value !== undefined
   );
 }
 

@@ -15,7 +15,7 @@ function Terrafile(options: CliOptions): Status {
   }
 
   function verifyFile(): Status {
-    if (!fsHelpers.checkIfFileExists(fsHelpers.getAbsolutePath(this.options?.file)).value) {
+    if (!fsHelpers.checkIfFileExists(fsHelpers.getAbsolutePath(this.options?.file).value).value) {
       this.success = false;
       this.contents = null;
       this.error = `Error: ${this.options?.file} does not exist`;
@@ -64,7 +64,7 @@ function Terrafile(options: CliOptions): Status {
   ): Promise<Status[]> {
     return Promise.all(
       contents.map(([key, val]) => {
-        const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`);
+        const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`).value;
         return fetch(val, dest, fetcher, cloner);
       }),
     );

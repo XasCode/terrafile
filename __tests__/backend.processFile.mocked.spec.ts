@@ -55,7 +55,7 @@ describe(`read file contents should read specified json file and validate its co
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
-    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile).value, `utf-8`));
     expect(Object.keys(testJson).length).toBe(31);
     for (const modName of Object.keys(testJson)) {
       const params = testJson[modName];
@@ -63,12 +63,14 @@ describe(`read file contents should read specified json file and validate its co
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`)).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`).value).value).toBe(
+        true,
+      );
     }
   });
 
   test(`should successfully read a valid terrafile when provided an absolute path`, async () => {
-    const configFile = getAbsolutePath(`__tests__/testFiles/terrafile.test.json`);
+    const configFile = getAbsolutePath(`__tests__/testFiles/terrafile.test.json`).value;
     const retVals = await readFileContents({
       directory: `err_vendor2/modules`,
       file: configFile,
@@ -77,7 +79,7 @@ describe(`read file contents should read specified json file and validate its co
     });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
-    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile).value, `utf-8`));
     expect(Object.keys(testJson).length).toBe(31);
     for (const modName of Object.keys(testJson)) {
       const params = testJson[modName];
@@ -85,7 +87,9 @@ describe(`read file contents should read specified json file and validate its co
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`err_vendor2/modules/${modName}${usePath}/main.tf`)).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`err_vendor2/modules/${modName}${usePath}/main.tf`).value).value).toBe(
+        true,
+      );
     }
   });
 
@@ -101,7 +105,7 @@ describe(`read file contents should read specified json file and validate its co
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
-    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile).value, `utf-8`));
     expect(Object.keys(testJson).length).toBe(7);
     for (const modName of Object.keys(testJson)) {
       const params = testJson[modName];
@@ -109,14 +113,14 @@ describe(`read file contents should read specified json file and validate its co
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
     }
   });
 
   test(`should err on lack read access to file`, async () => {
     const configFile = `err_vendor4/no_access_file`;
-    createDir(getAbsolutePath(`${configFile}/..`));
-    touchFile(getAbsolutePath(configFile), 0);
+    createDir(getAbsolutePath(`${configFile}/..`).value);
+    touchFile(getAbsolutePath(configFile).value, 0);
     await expectFileIssue({ file: configFile });
   });
 
@@ -125,7 +129,7 @@ describe(`read file contents should read specified json file and validate its co
     undefined, // options no provided - no module definition location
     {}, // no file option provided for a module definition
     { file: `` }, // no path provided to a module defintion file
-    { file: getAbsolutePath(`.`) }, // a directory provided as a module defintion file
+    { file: getAbsolutePath(`.`).value }, // a directory provided as a module defintion file
     { file: `does_not_exist` }, // path to module definition file does not exist
     { file: `__tests__/testFiles/invalid.txt` }, // module definitions are not json
     { file: `__tests__/testFiles/invalid.json` }, // json - but doesn't provide valid module definitions

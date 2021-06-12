@@ -86,6 +86,10 @@ interface RetBool extends RetVal {
   value?: boolean;
 }
 
+interface RetPath extends RetVal {
+  value?: Path;
+}
+
 type Config = Record<string, string>;
 
 type Request = {
@@ -113,6 +117,7 @@ export {
   RetBool,
   RetString,
   RetVal,
+  RetPath,
   SourceParts,
   Status,
   TestDefinition,

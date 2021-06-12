@@ -1,6 +1,6 @@
 import fs from 'src/backend/extInterfaces/fs/fs-extra';
 import path from 'path';
-import { Path, RetBool, RetString, Status } from 'src/shared/types';
+import { Path, RetBool, RetPath, RetString, Status } from 'src/shared/types';
 
 export function checkIfFileExists(filePath: Path): RetBool {
   if (!fs.existsSync(filePath)) {
@@ -46,21 +46,30 @@ export function checkIfDirExists(dir: Path): RetBool {
   }
 }
 
-export function getAbsolutePath(dir: Path): Path {
+export function getAbsolutePath(dir: Path): RetPath {
   try {
     if (dir.match(/^[\.a-zA-Z0-9\-_src/:\\]+$/g) === null) {
       throw Error(`Dir contains unsupported characters. Received ${dir}.`);
     }
-    return path.normalize(path.resolve(dir));
+    const absPath = path.normalize(path.resolve(dir));
+    return {
+      success: true,
+      value: absPath,
+      error: null,
+    };
   } catch (err) {
     console.error(`Error resolving path: ${dir}`);
+    return {
+      success: false,
+      value: undefined,
+      error: `Error resolving path: '${dir}'. Received error: '${err}'`,
+    };
   }
-  return undefined;
 }
 
 export function createDir(dir: Path): Path {
   try {
-    if (dir === undefined || getAbsolutePath(dir) !== dir) {
+    if (dir === undefined || getAbsolutePath(dir).value !== dir) {
       throw Error(`Function "createDir" expected an absolute path. Recieved "${dir}".`);
     }
     return fs.mkdirp(dir);
@@ -78,7 +87,7 @@ export function touchFile(filePath: Path, perms?: number): void {
 }
 
 export function rimrafDir(dir: Path): Path {
-  const absPath = getAbsolutePath(dir);
+  const absPath = getAbsolutePath(dir).value;
   if (absPath !== undefined && checkIfDirExists(dir).value) {
     fs.rimraf(dir, { maxBusyTries: 3000 });
     return dir;
@@ -88,7 +97,7 @@ export function rimrafDir(dir: Path): Path {
 }
 
 export function rimrafDirs(dirs: Path[]): Path[] {
-  return dirs.map((dir) => rimrafDir(getAbsolutePath(dir)));
+  return dirs.map((dir) => rimrafDir(getAbsolutePath(dir).value));
 }
 
 export function abortDirCreation(dir: Path): void {
@@ -111,7 +120,7 @@ export function renameDir(oldPath: Path, newPath: Path): RetString {
 }
 
 export function readFile(dir: Path): string {
-  return fs.readFileSync(getAbsolutePath(dir), `utf-8`);
+  return fs.readFileSync(getAbsolutePath(dir).value, `utf-8`);
 }
 
 export function copyDirAbs(src: Path, dest: Path): Status {

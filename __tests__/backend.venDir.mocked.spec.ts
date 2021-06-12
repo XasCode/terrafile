@@ -45,14 +45,14 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
     const retVals = createTargetDirectory({
       directory: installDir,
     });
-    expect(checkIfDirExists(getAbsolutePath(installDir)).value).toBe(true);
+    expect(checkIfDirExists(getAbsolutePath(installDir).value).value).toBe(true);
     expect(retVals.success).toBe(true);
-    expect(retVals.created).toBe(getAbsolutePath(`ok_vendor_a`));
+    expect(retVals.created).toBe(getAbsolutePath(`ok_vendor_a`).value);
     expect(retVals.saved).toBe(null);
   });
 
   test(`should create the target directory when provided an absolute path`, () => {
-    const installDir = getAbsolutePath(`ok_vendor_b/modules`);
+    const installDir = getAbsolutePath(`ok_vendor_b/modules`).value;
     const retVals = createTargetDirectory({
       directory: installDir,
     });
@@ -64,7 +64,7 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
 
   test(`should create the target directory and save <path> when directory already exists`, () => {
     const installDir = `ok_vendor_c/modules`;
-    const absInstallDir = getAbsolutePath(installDir);
+    const absInstallDir = getAbsolutePath(installDir).value;
     createDir(absInstallDir);
     const retVals = createTargetDirectory({
       directory: installDir,
@@ -78,8 +78,8 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
 
   test(`should not create the target directory when path is to a file`, () => {
     const installDir = `err_vendor/modules`;
-    createDir(getAbsolutePath(`${installDir}/..`));
-    touchFile(getAbsolutePath(installDir));
+    createDir(getAbsolutePath(`${installDir}/..`).value);
+    touchFile(getAbsolutePath(installDir).value);
     expectDirIssue({ directory: installDir });
   });
 

@@ -36,7 +36,7 @@ describe("test backend's ability to revert on error", () => {
     });
 
     // verify expected directories exist
-    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile).value, `utf-8`));
     expect(Object.keys(testJson).length).toBe(7);
     for (const modName of Object.keys(testJson)) {
       const params = testJson[modName];
@@ -44,7 +44,7 @@ describe("test backend's ability to revert on error", () => {
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
     }
 
     // 2nd install, w/ error
@@ -63,7 +63,7 @@ describe("test backend's ability to revert on error", () => {
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
     }
   });
 
@@ -81,7 +81,7 @@ describe("test backend's ability to revert on error", () => {
     });
 
     // verify expected directories exist; re-use testJson
-    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile).value, `utf-8`));
     expect(Object.keys(testJson).length).toBe(7);
     for (const modName of Object.keys(testJson)) {
       const params = testJson[modName];
@@ -89,7 +89,7 @@ describe("test backend's ability to revert on error", () => {
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(false);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(false);
     }
   });
 
@@ -106,7 +106,7 @@ describe("test backend's ability to revert on error", () => {
     });
 
     // verify expected directories exist
-    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile), `utf-8`));
+    const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile).value, `utf-8`));
     expect(Object.keys(testJson).length).toBe(7);
     for (const modName of Object.keys(testJson)) {
       const params = testJson[modName];
@@ -114,7 +114,7 @@ describe("test backend's ability to revert on error", () => {
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
     }
 
     // 2nd install, w/ error
@@ -134,7 +134,7 @@ describe("test backend's ability to revert on error", () => {
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [_repo, repoDir, _branchOrTag, _commit] = getPartsFromHttp(regRepoUrl);
       const usePath = repoDir ? repoDir.slice(1) : '';
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`)).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
     }
   });
 });

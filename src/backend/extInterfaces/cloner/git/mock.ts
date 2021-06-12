@@ -6,13 +6,13 @@ const mock = jest.fn().mockImplementation(async (args: string[], cwd?: Path): Pr
   const fsHelpersLocal = require(`src/backend/extInterfaces/fs/fs-extra/fsHelpers`);
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const pathLocal = require(`path`);
-  const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]);
+  const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]).value;
   const usePath: string =
     args.filter((cur: string) => cur === 'sparse-checkout').length > 0
-      ? pathLocal.resolve(fsHelpersLocal.getAbsolutePath(fullDest), args.slice(-1)[0].slice(1))
+      ? pathLocal.resolve(fsHelpersLocal.getAbsolutePath(fullDest).value, args.slice(-1)[0].slice(1))
       : fullDest;
   if (!fsHelpersLocal.checkIfDirExists(usePath).value) {
-    await fsHelpersLocal.createDir(fsHelpersLocal.getAbsolutePath(usePath));
+    await fsHelpersLocal.createDir(fsHelpersLocal.getAbsolutePath(usePath).value);
     await fsHelpersLocal.touchFile(`${usePath}${pathLocal.sep}main.tf`);
   }
   return Promise.resolve({
