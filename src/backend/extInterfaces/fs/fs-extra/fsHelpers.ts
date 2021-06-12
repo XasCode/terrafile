@@ -1,6 +1,6 @@
 import fs from 'src/backend/extInterfaces/fs/fs-extra';
 import path from 'path';
-import { Path, RetBool, RetPath, RetString, Status } from 'src/shared/types';
+import { Path, RetBool, RetPath, RetString, RetVal, Status } from 'src/shared/types';
 
 export function checkIfFileExists(filePath: Path): RetBool {
   if (!fs.existsSync(filePath)) {
@@ -87,11 +87,15 @@ export function createDir(dir: Path): RetPath {
   }
 }
 
-export function touchFile(filePath: Path, perms?: number): void {
+export function touchFile(filePath: Path, perms?: number): RetVal {
   fs.touch(filePath);
   if (perms !== undefined) {
     fs.chmodSync(filePath, perms);
   }
+  return {
+    success: true,
+    error: null,
+  };
 }
 
 export function rimrafDir(dir: Path): Path {
