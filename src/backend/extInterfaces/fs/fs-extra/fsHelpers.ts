@@ -120,12 +120,20 @@ export function rimrafDirs(dirs: Path[]): RetPath[] {
   return dirs.map((dir) => rimrafDir(getAbsolutePath(dir).value));
 }
 
-export function abortDirCreation(dir: Path): void {
+export function abortDirCreation(dir: Path): RetVal {
   if (dir !== null && checkIfDirExists(dir).value) {
     console.error(`Cleaning up due to abort, directories created starting at: ${JSON.stringify(dir)}`);
     rimrafDir(dir);
+    return {
+      success: true,
+      error: null,
+    };
   } else {
     console.error(`Cleaning up due to abort, no directory to clean up.`);
+    return {
+      success: false,
+      error: `Cleaning up due to abort, no directory to clean up.`,
+    };
   }
 }
 
