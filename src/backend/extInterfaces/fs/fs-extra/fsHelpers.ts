@@ -98,18 +98,26 @@ export function touchFile(filePath: Path, perms?: number): RetVal {
   };
 }
 
-export function rimrafDir(dir: Path): Path {
+export function rimrafDir(dir: Path): RetPath {
   const absPath = getAbsolutePath(dir).value;
   if (absPath !== undefined && checkIfDirExists(dir).value) {
     fs.rimraf(dir, { maxBusyTries: 3000 });
-    return dir;
+    return {
+      success: true,
+      value: dir,
+      error: null,
+    };
   }
   console.error(`Error deleting dir: ${dir}`);
-  return undefined;
+  return {
+    success: false,
+    value: undefined,
+    error: `Error deleting dir: '${dir}'`,
+  };
 }
 
 export function rimrafDirs(dirs: Path[]): Path[] {
-  return dirs.map((dir) => rimrafDir(getAbsolutePath(dir).value));
+  return dirs.map((dir) => rimrafDir(getAbsolutePath(dir).value).value);
 }
 
 export function abortDirCreation(dir: Path): void {

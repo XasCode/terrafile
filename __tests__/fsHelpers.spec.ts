@@ -75,21 +75,21 @@ describe(`rimrafDir should delete a dir and its contents`, () => {
 
   test(`should delete a directory that exists`, () => {
     fsHelpers.createDir(fsHelpers.getAbsolutePath(`vendor/modules`).value);
-    const deletedDir = fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(`vendor`).value);
+    const deletedDir = fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(`vendor`).value).value;
     expect(deletedDir).toBe(fsHelpers.getAbsolutePath(`vendor`).value);
     expect(console.error).not.toHaveBeenCalled();
     expect(fsHelpers.checkIfDirExists(`vendor`).value).toBe(false);
   });
 
   test(`should error when attempting to delete a directory that doesn't exist`, () => {
-    const deletedDir = fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(`sOmEtHiNg`).value);
+    const deletedDir = fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(`sOmEtHiNg`).value).value;
     expect(deletedDir).toBe(undefined);
     expect(console.error).not.toHaveBeenLastCalledWith(`Error deleting dir: ${`sOmEtHiNg`}`);
     expect(fsHelpers.checkIfDirExists(`sOmEtHiNg`).value).toBe(false);
   });
 
   test(`should error when attempting to delete a directory that is not a dir`, () => {
-    const deletedDir = fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(`LICENSE`).value);
+    const deletedDir = fsHelpers.rimrafDir(fsHelpers.getAbsolutePath(`LICENSE`).value).value;
     expect(deletedDir).toBe(undefined);
     expect(console.error).toHaveBeenLastCalledWith(`Error deleting dir: ${fsHelpers.getAbsolutePath(`LICENSE`).value}`);
     expect(
