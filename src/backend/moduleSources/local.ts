@@ -20,7 +20,9 @@ function copyFromLocalDir(
   } as Status;
   const src = fsHelpers.getAbsolutePath(params.source).value;
   if (fsHelpers.checkIfDirExists(src).value) {
-    return fsHelpers.copyDirAbs(src, dest);
+    const copyResult = fsHelpers.copyDirAbs(src, dest);
+    retVal.success = copyResult.success;
+    retVal.error = copyResult.error;
   }
   return retVal;
 }

@@ -1,6 +1,6 @@
 import fs from 'src/backend/extInterfaces/fs/fs-extra';
 import path from 'path';
-import { Path, RetBool, RetPath, RetString, RetVal, Status } from 'src/shared/types';
+import { Path, RetBool, RetPath, RetString, RetVal } from 'src/shared/types';
 
 export function checkIfFileExists(filePath: Path): RetBool {
   if (!fs.existsSync(filePath)) {
@@ -154,16 +154,18 @@ export function readFile(dir: Path): RetString {
   };
 }
 
-export function copyDirAbs(src: Path, dest: Path): Status {
-  const retVal = { success: true, contents: undefined, error: null } as Status;
+export function copyDirAbs(src: Path, dest: Path): RetVal {
   try {
     fs.copySync(src, dest, { overwrite: false, errorOnExist: true });
+    return {
+      success: true,
+    };
   } catch (err) {
-    retVal.success = false;
-    retVal.contents = null;
-    retVal.error = `Error copying absolute from '${src}' to '${dest}'`;
+    return {
+      success: false,
+      error: `Error copying absolute from '${src}' to '${dest}'`,
+    };
   }
-  return retVal;
 }
 
 export default {
