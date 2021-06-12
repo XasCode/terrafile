@@ -12,7 +12,7 @@ const mock = jest.fn().mockImplementation(async (args: string[], cwd?: Path): Pr
       ? pathLocal.resolve(fsHelpersLocal.getAbsolutePath(fullDest).value, args.slice(-1)[0].slice(1))
       : fullDest;
   if (!fsHelpersLocal.checkIfDirExists(usePath).value) {
-    await fsHelpersLocal.createDir(fsHelpersLocal.getAbsolutePath(usePath).value);
+    await fsHelpersLocal.createDir(fsHelpersLocal.getAbsolutePath(usePath).value).value;
     await fsHelpersLocal.touchFile(`${usePath}${pathLocal.sep}main.tf`);
   }
   return Promise.resolve({

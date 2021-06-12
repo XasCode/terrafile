@@ -23,7 +23,7 @@ function renameExistingDir(installDir: Path): Path {
 }
 
 function createNewDir(installDir: Path): Path {
-  const createdStartingAt = fsHelpers.createDir(installDir);
+  const createdStartingAt = fsHelpers.createDir(installDir).value;
   return createdStartingAt !== undefined ? createdStartingAt : null;
 }
 

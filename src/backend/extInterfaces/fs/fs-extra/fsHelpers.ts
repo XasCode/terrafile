@@ -67,16 +67,24 @@ export function getAbsolutePath(dir: Path): RetPath {
   }
 }
 
-export function createDir(dir: Path): Path {
+export function createDir(dir: Path): RetPath {
   try {
     if (dir === undefined || getAbsolutePath(dir).value !== dir) {
       throw Error(`Function "createDir" expected an absolute path. Recieved "${dir}".`);
     }
-    return fs.mkdirp(dir);
+    return {
+      success: true,
+      value: fs.mkdirp(dir),
+      error: null,
+    };
   } catch (err) {
     console.error(`Error creating dir: ${dir}`);
+    return {
+      success: false,
+      value: undefined,
+      error: `Error creating dir: '${dir}'`,
+    };
   }
-  return undefined;
 }
 
 export function touchFile(filePath: Path, perms?: number): void {
