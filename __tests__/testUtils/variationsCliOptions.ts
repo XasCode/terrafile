@@ -98,9 +98,8 @@ function noVerYesHelpCheckCommand(args: CliArgs): ExecResult {
       stdout: helpContent,
       stderr: ``,
     };
-  } else {
-    return noVerYesHelpInvalidCommand(args);
   }
+  return noVerYesHelpInvalidCommand(args);
 }
 
 function noVerCheckHelp(args: CliArgs): ExecResult {
