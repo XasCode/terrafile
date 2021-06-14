@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { Command, Option } from 'commander';
 import * as backend from 'src/backend';
-import { version } from '../../package.json';
+import { version } from '/package.json';
 import { Backend } from 'src/shared/types';
 
 async function main(myargs: string[], be?: Backend): Promise<void> {
