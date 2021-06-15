@@ -12,20 +12,20 @@ Terraform is a popular open-source infrastructure as code software tool that ena
 
 It is possible to publish modules for others to use, and to use modules that others have published via:
 
-  - A local filesystem.
-  - A registry: [Terraform Registry](https://registry.terraform.io) is an example of a public regsitry that hosts a broad collection of publicly available Terraform modules for configuring many kinds of common infrastructure. [Terraform Cloud and Terraform Enterprise](https://www.terraform.io/docs/cloud/index.html) both include a private module registry for sharing modules internally within your organization.
-  - A [git](https://git-scm.com/) repository: For example [GitHub](https://github.com) public or private repositories over https or ssh.
+- A local filesystem.
+- A registry: [Terraform Registry](https://registry.terraform.io) is an example of a public regsitry that hosts a broad collection of publicly available Terraform modules for configuring many kinds of common infrastructure. [Terraform Cloud and Terraform Enterprise](https://www.terraform.io/docs/cloud/index.html) both include a private module registry for sharing modules internally within your organization.
+- A [git](https://git-scm.com/) repository: For example [GitHub](https://github.com) public or private repositories over https or ssh.
 
 ### Problems Addressed
 
-  1. [DRY](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1001745#s5): Everywhere that a module is used the source is specified, even if already used elsewhere.
-  2. Change management: Managing changes to potentially very many modules throughout the code base can be labor intensive and error prone.
+1. [DRY](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1001745#s5): Everywhere that a module is used the source is specified, even if already used elsewhere.
+2. Change management: Managing changes to potentially very many modules throughout the code base can be labor intensive and error prone.
 
 ### Solution Approach
 
-  1. Define module dependencies in a single place, a `.json` file.
-  2. Use `terrafile` to retrieve modules and save them locally where they are committed into the codebase under your version control.
-  3. Reference the local versions under version control as the source of modules used in your codebase.
+1. Define module dependencies in a single place, a `.json` file.
+2. Use `terrafile` to retrieve modules and save them locally where they are committed into the codebase under your version control.
+3. Reference the local versions under version control as the source of modules used in your codebase.
 
 ## Installation
 
@@ -115,9 +115,9 @@ terrafile install -f terrafile.sample.json -d my_modules
 
 Module definitions using Terraform's [Module Sources](https://www.terraform.io/docs/modules/sources.html).
 
-  - Mercurial not supported
-  - AWS buckets not supported
-  - GCS buckets not supproted
+- Mercurial not supported
+- AWS buckets not supported
+- GCS buckets not supproted
 
 #### version
 

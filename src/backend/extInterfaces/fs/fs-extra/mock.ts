@@ -1,5 +1,5 @@
 import { CopyOptionsSync, Mode } from 'fs-extra';
-import { PathLike, StatOptions } from 'node:fs';
+import { PathLike, StatOptions, Stats } from 'node:fs';
 import fs from 'src/backend/extInterfaces/fs/fs-extra';
 import mkdirpImport from 'mkdirp';
 import rimrafImport from 'rimraf';
@@ -9,7 +9,7 @@ function existsSync(path: PathLike) {
   return fs.existsSync(path);
 }
 
-function lstatSync(path: PathLike, options?: StatOptions & { bigint?: false }) {
+function lstatSync(path: PathLike, options?: StatOptions & { bigint?: false }): Stats {
   return fs.lstatSync(path, options);
 }
 
@@ -25,15 +25,15 @@ function readFileSync(path: number | PathLike, options?: { encoding?: null; flag
   return fs.readFileSync(path, options);
 }
 
-function copySync(src: string, dest: string, options?: CopyOptionsSync) {
+function copySync(src: string, dest: string, options?: CopyOptionsSync): void {
   return fs.copySync(src, dest, options);
 }
 
-function mkdirp(dir: string, opts?: mkdirpImport.Mode | mkdirpImport.OptionsSync) {
+function mkdirp(dir: string, opts?: mkdirpImport.Mode | mkdirpImport.OptionsSync): string {
   return fs.mkdirp(dir, opts);
 }
 
-function rimraf(path: string, options?: rimrafImport.Options) {
+function rimraf(path: string, options?: rimrafImport.Options): void {
   return fs.rimraf(path, options);
 }
 

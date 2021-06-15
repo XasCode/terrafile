@@ -1,7 +1,6 @@
 import { Response } from 'src/shared/types';
 
 const mock = jest.fn(({ _method, url }): Promise<Response> => {
-  console.error(`axios url: ${url}`);
   switch (true) {
     case /terraform\/500Error\/aws/.test(url): {
       // Mock call to Axios to retrieve Terraform download URL,

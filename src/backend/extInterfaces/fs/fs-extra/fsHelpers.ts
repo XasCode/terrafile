@@ -31,19 +31,19 @@ export function checkIfDirExists(dir: Path): RetBool {
       value: false,
       error: null,
     };
-  } else if (!fs.lstatSync(dir).isDirectory()) {
+  }
+  if (!fs.lstatSync(dir).isDirectory()) {
     return {
       success: false,
       value: false,
       error: `checkIfDirExists: '${dir}' is not a directory.`,
     };
-  } else {
-    return {
-      success: true,
-      value: true,
-      error: null,
-    };
   }
+  return {
+    success: true,
+    value: true,
+    error: null,
+  };
 }
 
 export function getAbsolutePath(dir: Path): RetPath {

@@ -70,13 +70,12 @@ async function copyFromTerraformRegistry(
   console.log(`regRepoUrl: ${JSON.stringify(regRepoUrl)} | ${dest}`);
   if (regRepoUrl.success) {
     return cloneRepoToDest(regRepoUrl.value, dest, cloner);
-  } else {
-    return {
-      success: false,
-      contents: null,
-      error: `Repo URL not found in Terraform registry. ${dest}`,
-    };
   }
+  return {
+    success: false,
+    contents: null,
+    error: `Repo URL not found in Terraform registry. ${dest}`,
+  };
 }
 
 const acceptable = [`comment`, `source`, `version`];

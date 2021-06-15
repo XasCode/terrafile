@@ -8,7 +8,7 @@ const mock = jest.fn().mockImplementation(async (args: string[], cwd?: Path): Pr
   const pathLocal = require(`path`);
   const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]).value;
   const usePath: string =
-    args.filter((cur: string) => cur === 'sparse-checkout').length > 0
+    args.filter((cur: string) => cur === `sparse-checkout`).length > 0
       ? pathLocal.resolve(fsHelpersLocal.getAbsolutePath(fullDest).value, args.slice(-1)[0].slice(1))
       : fullDest;
   if (!fsHelpersLocal.checkIfDirExists(usePath).value) {
@@ -22,9 +22,9 @@ const mock = jest.fn().mockImplementation(async (args: string[], cwd?: Path): Pr
   });
 });
 
-//Mock running a cli command and recieving an error
+// Mock running a cli command and recieving an error
 // useful for actions like `git clone`, etc...
-const mockError = jest.fn().mockImplementation(async (args: string[], cwd?: Path): Promise<ExecResult> => {
+const mockError = jest.fn().mockImplementation(async (_args: string[], _cwd?: Path): Promise<ExecResult> => {
   return Promise.resolve({
     error: { name: ``, message: `oops!`, code: -1 } as ExecFileException,
     stdout: ``,
