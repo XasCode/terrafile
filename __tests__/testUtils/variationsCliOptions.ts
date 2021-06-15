@@ -92,7 +92,8 @@ function noVerYesHelpCheckCommand(args: CliArgs): ExecResult {
       stdout: helpInstallContent,
       stderr: ``,
     };
-  } else if (args.command === ``) {
+  }
+  if (args.command === ``) {
     return {
       error: null,
       stdout: helpContent,
