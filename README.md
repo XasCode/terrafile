@@ -12,26 +12,26 @@ Terraform is a popular open-source infrastructure as code software tool that ena
 
 It is possible to publish modules for others to use, and to use modules that others have published via:
 
-- A local filesystem.
-- A registry: [Terraform Registry](https://registry.terraform.io) is an example of a public regsitry that hosts a broad collection of publicly available Terraform modules for configuring many kinds of common infrastructure. [Terraform Cloud and Terraform Enterprise](https://www.terraform.io/docs/cloud/index.html) both include a private module registry for sharing modules internally within your organization.
-- A [git](https://git-scm.com/) repository: For example [GitHub](https://github.com) public or private repositories over https or ssh.
+  - A local filesystem.
+  - A registry: [Terraform Registry](https://registry.terraform.io) is an example of a public regsitry that hosts a broad collection of publicly available Terraform modules for configuring many kinds of common infrastructure. [Terraform Cloud and Terraform Enterprise](https://www.terraform.io/docs/cloud/index.html) both include a private module registry for sharing modules internally within your organization.
+  - A [git](https://git-scm.com/) repository: For example [GitHub](https://github.com) public or private repositories over https or ssh.
 
 ### Problems Addressed
 
-1. [DRY](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1001745#s5): Everywhere that a module is used the source is specified, even if already used elsewhere.
-2. Change management: Managing changes to potentially very many modules throughout the code base can be labor intensive and error prone.
+  1. [DRY](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1001745#s5): Everywhere that a module is used the source is specified, even if already used elsewhere.
+  2. Change management: Managing changes to potentially very many modules throughout the code base can be labor intensive and error prone.
 
 ### Solution Approach
 
-1. Define module dependencies in a single place, a `.json` file.
-2. Use `terrafile` to retrieve modules and save them locally where they are committed into the codebase under your version control.
-3. Reference the local versions under version control as the source of modules used in your codebase.
+  1. Define module dependencies in a single place, a `.json` file.
+  2. Use `terrafile` to retrieve modules and save them locally where they are committed into the codebase under your version control.
+  3. Reference the local versions under version control as the source of modules used in your codebase.
 
 ## Installation
 
 `terrafile` can be added as a project dependency:
 
-```
+```shell
  npm install --save-dev terrafile
 ```
 
@@ -49,7 +49,7 @@ You may also find it useful to add a script to your `package.json` for refreshin
 
 Alternatively, you could run terrafile via [npx](https://docs.npmjs.com/cli/v7/commands/npx) without including terrafile as a dependency for your project:
 
-```
+```shell
 npx terrafile install
 ```
 
@@ -59,7 +59,7 @@ npx terrafile install
 
 `terrafile` expects a `.json` file as input defining module sources. By default, `terrafile` will use `terrafile.json` in the current working directory. However, you can specify another location using the `-f` or `--file` cli options for the `install` command.
 
-```
+```shell
 terrafile install -f terrafile.sample.json
 ```
 
@@ -67,7 +67,7 @@ terrafile install -f terrafile.sample.json
 
 `terrafile` downloads the specified modules to the local filesystem 'cache'. By default modules will be downloaded to `vendor/modules/<module-name>`. However, you can specify another base directory instead of `vendor/modules` using the `-d` or `--directory` cli options for the `install` command.
 
-```
+```shell
 terrafile install -f terrafile.sample.json -d my_modules
 ```
 
@@ -111,29 +111,29 @@ terrafile install -f terrafile.sample.json -d my_modules
 }
 ```
 
-#### source:
+#### source
 
 Module definitions using Terraform's [Module Sources](https://www.terraform.io/docs/modules/sources.html).
 
-- Mercurial not supported
-- AWS buckets not supported
-- GCS buckets not supproted
+  - Mercurial not supported
+  - AWS buckets not supported
+  - GCS buckets not supproted
 
-#### version:
+#### version
 
 The `version` can be a tag, a branch or a commit hash. By default, the repository default branch, e.g. `main` will be used.
 
-#### path:
+#### path
 
 The sub-directory within a specified source repository where module sources are located. Useful for mono-repos with multiple modules in one repository.
 
-#### comment:
+#### comment
 
 `terrafile` ignores the `comment` field.
 
-### Example Usage:
+### Example Usage
 
-```typescript
+```shell
 Usage: terrafile --help
 
 Manage vendored modules using a JSON file.
@@ -147,7 +147,7 @@ Commands:
   help [command]     display help for command
 ```
 
-```
+```shell
 Usage: terrafile install --help
 
 Installs the files in your terrafile.json
