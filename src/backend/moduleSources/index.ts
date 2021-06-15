@@ -18,7 +18,9 @@ function getType(source: Path): ModulesKeyType {
   return source === undefined
     ? undefined
     : (Object.values(modules)
-        .map((module) => module.match(source))
+        .map((module) => {
+          return module.match(source);
+        })
         .join(``) as ModulesKeyType);
 }
 

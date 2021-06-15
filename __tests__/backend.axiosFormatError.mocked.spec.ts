@@ -12,7 +12,11 @@ import mockedCloner from 'src/backend/extInterfaces/cloner/git/mock';
 
 const testDirs = [`vendor_tfregistry_FormatError`];
 
-const cleanUpTestDirs = () => testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir).value));
+const cleanUpTestDirs = () => {
+  testDirs.forEach((testDir) => {
+    rimrafDir(getAbsolutePath(testDir).value);
+  });
+};
 
 // expected result when error encountered
 async function expectFileIssue(options: CliOptions): Promise<void> {

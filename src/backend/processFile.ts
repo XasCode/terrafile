@@ -46,10 +46,9 @@ function Terrafile(options: CliOptions): Status {
   }
 
   function validateJson(): Status {
-    const valid = this.contents.reduce(
-      (acc: boolean, [, val]: [string, Record<string, string>]) => acc && !validate(val),
-      this.success,
-    );
+    const valid = this.contents.reduce((acc: boolean, [, val]: [string, Record<string, string>]) => {
+      return acc && !validate(val);
+    }, this.success);
     this.success = valid;
     this.contents = valid ? this.contents : null;
     this.error = valid ? null : `Error: Not valid JSON format`;
