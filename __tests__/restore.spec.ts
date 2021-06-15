@@ -11,11 +11,12 @@ import { getSaveLocation, createTargetDirectory } from 'src/backend/venDir';
 
 const testDirs = [`restore`, `restore2`];
 
-const cleanUpTestDirs = () =>
-  testDirs.map((testDir) => {
+const cleanUpTestDirs = () => {
+  return testDirs.map((testDir) => {
     rimrafDir(getAbsolutePath(testDir).value);
     getSaveLocation(testDir);
   });
+};
 
 describe(`unit test restoreDirectory`, () => {
   beforeEach(() => {
