@@ -80,7 +80,7 @@ async function cloneRepoToDest(
     contents: null,
     error: `Error cloning repo to destination ${repoUrl} - ${fullDest}`,
   } as Status;
-  const useCloner = cloner ? cloner : defaultGitCloner;
+  const useCloner = cloner || defaultGitCloner;
   const [a, b, c, d]: RepoLocation = getPartsFromHttp(repoUrl);
   const successful =
     !(await cloneRepo([a, b, c, d], fullDest, useCloner)).error &&

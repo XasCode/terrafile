@@ -23,7 +23,7 @@ describe("test backend's ability to revert on error", () => {
     rimrafDir(`vendor`);
   });
 
-  test(`should install successfull, then second install to same location should fail processing file and revert dir`, async () => {
+  test(`1st install successfull, then 2nd install to same loc. should fail processing file and revert dir`, async () => {
     const configFile = `terrafile.sample.json`;
     const destination = `vendor/revert1`;
 

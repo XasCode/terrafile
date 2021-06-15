@@ -7,7 +7,7 @@ type FilteredTests = {
   filtered: FilteredTest[];
 };
 
-const ignoreStrings = ['backend.unmocked.spec.ts'];
+const ignoreStrings = [`backend.unmocked.spec.ts`];
 
 module.exports = async function filter(tests: string[]): Promise<FilteredTests> {
   return Promise.resolve({
@@ -18,7 +18,7 @@ module.exports = async function filter(tests: string[]): Promise<FilteredTests> 
         }, true);
       })
       .map((filterMatch) => {
-        return { message: 'skipping...', test: filterMatch };
+        return { message: `skipping...`, test: filterMatch };
       }),
   });
 };

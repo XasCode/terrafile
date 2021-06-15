@@ -36,8 +36,7 @@ function getRepoUrl(terraformRegistryGitUrl: Path): RetString {
 }
 
 async function getRegRepoUrl(downloadPointerUrl: Path, fetcher: (_: Config) => Promise<RetString>): Promise<RetString> {
-  console.log(`getRegRepoUrl: ${downloadPointerUrl} | ${__dirname}`);
-  const useFetcher = fetcher ? fetcher : defaultAxiosFetcher;
+  const useFetcher = fetcher || defaultAxiosFetcher;
   const fetcherResult = await useFetcher({ url: downloadPointerUrl });
   if (fetcherResult.success) {
     return getRepoUrl(fetcherResult.value);
@@ -65,9 +64,7 @@ async function copyFromTerraformRegistry(
     });
   }
   const downloadPointerUrl = getRegDownloadPointerUrl(params.source, params.version || ``);
-  console.log(`downloadPointerUrl: ${downloadPointerUrl} | ${dest}`);
   const regRepoUrl = await getRegRepoUrl(downloadPointerUrl, fetcher);
-  console.log(`regRepoUrl: ${JSON.stringify(regRepoUrl)} | ${dest}`);
   if (regRepoUrl.success) {
     return cloneRepoToDest(regRepoUrl.value, dest, cloner);
   }
