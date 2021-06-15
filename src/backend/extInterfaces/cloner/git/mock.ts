@@ -8,7 +8,9 @@ const mock = jest.fn().mockImplementation(async (args: string[], cwd?: Path): Pr
   const pathLocal = require(`path`);
   const fullDest = fsHelpersLocal.getAbsolutePath(cwd || args.slice(-1)[0]).value;
   const usePath: string =
-    args.filter((cur: string) => cur === `sparse-checkout`).length > 0
+    args.filter((cur: string) => {
+      return cur === `sparse-checkout`;
+    }).length > 0
       ? pathLocal.resolve(fsHelpersLocal.getAbsolutePath(fullDest).value, args.slice(-1)[0].slice(1))
       : fullDest;
   if (!fsHelpersLocal.checkIfDirExists(usePath).value) {
