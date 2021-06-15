@@ -62,7 +62,7 @@ describe(`read file contents should read specified json file and validate its co
       const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : '';
+      const usePath = repoDir ? repoDir.slice(1) : ``;
       expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`).value).value).toBe(
         true,
       );
@@ -86,7 +86,7 @@ describe(`read file contents should read specified json file and validate its co
       const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : '';
+      const usePath = repoDir ? repoDir.slice(1) : ``;
       expect(checkIfFileExists(getAbsolutePath(`err_vendor2/modules/${modName}${usePath}/main.tf`).value).value).toBe(
         true,
       );
@@ -112,7 +112,7 @@ describe(`read file contents should read specified json file and validate its co
       const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : '';
+      const usePath = repoDir ? repoDir.slice(1) : ``;
       expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
     }
   });

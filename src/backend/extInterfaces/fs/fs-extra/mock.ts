@@ -5,7 +5,7 @@ import mkdirpImport from 'mkdirp';
 import rimrafImport from 'rimraf';
 import touchImport from 'touch';
 
-function existsSync(path: PathLike) {
+function existsSync(path: PathLike): boolean {
   return fs.existsSync(path);
 }
 
@@ -13,15 +13,15 @@ function lstatSync(path: PathLike, options?: StatOptions & { bigint?: false }): 
   return fs.lstatSync(path, options);
 }
 
-function chmodSync(path: PathLike, mode: Mode) {
+function chmodSync(path: PathLike, mode: Mode): void {
   return fs.chmodSync(path, mode);
 }
 
-function renameSync(oldPath: PathLike, newPath: PathLike) {
+function renameSync(oldPath: PathLike, newPath: PathLike): void {
   return fs.renameSync(oldPath, newPath);
 }
 
-function readFileSync(path: number | PathLike, options?: { encoding?: null; flag?: string }) {
+function readFileSync(path: number | PathLike, options?: { encoding?: null; flag?: string }): Buffer {
   return fs.readFileSync(path, options);
 }
 
@@ -37,7 +37,7 @@ function rimraf(path: string, options?: rimrafImport.Options): void {
   return fs.rimraf(path, options);
 }
 
-function touch(filename: string, options?: touchImport.Options) {
+function touch(filename: string, options?: touchImport.Options): void {
   return fs.touch(filename, options);
 }
 

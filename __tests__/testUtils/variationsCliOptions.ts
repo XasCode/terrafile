@@ -58,15 +58,15 @@ function noVerNoHelpCheckCommand(args: CliArgs): ExecResult {
       stdout: ``,
       stderr: helpContent,
     };
-  } else if (args.command !== `install`) {
+  }
+  if (args.command !== `install`) {
     return {
       error: { name: ``, message: ``, code: 1 } as ExecFileException,
       stdout: ``,
       stderr: unknownCommand,
     };
-  } else {
-    return noVerNoHelpValidCommandCheckOptions(args);
   }
+  return noVerNoHelpValidCommandCheckOptions(args);
 }
 
 function noVerYesHelpInvalidCommand(args: CliArgs): ExecResult {
@@ -76,13 +76,12 @@ function noVerYesHelpInvalidCommand(args: CliArgs): ExecResult {
       stdout: ``,
       stderr: helpContent,
     };
-  } else {
-    return {
-      error: null,
-      stdout: helpContent,
-      stderr: ``,
-    };
   }
+  return {
+    error: null,
+    stdout: helpContent,
+    stderr: ``,
+  };
 }
 
 function noVerYesHelpCheckCommand(args: CliArgs): ExecResult {

@@ -13,7 +13,7 @@ module.exports = async function filter(tests: string[]): Promise<FilteredTests> 
   return Promise.resolve({
     filtered: tests
       .filter((test) => {
-        return ignoreStrings.reduce((acc, curr, i, arr) => {
+        return ignoreStrings.reduce((acc, curr) => {
           return acc && test.indexOf(curr) === -1;
         }, true);
       })

@@ -37,8 +37,12 @@ describe(`should take an array and rearrange the elements randomly`, () => {
     const output = randomizeOrder(input);
     expectRearranged(input, output);
     const numberOfMatchingPossibleOutputs = possibleOutputs
-      .map((possibleOutput) => JSON.stringify(output) === JSON.stringify(possibleOutput))
-      .filter((truthy) => truthy).length;
+      .map((possibleOutput) => {
+        return JSON.stringify(output) === JSON.stringify(possibleOutput);
+      })
+      .filter((truthy) => {
+        return truthy;
+      }).length;
     expect(numberOfMatchingPossibleOutputs).toBe(1);
   });
 });
