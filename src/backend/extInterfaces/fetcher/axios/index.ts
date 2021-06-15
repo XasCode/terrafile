@@ -10,7 +10,8 @@ function use(fetchLibrary: (_: Request) => Promise<Response>): (_: Record<string
       } as Request);
       if (response.status !== 204) {
         return { success: false, error: `Expected status 204 from ${url}, recieved ${response.status}` };
-      } else if (response.headers === undefined) {
+      }
+      if (response.headers === undefined) {
         return { success: false, error: `Response from ${url} did not include headers.` };
       }
       return { success: true, error: null, value: response.headers[`x-terraform-get`] };
