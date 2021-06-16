@@ -35,7 +35,9 @@
     "@typescript-eslint/implicit-arrow-linebreak": "off",
     "implicit-arrow-linebreak": ["error", "below"],
     "@typescript-eslint/arrow-body-style": "off",
-    "arrow-body-style": ["error", "always"]
+    "arrow-body-style": ["error", "always"],
+    "@typescript-eslint/no-unused-vars": "off",
+    "no-unused-vars": ["error", { "varsIgnorePattern": "^_" }]
   },
   "overrides": [
     {
