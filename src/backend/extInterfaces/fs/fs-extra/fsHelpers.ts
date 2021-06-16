@@ -48,7 +48,7 @@ export function checkIfDirExists(dir: Path): RetBool {
 
 export function getAbsolutePath(dir: Path): RetPath {
   try {
-    if (dir.match(/^[\.a-zA-Z0-9\-_src/:\\]+$/g) === null) {
+    if (dir.match(/^[.a-zA-Z0-9\-_/:\\]+$/g) === null) {
       throw Error(`Dir contains unsupported characters. Received ${dir}.`);
     }
     const absPath = path.normalize(path.resolve(dir));
