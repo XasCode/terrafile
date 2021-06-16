@@ -11,7 +11,9 @@ async function main(myargs: string[], be?: Backend): Promise<void> {
     .description(`Manage vendored modules using a JSON file.`)
     .command(`install`)
     .description(`Installs the files in your terrafile.json`)
-    .action((options) => (be === undefined ? backend.install(options) : be.install(options)))
+    .action((options) => {
+      return be === undefined ? backend.install(options) : be.install(options);
+    })
     .addOption(new Option(`-d, --directory <string>`, `module directory`).default(`vendor/modules`))
     .addOption(new Option(`-f, --file <string>`, `config file`).default(`terrafile.json`));
   try {
