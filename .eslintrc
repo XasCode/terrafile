@@ -37,9 +37,13 @@
     "arrow-body-style": ["error", "always"],
     "@typescript-eslint/no-unused-vars": "off",
     "no-unused-vars": ["error", { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-console": "off",
+    "no-console": "off",
+    "@typescript-eslint/no-restricted-syntax": "off",
     "no-restricted-syntax": "off",
-    "import/prefer-default-export": "off",
-    "newline-per-chained-call": "off"
+    "@typescript-eslint/newline-per-chained-call": "off",
+    "newline-per-chained-call": "off",
+    "import/prefer-default-export": "off"
   },
   "overrides": [
     {
@@ -51,6 +55,13 @@
     {
       "files": ["__tests__/testUtils/mock.ts"],
       "rules": {
+        "global-require": "off"
+      }
+    },
+    {
+      "files": ["**/mock.ts"],
+      "rules": {
+        "@typescript-eslint/global-require": "off",
         "global-require": "off"
       }
     }
