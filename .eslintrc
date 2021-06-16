@@ -33,7 +33,9 @@
     "@typescript-eslint/indent": "off",
     "indent": ["error", 2, { "offsetTernaryExpressions": true, "SwitchCase": 1}],
     "@typescript-eslint/implicit-arrow-linebreak": "off",
-    "implicit-arrow-linebreak": ["error", "below"] 
+    "implicit-arrow-linebreak": ["error", "below"],
+    "@typescript-eslint/arrow-body-style": "off",
+    "arrow-body-style": ["error", "always"]
   },
   "overrides": [
     {
