@@ -126,7 +126,9 @@ function getCommand({ command, helpCommand, ver, help, badOption }: CliArgs): st
 function getArgs({ helpCommand, command, help, ver, directory, file, badOption }: CliArgs): string {
   return `${helpCommand} ${command} ${help} ${ver} ${directory} ${file} ${badOption}`
     .split(` `)
-    .filter((cur) => cur.length > 0)
+    .filter((cur) => {
+      return cur.length > 0;
+    })
     .join(` `);
 }
 
