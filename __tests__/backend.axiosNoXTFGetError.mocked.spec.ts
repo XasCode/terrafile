@@ -12,7 +12,11 @@ import mockedCloner from 'src/backend/extInterfaces/cloner/git/mock';
 
 const testDirs = [`vendor_tfregistry_NoXTFGetError`];
 
-const cleanUpTestDirs = () => testDirs.map((testDir) => rimrafDir(getAbsolutePath(testDir).value));
+const cleanUpTestDirs = () => {
+  return testDirs.forEach((testDir) => {
+    return rimrafDir(getAbsolutePath(testDir).value);
+  });
+};
 
 // expected result when error encountered
 async function expectFileIssue(options: CliOptions): Promise<void> {
