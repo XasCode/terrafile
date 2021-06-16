@@ -39,6 +39,7 @@ describe(`should execute 'terrafile' with a set of commands/options and verify t
   });
 
   test(`test currated set of cli commands synchronously`, async () => {
+    /* eslint-disable no-await-in-loop */
     for (const cliCommand of Object.keys(curatedCliCommands)) {
       const result = await cli(cliCommand.split(` `), `./dist/src`);
       expect(result.stdout).toBe(curatedCliCommands[cliCommand][0]);
