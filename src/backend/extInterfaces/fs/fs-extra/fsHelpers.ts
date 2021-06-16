@@ -117,7 +117,9 @@ export function rimrafDir(dir: Path): RetPath {
 }
 
 export function rimrafDirs(dirs: Path[]): RetPath[] {
-  return dirs.map((dir) => rimrafDir(getAbsolutePath(dir).value));
+  return dirs.map((dir) => {
+    return rimrafDir(getAbsolutePath(dir).value);
+  });
 }
 
 export function abortDirCreation(dir: Path): RetVal {
