@@ -43,7 +43,7 @@ describe(`test backend's ability to revert on error`, () => {
       const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : '';
+      const usePath = repoDir ? repoDir.slice(1) : ``;
       expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
     }
 
@@ -62,7 +62,7 @@ describe(`test backend's ability to revert on error`, () => {
       const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : '';
+      const usePath = repoDir ? repoDir.slice(1) : ``;
       expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
     }
   });
@@ -90,7 +90,7 @@ describe(`test backend's ability to revert on error`, () => {
       const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : '';
+      const usePath = repoDir ? repoDir.slice(1) : ``;
       expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(false);
     }
   });
@@ -115,7 +115,7 @@ describe(`test backend's ability to revert on error`, () => {
       const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : '';
+      const usePath = repoDir ? repoDir.slice(1) : ``;
       expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
     }
 
@@ -137,7 +137,7 @@ describe(`test backend's ability to revert on error`, () => {
       const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
       const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
       const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : '';
+      const usePath = repoDir ? repoDir.slice(1) : ``;
       expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
     }
   });
