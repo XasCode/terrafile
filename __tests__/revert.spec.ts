@@ -125,7 +125,9 @@ describe(`test backend's ability to revert on error`, () => {
       directory: destination,
       fetcher: fetcher.use(mockedFetcher.mock),
       cloner: cloner.use(mockedCloner.mockError),
-      createDir: (_: Path) => null,
+      createDir: (_: Path) => {
+        return null;
+      },
     });
 
     // verify expected directories exist; re-use testJson
