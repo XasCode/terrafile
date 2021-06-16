@@ -31,7 +31,7 @@ function getRepoUrl(terraformRegistryGitUrl: Path): RetString {
   }
   return {
     success: false,
-    error: `Attempt to retrieve loc. of repo from tF registry returned undefined, may be missing 'x-terraform-get' header.`,
+    error: `Attempt to get loc of repo from tF registry returned undefined, may be missing 'x-terraform-get' header.`,
   };
 }
 
