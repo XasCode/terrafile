@@ -23,7 +23,7 @@ describe(`test backend's ability to revert on error`, () => {
     rimrafDir(`vendor`);
   });
 
-  test(`1st install successfull, then 2nd install to same loc. should fail processing file and revert dir`, async () => {
+  test(`1st install successfull, then 2nd install to same loc should fail processing file and revert dir`, async () => {
     const configFile = `terrafile.sample.json`;
     const destination = `vendor/revert1`;
 
@@ -77,7 +77,9 @@ describe(`test backend's ability to revert on error`, () => {
       directory: destination,
       fetcher: fetcher.use(mockedFetcher.mock),
       cloner: cloner.use(mockedCloner.mockError),
-      createDir: (_: Path) => null,
+      createDir: (_: Path) => {
+        return null;
+      },
     });
 
     // verify expected directories exist; re-use testJson
