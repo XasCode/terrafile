@@ -9,19 +9,19 @@ export function checkIfFileExists(filePath: Path): RetBool {
       value: false,
       error: null,
     };
-  } else if (!fs.lstatSync(filePath).isFile()) {
+  }
+  if (!fs.lstatSync(filePath).isFile()) {
     return {
       success: false,
       value: false,
       error: `checkIfFileExists: '${filePath}' is not a file.`,
     };
-  } else {
-    return {
-      success: true,
-      value: true,
-      error: null,
-    };
   }
+  return {
+    success: true,
+    value: true,
+    error: null,
+  };
 }
 
 export function checkIfDirExists(dir: Path): RetBool {
@@ -130,13 +130,12 @@ export function abortDirCreation(dir: Path): RetVal {
       success: true,
       error: null,
     };
-  } else {
-    console.error(`Cleaning up due to abort, no directory to clean up.`);
-    return {
-      success: false,
-      error: `Cleaning up due to abort, no directory to clean up.`,
-    };
   }
+  console.error(`Cleaning up due to abort, no directory to clean up.`);
+  return {
+    success: false,
+    error: `Cleaning up due to abort, no directory to clean up.`,
+  };
 }
 
 export function renameDir(oldPath: Path, newPath: Path): RetString {
