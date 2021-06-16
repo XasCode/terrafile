@@ -26,7 +26,7 @@
     "@typescript-eslint/function-paren-newline": "off",
     "function-paren-newline": ["error", "multiline-arguments"],
     "@typescript-eslint/object-curly-newline": "off",
-    "object-curly-newline": ["error", { "ImportDeclaration": { "minProperties": 6, "consistent": true } }],
+    "object-curly-newline": ["error", { "consistent": true }],
     "@typescript-eslint/operator-linebreak": "off",
     "operator-linebreak": ["error", "after", { "overrides": { "?": "before", ":": "before" } }],
     "@typescript-eslint/indent": "off",
