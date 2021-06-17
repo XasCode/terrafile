@@ -3,7 +3,25 @@ import { cloneRepoToDest } from 'src/backend/moduleSources/common/cloneRepo';
 import type { ModulesKeyType } from 'src/backend/moduleSources';
 import { startsWith } from 'src/backend/moduleSources/common/startsWith';
 
-function Git(matchStart?: string, sourceType?: ModulesKeyType) {
+type TestableTypes = {
+  replacePathIfPathParam: (source: Path, repoPath: Path) => Path;
+  replaceUrlVersionIfVersionParam: (source: Path, version: string) => Path;
+};
+
+type GitModuleTypes = {
+  fetch: (
+    params: Entry,
+    dest: Path,
+    _fetcher: (_: Config) => Promise<RetString>,
+    cloner: (_: string[], __?: Path) => Promise<ExecResult>,
+  ) => Promise<Status>;
+  match: (source: Path) => ModulesKeyType | ``;
+  testable: TestableTypes;
+  replaceUrlVersionIfVersionParam: (source: Path, version: string) => Path;
+  replacePathIfPathParam: (source: Path, repoPath: Path) => Path;
+};
+
+function Git(matchStart?: string, sourceType?: ModulesKeyType): GitModuleTypes {
   function replaceUrlVersionIfVersionParam(source: Path, version: string): Path {
     return version ? [source.split(`?ref=`)[0], version].join(`?ref=`) : source;
   }
