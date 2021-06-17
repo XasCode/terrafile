@@ -58,10 +58,7 @@ type Status = {
   cloner?: (_: string[], __?: Path) => Promise<ExecResult>;
 };
 
-enum Option {
-  file = `file`,
-  folder = `directory`,
-}
+type Option = `file` | `directory`;
 
 type Entry = {
   source?: string;
