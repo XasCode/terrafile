@@ -32,7 +32,7 @@ function Git(matchStart?: string, sourceType?: ModulesKeyType): GitModuleTypes {
     return `${beforeGit}${source.includes(`.git`) ? `.git` : ``}${beforePathSep}${newPath}${newQrefPart}`;
   }
 
-  async function fetch({ params, dest, fetcher, cloner }: FetchParams): Promise<Status> {
+  async function fetch({ params, dest, fetcher: _fetcher, cloner }: FetchParams): Promise<Status> {
     const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
     const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
     return cloneRepoToDest(regRepoUrl, dest, cloner);
