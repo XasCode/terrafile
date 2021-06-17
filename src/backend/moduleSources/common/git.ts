@@ -3,7 +3,7 @@ import { cloneRepoToDest } from 'src/backend/moduleSources/common/cloneRepo';
 import type { ModulesKeyType } from 'src/backend/moduleSources';
 import { startsWith } from 'src/backend/moduleSources/common/startsWith';
 
-function Git(acceptable?: string[], matchStart?: string, sourceType?: ModulesKeyType) {
+function Git(matchStart?: string, sourceType?: ModulesKeyType) {
   function replaceUrlVersionIfVersionParam(source: Path, version: string): Path {
     return version ? [source.split(`?ref=`)[0], version].join(`?ref=`) : source;
   }
@@ -39,18 +39,7 @@ function Git(acceptable?: string[], matchStart?: string, sourceType?: ModulesKey
     return startsWith(source, matchStart) ? sourceType : ``;
   }
 
-  function validate(params: Entry): boolean {
-    let notFoundOrNotValid = false;
-    const paramKeys = Object.keys(params);
-    for (const param of paramKeys) {
-      if (!acceptable.includes(param)) {
-        notFoundOrNotValid = true;
-      }
-    }
-    return notFoundOrNotValid;
-  }
-
-  return { fetch, match, validate, testable, replaceUrlVersionIfVersionParam, replacePathIfPathParam };
+  return { fetch, match, testable, replaceUrlVersionIfVersionParam, replacePathIfPathParam };
 }
 
 export default Git;

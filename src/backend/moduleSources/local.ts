@@ -2,6 +2,7 @@ import { startsWith } from 'src/backend/moduleSources/common/startsWith';
 import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/shared/types';
 import fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 import type { ModulesKeyType } from 'src/backend/moduleSources';
+import Validate from 'src/backend/moduleSources/common/validate';
 
 function match(source: Path): ModulesKeyType | `` {
   return startsWith(source, `/`) || startsWith(source, `./`) || startsWith(source, `../`) ? `local` : ``;
@@ -29,6 +30,7 @@ function copyFromLocalDir(
 
 const acceptable = [`comment`, `source`];
 
+/*
 function validate(params: Entry): boolean {
   let notFoundOrNotValid = false;
   const paramKeys = Object.keys(params);
@@ -39,5 +41,7 @@ function validate(params: Entry): boolean {
   }
   return notFoundOrNotValid;
 }
+*/
+const validate = Validate(acceptable);
 
 export default { match, fetch: copyFromLocalDir, validate };

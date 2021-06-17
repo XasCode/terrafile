@@ -3,6 +3,7 @@ import { Entry, Path, RetString, Status, Config, ExecResult } from 'src/shared/t
 import { cloneRepoToDest } from 'src/backend/moduleSources/common/cloneRepo';
 import type { ModulesKeyType } from 'src/backend/moduleSources';
 import axiosFetcher from 'src/backend/extInterfaces/fetcher/axios';
+import Validate from 'src/backend/moduleSources/common/validate';
 
 const defaultAxiosFetcher = axiosFetcher.use(axiosFetcher.default);
 
@@ -77,15 +78,6 @@ async function copyFromTerraformRegistry(
 
 const acceptable = [`comment`, `source`, `version`];
 
-function validate(params: Entry): boolean {
-  let notFoundOrNotValid = false;
-  const paramKeys = Object.keys(params);
-  for (const param of paramKeys) {
-    if (!acceptable.includes(param)) {
-      notFoundOrNotValid = true;
-    }
-  }
-  return notFoundOrNotValid;
-}
+const validate = Validate(acceptable);
 
 export default { match, fetch: copyFromTerraformRegistry, validate };
