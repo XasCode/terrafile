@@ -7,8 +7,8 @@
     "terrafile": "./dist/src/cli/terrafile.js"
   },
   "scripts": {
-    "test-basic": "npm run build && tscpaths -p tsconfig.json -s ./ -o ./dist && jest --filter=\"./dist/__tests__/testUtils/testFilter.js\"",
-    "test": "npm run test-basic -- --skipFilter",
+    "test": "npm run build && tscpaths -p tsconfig.json -s ./ -o ./dist && jest --filter=\"./dist/__tests__/testUtils/testFilter.js\"",
+    "test-all": "npm run test -- --skipFilter",
     "build": "tsc",
     "lint": "eslint src",
     "bump": "npm version patch",
