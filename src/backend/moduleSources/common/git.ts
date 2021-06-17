@@ -4,21 +4,21 @@ import type { ModulesKeyType } from 'src/backend/moduleSources';
 import { startsWith } from 'src/backend/moduleSources/common/startsWith';
 
 type TestableTypes = {
-  replacePathIfPathParam: (source: Path, repoPath: Path) => Path;
-  replaceUrlVersionIfVersionParam: (source: Path, version: string) => Path;
+  replacePathIfPathParam: (_source: Path, _repoPath: Path) => Path;
+  replaceUrlVersionIfVersionParam: (_source: Path, _version: string) => Path;
 };
 
 type GitModuleTypes = {
   fetch: (
-    params: Entry,
-    dest: Path,
+    _params: Entry,
+    _dest: Path,
     _fetcher: (_: Config) => Promise<RetString>,
-    cloner: (_: string[], __?: Path) => Promise<ExecResult>,
+    _cloner: (_: string[], __?: Path) => Promise<ExecResult>,
   ) => Promise<Status>;
-  match: (source: Path) => ModulesKeyType | ``;
+  match: (_source: Path) => ModulesKeyType | ``;
   testable: TestableTypes;
-  replaceUrlVersionIfVersionParam: (source: Path, version: string) => Path;
-  replacePathIfPathParam: (source: Path, repoPath: Path) => Path;
+  replaceUrlVersionIfVersionParam: (_source: Path, _version: string) => Path;
+  replacePathIfPathParam: (_source: Path, _repoPath: Path) => Path;
 };
 
 function Git(matchStart?: string, sourceType?: ModulesKeyType): GitModuleTypes {
