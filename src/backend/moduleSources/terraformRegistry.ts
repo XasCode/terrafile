@@ -1,5 +1,5 @@
 import { startsWith } from 'src/backend/moduleSources/common/startsWith';
-import { Entry, Path, RetString, Status, Config, ExecResult } from 'src/shared/types';
+import { Path, RetString, Status, Config, FetchParams } from 'src/shared/types';
 import { cloneRepoToDest } from 'src/backend/moduleSources/common/cloneRepo';
 import type { ModulesKeyType } from 'src/backend/moduleSources';
 import axiosFetcher from 'src/backend/extInterfaces/fetcher/axios';
@@ -51,12 +51,7 @@ function getRegDownloadPointerUrl(source: Path, version: string): Path {
   return `${registryURL}/${namespace}/${name}/${system}/${version}/download`;
 }
 
-async function copyFromTerraformRegistry(
-  params: Entry,
-  dest: Path,
-  fetcher: (_: Config) => Promise<RetString>,
-  cloner: (_: string[], __?: Path) => Promise<ExecResult>,
-): Promise<Status> {
+async function copyFromTerraformRegistry({ params, dest, fetcher, cloner }: FetchParams): Promise<Status> {
   if (params.source.length === 0) {
     return Promise.resolve({
       success: false,

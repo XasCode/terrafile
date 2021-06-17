@@ -1,4 +1,4 @@
-import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/shared/types';
+import { Path, Status, FetchParams } from 'src/shared/types';
 import { cloneRepoToDest } from 'src/backend/moduleSources/common/cloneRepo';
 import type { ModulesKeyType } from 'src/backend/moduleSources';
 import { startsWith } from 'src/backend/moduleSources/common/startsWith';
@@ -9,12 +9,7 @@ type TestableTypes = {
 };
 
 type GitModuleTypes = {
-  fetch: (
-    _params: Entry,
-    _dest: Path,
-    _fetcher: (_: Config) => Promise<RetString>,
-    _cloner: (_: string[], __?: Path) => Promise<ExecResult>,
-  ) => Promise<Status>;
+  fetch: (fp: FetchParams) => Promise<Status>;
   match: (_source: Path) => ModulesKeyType | ``;
   testable: TestableTypes;
   replaceUrlVersionIfVersionParam: (_source: Path, _version: string) => Path;
@@ -37,12 +32,7 @@ function Git(matchStart?: string, sourceType?: ModulesKeyType): GitModuleTypes {
     return `${beforeGit}${source.includes(`.git`) ? `.git` : ``}${beforePathSep}${newPath}${newQrefPart}`;
   }
 
-  async function fetch(
-    params: Entry,
-    dest: Path,
-    _fetcher: (_: Config) => Promise<RetString>,
-    cloner: (_: string[], __?: Path) => Promise<ExecResult>,
-  ): Promise<Status> {
+  async function fetch({ params, dest, fetcher, cloner }: FetchParams): Promise<Status> {
     const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
     const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
     return cloneRepoToDest(regRepoUrl, dest, cloner);

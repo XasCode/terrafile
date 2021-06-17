@@ -1,4 +1,4 @@
-import { Entry, Path, Status, Config, ExecResult, RetString } from 'src/shared/types';
+import { Entry, Path, Status, FetchParams } from 'src/shared/types';
 
 import local from 'src/backend/moduleSources/local';
 import gitHttps from 'src/backend/moduleSources/gitHttps';
@@ -24,15 +24,9 @@ function getType(source: Path): ModulesKeyType {
         .join(``) as ModulesKeyType);
 }
 
-async function fetch(
-  params: Entry,
-  dest: Path,
-  fetcher: (_: Config) => Promise<RetString>,
-  cloner: (_: string[], __?: Path) => Promise<ExecResult>,
-): Promise<Status> {
+async function fetch({ params, dest, fetcher, cloner }: FetchParams): Promise<Status> {
   const moduleType: ModulesKeyType = getType(params.source);
-  const fetchResults = await modules[moduleType].fetch(params, dest, fetcher, cloner);
-  return fetchResults;
+  return modules[moduleType].fetch({ params, dest, fetcher, cloner });
 }
 
 function validate(params: Entry): boolean {

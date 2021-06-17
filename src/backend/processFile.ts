@@ -64,7 +64,7 @@ function Terrafile(options: CliOptions): Status {
     return Promise.all(
       contents.map(([key, val]) => {
         const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`).value;
-        return fetch(val, dest, fetcher, cloner);
+        return fetch({ params: val, dest, fetcher, cloner });
       }),
     );
   }

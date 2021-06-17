@@ -102,6 +102,13 @@ type Response = {
   headers?: Record<string, string>;
 };
 
+type FetchParams = {
+  params: Entry;
+  dest: Path;
+  fetcher: (_: Config) => Promise<RetString>;
+  cloner: (_: string[], __?: Path) => Promise<ExecResult>;
+};
+
 export {
   Backend,
   CliArgs,
@@ -109,6 +116,7 @@ export {
   Config,
   Entry,
   ExecResult,
+  FetchParams,
   Option,
   Path,
   RepoLocation,
