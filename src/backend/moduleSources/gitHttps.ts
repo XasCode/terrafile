@@ -1,23 +1,9 @@
-import { startsWith } from 'src/backend/moduleSources/common/startsWith';
-import { Entry, Path } from 'src/shared/types';
-import { fetch } from 'src/backend/moduleSources/common/git';
-import type { ModulesKeyType } from 'src/backend/moduleSources';
+import Git from 'src/backend/moduleSources/common/git';
 
 const acceptable = [`comment`, `source`, `version`, `path`];
+const matchStart = `https://`;
+const sourceType = `gitHttps`;
 
-function match(source: Path): ModulesKeyType | `` {
-  return startsWith(source, `https://`) ? `gitHttps` : ``;
-}
+const git = Git(acceptable, matchStart, sourceType);
 
-function validate(params: Entry): boolean {
-  let notFoundOrNotValid = false;
-  const paramKeys = Object.keys(params);
-  for (const param of paramKeys) {
-    if (!acceptable.includes(param)) {
-      notFoundOrNotValid = true;
-    }
-  }
-  return notFoundOrNotValid;
-}
-
-export default { match, fetch, validate };
+export default { ...git };

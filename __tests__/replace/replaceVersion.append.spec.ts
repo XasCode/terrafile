@@ -1,6 +1,5 @@
-import { testable } from 'src/backend/moduleSources/common/git';
-
-const { replaceUrlVersionIfVersionParam } = testable;
+import Git from 'src/backend/moduleSources/common/git';
+const { replaceUrlVersionIfVersionParam } = Git().testable;
 
 test.each([
   {

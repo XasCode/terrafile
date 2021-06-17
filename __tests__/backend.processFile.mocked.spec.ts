@@ -10,7 +10,6 @@ import {
   checkIfFileExists,
 } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 import { getPartsFromHttp } from 'src/backend/moduleSources/common/cloneRepo';
-import { replacePathIfPathParam, replaceUrlVersionIfVersionParam } from 'src/backend/moduleSources/common/git';
 
 import { CliOptions } from 'src/shared/types';
 
@@ -18,6 +17,9 @@ import fetcher from 'src/backend/extInterfaces/fetcher/axios';
 import cloner from 'src/backend/extInterfaces/cloner/git';
 import mockedFetcher from 'src/backend/extInterfaces/fetcher/axios/mock';
 import mockedCloner from 'src/backend/extInterfaces/cloner/git/mock';
+
+import Git from 'src/backend/moduleSources/common/git';
+const { replacePathIfPathParam, replaceUrlVersionIfVersionParam } = Git().testable;
 
 const useFetcher = fetcher.use(mockedFetcher.mock);
 const useCloner = cloner.use(mockedCloner.mock);
