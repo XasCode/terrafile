@@ -14,7 +14,7 @@
       "src/*": ["./src/*"],
       "__tests__/*": ["./__tests__/*"],
       "__mocks__/*": ["__mocks__/*"],
-      "/*": ["./*"]
+      "package.json": ["./package.json"]
     }
   },
   "include": [

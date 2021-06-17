@@ -12,7 +12,7 @@ import {
   unknownOptionShort,
 } from 'src/cli/strings';
 
-import { version } from '/package.json';
+import { version } from 'package.json';
 
 const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
 

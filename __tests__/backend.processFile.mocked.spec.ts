@@ -19,6 +19,7 @@ import mockedFetcher from 'src/backend/extInterfaces/fetcher/axios/mock';
 import mockedCloner from 'src/backend/extInterfaces/cloner/git/mock';
 
 import Git from 'src/backend/moduleSources/common/git';
+
 const { replacePathIfPathParam, replaceUrlVersionIfVersionParam } = Git().testable;
 
 const useFetcher = fetcher.use(mockedFetcher.mock);
