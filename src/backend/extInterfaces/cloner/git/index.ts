@@ -11,7 +11,7 @@ async function git(args: string[], cwd?: Path): Promise<ExecResult> {
 
 function use(
   cloneLibrary: (_: string[], __?: Path) => Promise<ExecResult>,
-): (args: string[], cwd?: Path) => Promise<ExecResult> {
+): (_args: string[], _cwd?: Path) => Promise<ExecResult> {
   return async function cloner(args: string[], cwd?: Path): Promise<ExecResult> {
     return cloneLibrary(args, cwd);
   };

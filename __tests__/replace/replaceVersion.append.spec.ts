@@ -1,4 +1,5 @@
 import Git from 'src/backend/moduleSources/common/git';
+
 const { replaceUrlVersionIfVersionParam } = Git().testable;
 
 test.each([

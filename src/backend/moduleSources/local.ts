@@ -8,7 +8,7 @@ function match(source: Path): ModulesKeyType | `` {
   return startsWith(source, `/`) || startsWith(source, `./`) || startsWith(source, `../`) ? `local` : ``;
 }
 
-function copyFromLocalDir({ params, dest, fetcher: _fetcher, cloner: _cloner }: FetchParams): Status {
+function copyFromLocalDir({ params, dest }: FetchParams): Status {
   const retVal = {
     success: false,
     contents: null,

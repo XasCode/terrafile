@@ -1,5 +1,6 @@
 import { Entry } from 'src/shared/types';
 import Git from 'src/backend/moduleSources/common/git';
+
 const { replacePathIfPathParam, replaceUrlVersionIfVersionParam } = Git().testable;
 
 test.each([

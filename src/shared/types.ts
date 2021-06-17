@@ -3,7 +3,7 @@ import { ExecFileException } from 'child_process';
 type Path = string;
 
 type Backend = {
-  install(c: CliOptions): void;
+  install(_: CliOptions): void;
 };
 
 type ExecResult = {

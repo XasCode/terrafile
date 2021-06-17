@@ -9,7 +9,7 @@ type TestableTypes = {
 };
 
 type GitModuleTypes = {
-  fetch: (fp: FetchParams) => Promise<Status>;
+  fetch: (_fp: FetchParams) => Promise<Status>;
   match: (_source: Path) => ModulesKeyType | ``;
   testable: TestableTypes;
   replaceUrlVersionIfVersionParam: (_source: Path, _version: string) => Path;
@@ -32,7 +32,7 @@ function Git(matchStart?: string, sourceType?: ModulesKeyType): GitModuleTypes {
     return `${beforeGit}${source.includes(`.git`) ? `.git` : ``}${beforePathSep}${newPath}${newQrefPart}`;
   }
 
-  async function fetch({ params, dest, fetcher: _fetcher, cloner }: FetchParams): Promise<Status> {
+  async function fetch({ params, dest, cloner }: FetchParams): Promise<Status> {
     const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
     const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
     return cloneRepoToDest(regRepoUrl, dest, cloner);
