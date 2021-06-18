@@ -57,7 +57,7 @@
     "ts-jest": "^27.0.3",
     "ts-node": "^10.0.0",
     "tscpaths": "^0.0.9",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.4"
   },
   "husky": {
     "hooks": {
