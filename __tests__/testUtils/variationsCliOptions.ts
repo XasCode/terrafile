@@ -1,5 +1,6 @@
 import { ExecFileException } from 'child_process';
 import { readFileSync } from 'fs-extra';
+import chalk from 'chalk';
 
 import { getAbsolutePath } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 import { cartesian } from '__tests__/testUtils/cartesian';
@@ -38,17 +39,19 @@ function getOptions({ directory, file }: CliOptions): CliOptions {
 }
 
 function noVerNoHelpValidCommandCheckOptions(args: CliArgs): ExecResult {
-  return args.badOption !== ``
-    ? {
-        error: { name: ``, message: ``, code: 1 } as ExecFileException,
-        stdout: ``,
-        stderr: args.badOption[1] === `-` ? unknownOptionLong : unknownOptionShort,
-      }
-    : {
-        error: null,
-        stdout: JSON.stringify(getOptions({ directory: args.directory, file: args.file })),
-        stderr: ``,
-      };
+  if (args.badOption !== ``) {
+    return {
+      error: { name: ``, message: ``, code: 1 } as ExecFileException,
+      stdout: ``,
+      stderr: args.badOption[1] === `-` ? unknownOptionLong : unknownOptionShort,
+    };
+  }
+  const options = getOptions({ directory: args.directory, file: args.file });
+  return {
+    error: null,
+    stdout: chalk.blue(`Plan: (${options.file}) --> (${options.directory})`),
+    stderr: ``,
+  };
 }
 
 function noVerNoHelpCheckCommand(args: CliArgs): ExecResult {

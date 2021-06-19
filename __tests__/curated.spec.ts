@@ -1,5 +1,6 @@
 import { ExecFileException } from 'child_process';
 import { resolve } from 'path';
+import chalk from 'chalk';
 
 import { cli } from '__tests__/testUtils';
 import { rimrafDir } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
@@ -20,13 +21,13 @@ const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
 const curatedCliCommands: Record<string, [string, string, ExecFileException]> = {
   help: [`${helpContent}\n`, ``, null],
   '--version': [`${version}\n`, ``, null],
-  install: [`${JSON.stringify(defaultOpts)}\n`, ``, null],
+  install: [`${chalk.blue(`Plan: (${defaultOpts.file}) --> (${defaultOpts.directory})`)}\n`, ``, null],
   foo: [``, `${unknownCommand}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
   '--error': [``, `${helpContent}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
   'install --bar': [``, `${unknownOptionLong}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
   'install -b': [``, `${unknownOptionShort}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
   'help install': [`${helpInstallContent}\n`, ``, null],
-  'install -d <abc': [`{"directory":"<abc","file":"terrafile.json"}\n`, `Error resolving path: <abc\n`, null],
+  'install -d <abc': [`${chalk.blue(`Plan: (terrafile.json) --> (<abc)`)}\n`, `Error resolving path: <abc\n`, null],
 };
 
 describe(`should execute 'terrafile' with a set of commands/options and verify the output`, () => {

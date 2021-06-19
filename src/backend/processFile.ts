@@ -1,5 +1,7 @@
 import path from 'path';
 import fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+import chalk from 'chalk';
+
 import { validOptions } from 'src/backend/utils';
 import { CliOptions, Option, Path, Status, Config, ExecResult, RetString } from 'src/shared/types';
 import { validate, fetch } from 'src/backend/moduleSources';
@@ -10,7 +12,9 @@ function Terrafile(options: CliOptions): Status {
       this.success = false;
       this.contents = null;
       this.error = `Error: Not valid options`;
+      console.log(chalk.red(`  ! Failed - validate options`));
     }
+    console.log(chalk.green(`  + Success - validate options`));
     return this;
   }
 
@@ -19,6 +23,9 @@ function Terrafile(options: CliOptions): Status {
       this.success = false;
       this.contents = null;
       this.error = `Error: ${this.options?.file} does not exist`;
+      console.log(chalk.red(`  ! Failed - verify file: ${this.options?.file}`));
+    } else {
+      console.log(chalk.green(`  + Success - verify file: ${this.options?.file}`));
     }
     return this;
   }
@@ -26,10 +33,12 @@ function Terrafile(options: CliOptions): Status {
   function readFile(): Status {
     try {
       this.json = JSON.parse(fsHelpers.readFile(this.options.file).value);
+      console.log(chalk.green(`  + Success - read file: ${this.options.file}`));
     } catch (err) {
       this.success = false;
       this.contents = null;
       this.error = `Error: could not parse ${this.options?.file}`;
+      console.log(chalk.red(`  ! Failed - read file: ${this.options.file}`));
     }
     return this;
   }
@@ -37,21 +46,35 @@ function Terrafile(options: CliOptions): Status {
   function parse(): Status {
     try {
       this.contents = Object.entries(this.json);
+      console.log(chalk.green(`  + Success - parse json`));
     } catch (err) {
       this.success = false;
       this.contents = [];
       this.error = `Error: could not parse json appropriately`;
+      console.log(chalk.red(`  ! Failed - parse json`));
     }
     return this;
   }
 
   function validateJson(): Status {
     const valid = this.contents.reduce((acc: boolean, [, val]: [string, Record<string, string>]) => {
-      return acc && !validate(val);
+      const result = !validate(val);
+      if (result) {
+        console.log(chalk.green(`    + Success - validate - ${val}`));
+      } else {
+        console.log(chalk.red(`    ! Failed - validate - ${val}`));
+      }
+      return acc && result;
     }, this.success);
     this.success = valid;
     this.contents = valid ? this.contents : null;
-    this.error = valid ? null : `Error: Not valid JSON format`;
+    if (valid) {
+      this.error = null;
+      console.log(chalk.green(`  + Success - validate json`));
+    } else {
+      this.error = `Error: Not valid JSON format`;
+      console.log(chalk.red(`  ! Failed - validate json`));
+    }
     return this;
   }
 
@@ -78,6 +101,11 @@ function Terrafile(options: CliOptions): Status {
         retVal.contents = currentModuleRetVal.contents;
         retVal.error = this.error || currentModuleRetVal.error;
       });
+      if (retVal.success) {
+        console.log(chalk.green(`  + Success - process: ${options.file}`));
+      } else {
+        console.log(chalk.red(`  ! Failed - process: ${options.file}`));
+      }
     }
     return retVal;
   }
