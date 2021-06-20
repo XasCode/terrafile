@@ -18,6 +18,7 @@ function copyFromLocalDir({ params, dest }: FetchParams): Status {
   if (fsHelpers.checkIfDirExists(src).value) {
     const copyResult = fsHelpers.copyDirAbs(src, dest);
     retVal.success = copyResult.success;
+    retVal.contents = [params as [string, Record<string, string>]];
     retVal.error = copyResult.error;
   }
   return retVal;

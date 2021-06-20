@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 import { Entry, Path, Status, FetchParams } from 'src/shared/types';
 
 import local from 'src/backend/moduleSources/local';
@@ -26,6 +28,7 @@ function getType(source: Path): ModulesKeyType {
 
 async function fetch({ params, dest, fetcher, cloner }: FetchParams): Promise<Status> {
   const moduleType: ModulesKeyType = getType(params.source);
+  console.log(chalk.blue(`    - Info - type: ${moduleType}`));
   return modules[moduleType].fetch({ params, dest, fetcher, cloner });
 }
 

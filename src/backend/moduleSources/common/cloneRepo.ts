@@ -1,3 +1,8 @@
+import path from 'path';
+import chalk from 'chalk';
+
+import { ExecFileException } from 'child_process';
+import * as fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 import { ExecResult, Path, RepoLocation, SourceParts, Status } from 'src/shared/types';
 import gitCloner from 'src/backend/extInterfaces/cloner/git';
 
@@ -70,6 +75,60 @@ async function checkoutCommit(
   return {} as ExecResult;
 }
 
+const tempDirName = `__temp__`;
+
+async function renameFullDestToTempDir([, repoDir]: RepoLocation, fullDest: Path): Promise<ExecResult> {
+  if (repoDir) {
+    const tempDir = `${fullDest}${tempDirName}`;
+    const retVal = fsHelpers.renameDir(fullDest, tempDir);
+    if (!retVal.success) {
+      const err = `failed to rename '${fullDest}' to '${tempDir}'`;
+      console.log(chalk.red(`    ! Failed - ${err}`));
+      return {
+        error: { name: ``, message: err, code: -1 } as ExecFileException,
+        stdout: ``,
+        stderr: ``,
+      };
+    }
+  }
+  return {} as ExecResult;
+}
+
+async function moveFromTempRepoDirToFullDest([, repoDir]: RepoLocation, fullDest: Path): Promise<ExecResult> {
+  if (repoDir) {
+    const tempDir = `${fullDest}${tempDirName}`;
+    const src = `${tempDir}${path.sep}${repoDir}`;
+    const retVal = fsHelpers.copyDirAbs(src, fullDest);
+    if (!retVal.success) {
+      const err = `failed to copy '${src}' to '${fullDest}'`;
+      console.log(chalk.red(`    ! Failed - ${err}`));
+      return {
+        error: { name: ``, message: err, code: -1 } as ExecFileException,
+        stdout: ``,
+        stderr: ``,
+      };
+    }
+  }
+  return {} as ExecResult;
+}
+
+async function removeTempDir([, repoDir]: RepoLocation, fullDest: Path): Promise<ExecResult> {
+  if (repoDir) {
+    const tempDir = `${fullDest}${tempDirName}`;
+    const retVal = fsHelpers.rimrafDir(tempDir);
+    if (!retVal.success) {
+      const err = `failed to delete '${tempDir}'`;
+      console.log(chalk.red(`    ! Failed - ${err}`));
+      return {
+        error: { name: ``, message: err, code: -1 } as ExecFileException,
+        stdout: ``,
+        stderr: ``,
+      };
+    }
+  }
+  return {} as ExecResult;
+}
+
 async function cloneRepoToDest(
   repoUrl: Path,
   fullDest: Path,
@@ -81,16 +140,31 @@ async function cloneRepoToDest(
     error: `Error cloning repo to destination ${repoUrl} - ${fullDest}`,
   } as Status;
   const useCloner = cloner || defaultGitCloner;
-  const [a, b, c, d]: RepoLocation = getPartsFromHttp(repoUrl);
-  const successful =
-    !(await cloneRepo([a, b, c, d], fullDest, useCloner)).error &&
-    !(await scopeRepo([a, b, c, d], fullDest, useCloner)).error &&
-    !(await checkoutCommit([a, b, c, d], fullDest, useCloner)).error;
-  if (successful) {
-    retVal.success = true;
-    retVal.error = null;
-    delete retVal.contents;
+  const repoSourceParts: RepoLocation = getPartsFromHttp(repoUrl);
+  const successfulCloning =
+    !(await cloneRepo(repoSourceParts, fullDest, useCloner)).error &&
+    !(await scopeRepo(repoSourceParts, fullDest, useCloner)).error &&
+    !(await checkoutCommit(repoSourceParts, fullDest, useCloner)).error;
+  if (!successfulCloning) {
+    console.log(chalk.yellow(`      ! Failed - cloning '${repoUrl}' to '${fullDest}'; is network available?`));
+    return retVal;
   }
+  const successfulMoving =
+    !(await renameFullDestToTempDir(repoSourceParts, fullDest)).error &&
+    !(await moveFromTempRepoDirToFullDest(repoSourceParts, fullDest)).error &&
+    !(await removeTempDir(repoSourceParts, fullDest)).error;
+  if (!successfulMoving) {
+    const src = `${fullDest}${path.sep}${repoSourceParts[1]}`;
+    console.log(
+      chalk.yellow(
+        `      ! Failed - moving '${src}' to '${fullDest}'; if destination already exists, remove and try again.`,
+      ),
+    );
+    return retVal;
+  }
+  retVal.success = true;
+  retVal.error = null;
+  retVal.contents = [{ source: `${repoUrl}` } as unknown as [string, Record<string, string>]];
   return retVal;
 }
 

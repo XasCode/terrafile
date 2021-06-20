@@ -57,12 +57,12 @@ function Terrafile(options: CliOptions): Status {
   }
 
   function validateJson(): Status {
-    const valid = this.contents.reduce((acc: boolean, [, val]: [string, Record<string, string>]) => {
+    const valid = this.contents.reduce((acc: boolean, [key, val]: [string, Record<string, string>]) => {
       const result = !validate(val);
       if (result) {
-        console.log(chalk.green(`    + Success - validate - ${val}`));
+        console.log(chalk.green(`    + Success - validate - ${key}`));
       } else {
-        console.log(chalk.red(`    ! Failed - validate - ${val}`));
+        console.log(chalk.red(`    ! Failed - validate - ${key}`));
       }
       return acc && result;
     }, this.success);
@@ -87,6 +87,7 @@ function Terrafile(options: CliOptions): Status {
     return Promise.all(
       contents.map(([key, val]) => {
         const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`).value;
+        console.log(chalk.blue(`    - Info - fetch: ${key}`));
         return fetch({ params: val, dest, fetcher, cloner });
       }),
     );
@@ -100,6 +101,10 @@ function Terrafile(options: CliOptions): Status {
         retVal.success = this.success && currentModuleRetVal.success;
         retVal.contents = currentModuleRetVal.contents;
         retVal.error = this.error || currentModuleRetVal.error;
+        if (retVal.contents)
+          console.log(
+            chalk.blue(`      - Info - fetch source: ${retVal.contents[0]?.source} --> dest: ${options.directory}`),
+          );
       });
       if (retVal.success) {
         console.log(chalk.green(`  + Success - process: ${options.file}`));
