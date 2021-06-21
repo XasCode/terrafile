@@ -40,12 +40,7 @@ describe(`test backend's ability to revert on error`, () => {
     const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile).value, `utf-8`));
     expect(Object.keys(testJson).length).toBe(7);
     for (const modName of Object.keys(testJson)) {
-      const params = testJson[modName];
-      const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
-      const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
-      const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : ``;
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}/main.tf`).value).value).toBe(true);
     }
 
     // 2nd install, w/ error
@@ -59,12 +54,7 @@ describe(`test backend's ability to revert on error`, () => {
     // verify expected directories exist; re-use testJson
     expect(Object.keys(testJson).length).toBe(7);
     for (const modName of Object.keys(testJson)) {
-      const params = testJson[modName];
-      const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
-      const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
-      const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : ``;
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}/main.tf`).value).value).toBe(true);
     }
   });
 
@@ -112,12 +102,7 @@ describe(`test backend's ability to revert on error`, () => {
     const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile).value, `utf-8`));
     expect(Object.keys(testJson).length).toBe(7);
     for (const modName of Object.keys(testJson)) {
-      const params = testJson[modName];
-      const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
-      const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
-      const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : ``;
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}/main.tf`).value).value).toBe(true);
     }
 
     // 2nd install, w/ error
@@ -134,12 +119,7 @@ describe(`test backend's ability to revert on error`, () => {
     // verify expected directories exist; re-use testJson
     expect(Object.keys(testJson).length).toBe(7);
     for (const modName of Object.keys(testJson)) {
-      const params = testJson[modName];
-      const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
-      const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
-      const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : ``;
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}/main.tf`).value).value).toBe(true);
     }
   });
 });

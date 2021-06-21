@@ -44,7 +44,6 @@ describe(`read file contents should read specified json file and validate its co
   async function expectFileIssue(options: CliOptions): Promise<void> {
     const retVals = await readFileContents(options);
     expect(retVals.success).toBe(false);
-    expect(retVals.contents).toBe(null);
   }
 
   test(`should successfully read a valid terrafile when provided a relative path`, async () => {
@@ -61,14 +60,7 @@ describe(`read file contents should read specified json file and validate its co
     const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile).value, `utf-8`));
     expect(Object.keys(testJson).length).toBe(31);
     for (const modName of Object.keys(testJson)) {
-      const params = testJson[modName];
-      const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
-      const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
-      const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : ``;
-      expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}${usePath}/main.tf`).value).value).toBe(
-        true,
-      );
+      expect(checkIfFileExists(getAbsolutePath(`err_vendor1/modules/${modName}/main.tf`).value).value).toBe(true);
     }
   });
 
@@ -85,14 +77,7 @@ describe(`read file contents should read specified json file and validate its co
     const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile).value, `utf-8`));
     expect(Object.keys(testJson).length).toBe(31);
     for (const modName of Object.keys(testJson)) {
-      const params = testJson[modName];
-      const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
-      const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
-      const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : ``;
-      expect(checkIfFileExists(getAbsolutePath(`err_vendor2/modules/${modName}${usePath}/main.tf`).value).value).toBe(
-        true,
-      );
+      expect(checkIfFileExists(getAbsolutePath(`err_vendor2/modules/${modName}/main.tf`).value).value).toBe(true);
     }
   });
 
@@ -111,12 +96,7 @@ describe(`read file contents should read specified json file and validate its co
     const testJson = JSON.parse(readFileSync(getAbsolutePath(configFile).value, `utf-8`));
     expect(Object.keys(testJson).length).toBe(7);
     for (const modName of Object.keys(testJson)) {
-      const params = testJson[modName];
-      const newUrl = replaceUrlVersionIfVersionParam(params.source, params.version);
-      const regRepoUrl = replacePathIfPathParam(newUrl, params.path);
-      const [, repoDir] = getPartsFromHttp(regRepoUrl);
-      const usePath = repoDir ? repoDir.slice(1) : ``;
-      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}${usePath}/main.tf`).value).value).toBe(true);
+      expect(checkIfFileExists(getAbsolutePath(`${destination}/${modName}/main.tf`).value).value).toBe(true);
     }
   });
 

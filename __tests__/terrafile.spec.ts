@@ -53,8 +53,7 @@ describe.each(variations)(
       switch (command) {
         case `install`: {
           install(options);
-          expect(console.log).toBeCalledTimes(1);
-          expect(console.log).toHaveBeenLastCalledWith(stdOut);
+          expect(console.log).toHaveBeenCalledWith(stdOut);
           break;
         }
         default: {
@@ -77,7 +76,7 @@ describe.each(variations)(
 
       // if we successfully are running the installl command,
       if (command === `install`) {
-        expect(console.log).toHaveBeenLastCalledWith(`${stdOut}`);
+        expect(console.log).toHaveBeenCalledWith(`${stdOut}`);
         expect(process.stdout.write).not.toHaveBeenCalled();
         expect(process.stderr.write).not.toHaveBeenCalled();
         expect(console.error).not.toHaveBeenCalled();

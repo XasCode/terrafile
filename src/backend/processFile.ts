@@ -33,12 +33,12 @@ function Terrafile(options: CliOptions): Status {
   function readFile(): Status {
     try {
       this.json = JSON.parse(fsHelpers.readFile(this.options.file).value);
-      console.log(chalk.green(`  + Success - read file: ${this.options.file}`));
+      console.log(chalk.green(`  + Success - read file: ${this.options?.file}`));
     } catch (err) {
       this.success = false;
       this.contents = null;
       this.error = `Error: could not parse ${this.options?.file}`;
-      console.log(chalk.red(`  ! Failed - read file: ${this.options.file}`));
+      console.log(chalk.red(`  ! Failed - read file: ${this.options?.file}`));
     }
     return this;
   }
