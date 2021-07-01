@@ -101,10 +101,11 @@ function Terrafile(options: CliOptions): Status {
         retVal.success = this.success && currentModuleRetVal.success;
         retVal.contents = currentModuleRetVal.contents;
         retVal.error = this.error || currentModuleRetVal.error;
-        if (retVal.contents)
+        if (retVal.contents) {
           console.log(
             chalk.blue(`      - Info - fetch source: ${retVal.contents[0]?.source} --> dest: ${options.directory}`),
           );
+        }
       });
       if (retVal.success) {
         console.log(chalk.green(`  + Success - process: ${options.file}`));
