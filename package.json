@@ -1,6 +1,6 @@
 {
   "name": "terrafile",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "",
   "main": "./dist/src/cli/terrafile.js",
   "bin": {
