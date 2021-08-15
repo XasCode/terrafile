@@ -27,8 +27,8 @@
   "dependencies": {
     "axios": "^0.21.1",
     "chalk": "^4.1.1",
-    "commander": "^7.2.0",
-    "fast-glob": "^3.2.5",
+    "commander": "^8.1.0",
+    "fast-glob": "^3.2.7",
     "fs-extra": "^9.1.0",
     "mkdirp": "^1.0.4",
     "rimraf": "^3.0.2",
@@ -44,12 +44,12 @@
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "codecov": "^3.8.1",
-    "coveralls": "^3.1.0",
+    "coveralls": "^3.1.1",
     "eslint": "^7.29.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-json": "^3.0.0",
-    "husky": "^6.0.0",
+    "husky": "^7.0.1",
     "jest": "^27.0.6",
     "jest-progress-bar-reporter": "^1.0.21",
     "lint-staged": "^11.0.0",
@@ -58,7 +58,7 @@
     "ts-jest": "^27.0.3",
     "ts-node": "^10.0.0",
     "tscpaths": "^0.0.9",
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.5"
   },
   "husky": {
     "hooks": {

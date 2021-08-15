@@ -19,7 +19,7 @@ Options:
   -f, --file <string>       config file (default: "terrafile.json")
   -h, --help                display help for command`;
 
-const unknownCommand = `error: unknown command 'foo'. See 'terrafile --help'.`;
+const unknownCommand = `error: unknown command 'foo'`;
 
 const unknownOptionShort = `error: unknown option '-b'`;
 const unknownOptionLong = `error: unknown option '--bar'`;
