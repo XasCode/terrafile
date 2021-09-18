@@ -19,8 +19,8 @@ const helpCommands = [``, `help`];
 const commands = [``, `install`, `foo`];
 const helps = [``, `-h`, `--help`];
 const versions = [``, `-V`, `--version`];
-const directories = [``, `-d bar`, `--directory bar`];
-const files = [``, `-f foobar`, `--file foobar`];
+const directories = [``, /*`-d bar`,*/ `--directory bar`];
+const files = [``, /*`-f foobar`,*/ `--file foobar`];
 const badOptions = [``, `-b`, `--bar`];
 
 const { version } = JSON.parse(readFileSync(getAbsolutePath(`./package.json`).value, `utf-8`));
@@ -54,13 +54,38 @@ function noVerNoHelpValidCommandCheckOptions(args: CliArgs): ExecResult {
   };
 }
 
+function noVerNoHelpNoCommandCheckOptions(args: CliArgs): ExecResult {
+  const retVal = {
+    error: { name: ``, message: ``, code: 1 } as ExecFileException,
+    stdout: ``,
+  };
+  if (args.directory !== ``) {
+    return {
+      ...retVal,
+      stderr: `error: unknown option '--directory'`,
+    };
+  }
+  if (args.file != ``) {
+    return {
+      ...retVal,
+      stderr: `error: unknown option '--file'`,
+    };
+  }
+  if (args.badOption !== ``) {
+    return {
+      ...retVal,
+      stderr: args.badOption[1] === `-` ? unknownOptionLong : unknownOptionShort,
+    };
+  }
+  return {
+    ...retVal,
+    stderr: helpContent,
+  };
+}
+
 function noVerNoHelpCheckCommand(args: CliArgs): ExecResult {
   if (args.command === ``) {
-    return {
-      error: { name: ``, message: ``, code: 1 } as ExecFileException,
-      stdout: ``,
-      stderr: helpContent,
-    };
+    return noVerNoHelpNoCommandCheckOptions(args);
   }
   if (args.command !== `install`) {
     return {

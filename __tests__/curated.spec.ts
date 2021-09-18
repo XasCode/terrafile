@@ -18,16 +18,16 @@ import { version } from 'package.json';
 const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
 
 // each of these commands will be execed to test cli output
-const curatedCliCommands: Record<string, [string, string, ExecFileException]> = {
+const curatedCliCommands: Record<string, [string | RegExp, string | RegExp, ExecFileException]> = {
   help: [`${helpContent}\n`, ``, null],
   '--version': [`${version}\n`, ``, null],
   install: [`${chalk.blue(`Plan: (${defaultOpts.file}) --> (${defaultOpts.directory})`)}\n`, ``, null],
   foo: [``, `${unknownCommand}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
-  '--error': [``, `${helpContent}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
+  '--bar': [``, `${unknownOptionLong}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
   'install --bar': [``, `${unknownOptionLong}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
   'install -b': [``, `${unknownOptionShort}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
   'help install': [`${helpInstallContent}\n`, ``, null],
-  'install -d <abc': [`${chalk.blue(`Plan: (terrafile.json) --> (<abc)`)}\n`, `Error resolving path: <abc\n`, null],
+  'install -d <abc': [/Plan: \(terrafile.json\) --> \(<abc\)/, /Error resolving path: <abc\n/, null],
 };
 
 describe(`should execute 'terrafile' with a set of commands/options and verify the output`, () => {
@@ -43,8 +43,10 @@ describe(`should execute 'terrafile' with a set of commands/options and verify t
     /* eslint-disable no-await-in-loop */
     for (const cliCommand of Object.keys(curatedCliCommands)) {
       const result = await cli(cliCommand.split(` `), `./dist/src`);
-      expect(result.stdout.includes(curatedCliCommands[cliCommand][0])).toBe(true);
-      expect(result.stderr.includes(curatedCliCommands[cliCommand][1])).toBe(true);
+      //expect(result.stdout.includes(curatedCliCommands[cliCommand][0])).toBe(true);
+      expect(result.stdout).toMatch(curatedCliCommands[cliCommand][0]);
+      //expect(result.stderr.includes(curatedCliCommands[cliCommand][1])).toBe(true);
+      expect(result.stderr).toMatch(curatedCliCommands[cliCommand][1]);
       expect(result.error === null ? result.error : result.error.code).toBe(
         curatedCliCommands[cliCommand][2] === null
           ? curatedCliCommands[cliCommand][2]

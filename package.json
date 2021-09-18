@@ -9,7 +9,7 @@
   "scripts": {
     "test": "npm run build && jest --filter=\"./dist/__tests__/testUtils/testFilter.js\"",
     "test-all": "npm run test -- --skipFilter",
-    "build": "tsc && tscpaths -p tsconfig.json -s ./ -o ./dist",
+    "build": "tsc && tscpaths -p tsconfig.json -s ./ -o ./dist -v",
     "lint": "eslint src",
     "bump": "npm version patch",
     "release": "git push --tags && npm publish"
@@ -27,7 +27,6 @@
   "dependencies": {
     "axios": "^0.21.3",
     "chalk": "^4.1.2",
-    "commander": "^8.1.0",
     "fast-glob": "^3.2.7",
     "fs-extra": "^9.1.0",
     "mkdirp": "^1.0.4",
@@ -43,7 +42,9 @@
     "@types/touch": "^3.1.1",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.31.1",
+    "@xascode/tscpaths": "^0.1.4",
     "codecov": "^3.8.1",
+    "commander": "^8.2.0",
     "coveralls": "^3.1.1",
     "eslint": "^7.29.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -57,7 +58,6 @@
     "prettier-eslint": "^12.0.0",
     "ts-jest": "^27.0.3",
     "ts-node": "^10.2.1",
-    "tscpaths": "^0.0.9",
     "typescript": "^4.3.5"
   },
   "husky": {
