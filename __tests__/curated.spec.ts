@@ -43,9 +43,7 @@ describe(`should execute 'terrafile' with a set of commands/options and verify t
     /* eslint-disable no-await-in-loop */
     for (const cliCommand of Object.keys(curatedCliCommands)) {
       const result = await cli(cliCommand.split(` `), `./dist/src`);
-      //expect(result.stdout.includes(curatedCliCommands[cliCommand][0])).toBe(true);
       expect(result.stdout).toMatch(curatedCliCommands[cliCommand][0]);
-      //expect(result.stderr.includes(curatedCliCommands[cliCommand][1])).toBe(true);
       expect(result.stderr).toMatch(curatedCliCommands[cliCommand][1]);
       expect(result.error === null ? result.error : result.error.code).toBe(
         curatedCliCommands[cliCommand][2] === null
