@@ -48,7 +48,7 @@
     "coveralls": "^3.1.1",
     "eslint": "^7.29.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-airbnb-typescript": "^14.0.2",
     "eslint-plugin-json": "^3.0.0",
     "husky": "^7.0.2",
     "jest": "^27.2.1",
