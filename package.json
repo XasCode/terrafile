@@ -29,7 +29,7 @@
     "@jestaubach/fetcher-axios": "^0.1.4",
     "@jestaubach/fs-helpers": "^0.2.8",
     "axios": "^0.25.0",
-    "chalk": "^4.1.2",
+    "chalk": "^5.0.0",
     "commander": "^9.0.0",
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
