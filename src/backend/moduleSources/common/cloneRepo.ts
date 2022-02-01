@@ -2,14 +2,12 @@ import path from 'path';
 import chalk from 'chalk';
 
 import { ExecFileException } from 'child_process';
-import * as fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
-import { ExecResult, Path, RepoLocation, SourceParts, Status } from 'src/shared/types';
-import gitCloner from 'src/backend/extInterfaces/cloner/git';
+import { ExecResult, Path, RepoLocation, SourceParts, Status, FsHelpers } from 'src/shared/types';
+import gitCloner from '@jestaubach/cloner-git';
 
 const defaultGitCloner = gitCloner.use(gitCloner.default);
 
-function determineRef(ref: string): string[] {
-  const commit = ref;
+function determineRef(ref: string): string[] {  const commit = ref;
   const branchOrTag = ref;
   return ref?.length === 40 ? [``, commit] : [branchOrTag, ``];
 }
@@ -77,10 +75,15 @@ async function checkoutCommit(
 
 const tempDirName = `__temp__`;
 
-async function renameFullDestToTempDir([, repoDir]: RepoLocation, fullDest: Path): Promise<ExecResult> {
+function renameFullDestToTempDir([, repoDir]: RepoLocation, fullDest: Path, fsHelpers: FsHelpers): ExecResult {
   if (repoDir) {
     const tempDir = `${fullDest}${tempDirName}`;
-    const retVal = fsHelpers.renameDir(fullDest, tempDir);
+    let retVal = null;
+    try {
+      retVal = fsHelpers.renameDir(fullDest, tempDir);
+    } catch(err) {
+      console.log(`caught error in renameDir`);
+    }
     if (!retVal.success) {
       const err = `failed to rename '${fullDest}' to '${tempDir}'`;
       console.log(chalk.red(`    ! Failed - ${err}`));
@@ -94,10 +97,10 @@ async function renameFullDestToTempDir([, repoDir]: RepoLocation, fullDest: Path
   return {} as ExecResult;
 }
 
-async function moveFromTempRepoDirToFullDest([, repoDir]: RepoLocation, fullDest: Path): Promise<ExecResult> {
+function moveFromTempRepoDirToFullDest([, repoDir]: RepoLocation, fullDest: Path, fsHelpers: FsHelpers): ExecResult {
   if (repoDir) {
     const tempDir = `${fullDest}${tempDirName}`;
-    const src = `${tempDir}${path.sep}${repoDir}`;
+    const src = fsHelpers.getAbsolutePath(`${tempDir}${path.sep}${repoDir}`).value;
     const retVal = fsHelpers.copyDirAbs(src, fullDest);
     if (!retVal.success) {
       const err = `failed to copy '${src}' to '${fullDest}'`;
@@ -112,7 +115,7 @@ async function moveFromTempRepoDirToFullDest([, repoDir]: RepoLocation, fullDest
   return {} as ExecResult;
 }
 
-async function removeTempDir([, repoDir]: RepoLocation, fullDest: Path): Promise<ExecResult> {
+function removeTempDir([, repoDir]: RepoLocation, fullDest: Path, fsHelpers: FsHelpers): ExecResult {
   if (repoDir) {
     const tempDir = `${fullDest}${tempDirName}`;
     const retVal = fsHelpers.rimrafDir(tempDir);
@@ -133,6 +136,7 @@ async function cloneRepoToDest(
   repoUrl: Path,
   fullDest: Path,
   cloner: (_: string[], __?: Path) => Promise<ExecResult>,
+  fsHelpers: FsHelpers,
 ): Promise<Status> {
   const retVal = {
     success: false,
@@ -150,9 +154,9 @@ async function cloneRepoToDest(
     return retVal;
   }
   const successfulMoving =
-    !(await renameFullDestToTempDir(repoSourceParts, fullDest)).error &&
-    !(await moveFromTempRepoDirToFullDest(repoSourceParts, fullDest)).error &&
-    !(await removeTempDir(repoSourceParts, fullDest)).error;
+    !(renameFullDestToTempDir(repoSourceParts, fullDest, fsHelpers)).error &&
+    !(moveFromTempRepoDirToFullDest(repoSourceParts, fullDest, fsHelpers)).error &&
+    !(removeTempDir(repoSourceParts, fullDest, fsHelpers)).error;
   if (!successfulMoving) {
     const src = `${fullDest}${path.sep}${repoSourceParts[1]}`;
     console.log(

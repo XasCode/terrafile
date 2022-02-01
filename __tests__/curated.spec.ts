@@ -3,7 +3,9 @@ import { resolve } from 'path';
 import chalk from 'chalk';
 
 import { cli } from '__tests__/testUtils';
-import { rimrafDir } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+
+import fsHelpers from '@jestaubach/fs-helpers';
+const { rimrafDir } = fsHelpers.use(fsHelpers.default);
 
 import {
   helpContent,
@@ -21,7 +23,8 @@ const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
 const curatedCliCommands: Record<string, [string | RegExp, string | RegExp, ExecFileException]> = {
   help: [`${helpContent}\n`, ``, null],
   '--version': [`${version}\n`, ``, null],
-  install: [`${chalk.blue(`Plan: (${defaultOpts.file}) --> (${defaultOpts.directory})`)}\n`, ``, null],
+  //install: [`${chalk.blue(`Plan: (${defaultOpts.file}) --> (${defaultOpts.directory})`)}\n`, ``, null],
+  install: [`${`Plan: (${defaultOpts.file}) --> (${defaultOpts.directory})`}`, ``, null],
   foo: [``, `${unknownCommand}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
   '--bar': [``, `${unknownOptionLong}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
   'install --bar': [``, `${unknownOptionLong}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],

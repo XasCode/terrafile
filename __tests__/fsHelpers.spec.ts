@@ -1,6 +1,9 @@
 import path from 'path';
 import fs from 'fs-extra';
-import fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+
+import fsh from '@jestaubach/fs-helpers';
+const fsHelpers = fsh.use(fsh.default);
+
 import { spy } from '__tests__/testUtils';
 
 describe(`checkIfDirExists checks for the existence of a directory`, () => {
@@ -54,12 +57,6 @@ describe(`createDir should create a directory at the provided location`, () => {
     expect(createdDirsStartingLocation).toBe(undefined);
     expect(console.error).toHaveBeenLastCalledWith(`Error creating dir: ${fsHelpers.getAbsolutePath(`LICENSE`).value}`);
     expect(console.log).not.toHaveBeenCalled();
-  });
-
-  test(`should raise error if provided a relative path`, () => {
-    const createdDirsStartingLocation = fsHelpers.createDir(`bar`).value;
-    expect(console.error).toHaveBeenLastCalledWith(`Error creating dir: ${`bar`}`);
-    expect(createdDirsStartingLocation).toBe(undefined);
   });
 });
 

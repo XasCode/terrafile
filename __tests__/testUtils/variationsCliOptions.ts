@@ -2,7 +2,10 @@ import { ExecFileException } from 'child_process';
 import { readFileSync } from 'fs-extra';
 import chalk from 'chalk';
 
-import { getAbsolutePath } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+import fsHelpers from '@jestaubach/fs-helpers';
+const useFsHelpers = fsHelpers.use(fsHelpers.default);
+const { getAbsolutePath } = useFsHelpers;
+
 import { cartesian } from '__tests__/testUtils/cartesian';
 
 import { CliArgs, CliOptions, ExecResult, TestDefinition } from 'src/shared/types';

@@ -11,7 +11,7 @@ async function install(options: CliOptions): Promise<void> {
     console.error(chalk.red(`  ! Failed - create target directory: ${options.directory}`));
     if (createResult.saved !== null) {
       console.error(chalk.blue(`    Restoring ${options.directory}`));
-      restoreDirectory(options.directory);
+      restoreDirectory(options.directory, options);
     }
     return;
   }
@@ -21,7 +21,7 @@ async function install(options: CliOptions): Promise<void> {
     console.log(chalk.red(`  ! Failed - process terrafile: ${options.file}`));
     if (createResult.saved !== null) {
       console.log(chalk.blue(`    Restoring ${options.directory}`));
-      restoreDirectory(options.directory);
+      restoreDirectory(options.directory, options);
     }
     return;
   }

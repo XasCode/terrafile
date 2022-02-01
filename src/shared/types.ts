@@ -23,7 +23,6 @@ type CliArgs = {
 };
 
 type TestDefinition = {
-  // backends: string[];
   args: string;
   command: string;
   options: CliOptions;
@@ -32,11 +31,24 @@ type TestDefinition = {
   stdErr: string;
 };
 
+type FsHelpers = {
+  getAbsolutePath: (_:string) => RetPath,
+  checkIfFileExists: (_:string) => RetBool,
+  checkIfDirExists: (_:string) => RetBool,
+  createDir: (_:string) => RetPath,
+  renameDir: (_:string, __:string) => RetVal,
+  rimrafDir: (_:string) => RetVal,
+  readFile: (_:string) => RetString,
+  copyDirAbs: (_:string, __:string) => RetVal,
+  touchFile: (_:string) => RetVal,
+}
+
 type CliOptions = {
   directory?: Path;
   file?: Path;
   fetcher?: (_: Config) => Promise<RetString>;
   cloner?: (_: string[], __?: Path) => Promise<ExecResult>;
+  fsHelpers?: FsHelpers;
   createDir?: (_: Path) => Path;
 };
 
@@ -50,12 +62,13 @@ type Status = {
   process?: () => Promise<Status>;
   validateFormat?: () => Status;
   validateOptions?: () => Status;
-  verifyFile?: () => Status;
-  readFile?: () => Status;
+  verifyFile?: (_:CliOptions) => Status;
+  readFile?: (_:CliOptions) => Status;
   parse?: () => Status;
   validateJson?: () => Status;
   fetcher?: (_: Config) => Promise<RetString>;
   cloner?: (_: string[], __?: Path) => Promise<ExecResult>;
+  fsHelpers?: FsHelpers;
 };
 
 type Option = `file` | `directory`;
@@ -104,6 +117,7 @@ type FetchParams = {
   dest: Path;
   fetcher: (_: Config) => Promise<RetString>;
   cloner: (_: string[], __?: Path) => Promise<ExecResult>;
+  fsHelpers: FsHelpers;
 };
 
 export {
@@ -114,6 +128,7 @@ export {
   Entry,
   ExecResult,
   FetchParams,
+  FsHelpers,
   Option,
   Path,
   RepoLocation,

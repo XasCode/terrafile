@@ -1,11 +1,14 @@
-import {
-  rimrafDir,
+import fsHelpers from '@jestaubach/fs-helpers'; 
+const useFsHelpers = fsHelpers.use(fsHelpers.default);
+const { 
   getAbsolutePath,
   createDir,
   touchFile,
-  checkIfDirExists,
+  rimrafDir,
   checkIfFileExists,
-} from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+  checkIfDirExists,
+} = useFsHelpers;
+
 import { restoreDirectory } from 'src/backend/restore';
 import { getSaveLocation, createTargetDirectory } from 'src/backend/venDir';
 
@@ -34,7 +37,7 @@ describe(`unit test restoreDirectory`, () => {
     // touch file in the install location
     touchFile(getAbsolutePath(`${installDir}/main.tf`).value);
     // create install location
-    createTargetDirectory({ directory: installDir });
+    createTargetDirectory({ directory: installDir, fsHelpers: useFsHelpers});
     // expect directory at install location
     const saveLocation = getSaveLocation(installDir);
     expect(checkIfDirExists(saveLocation).value).toBe(true);
@@ -43,7 +46,7 @@ describe(`unit test restoreDirectory`, () => {
     // expect file not to be at install location
     expect(checkIfFileExists(`${getAbsolutePath(installDir).value}/main.tf`).value).toBe(false);
     // restore install location
-    restoreDirectory(installDir);
+    restoreDirectory(installDir, {fsHelpers: useFsHelpers});
     // expect file at isntall directory
     expect(checkIfFileExists(`${getAbsolutePath(installDir).value}/main.tf`).value).toBe(true);
     // expect save location to be not found
@@ -53,9 +56,9 @@ describe(`unit test restoreDirectory`, () => {
   test(`should err if attempting to restore non-saved file`, () => {
     const installDir = `restore2/modules`;
     // create install location
-    createTargetDirectory({ directory: installDir });
+    createTargetDirectory({ directory: installDir, fsHelpers: useFsHelpers });
     // restore install location
-    const { success } = restoreDirectory(installDir);
+    const { success } = restoreDirectory(installDir, {fsHelpers: useFsHelpers});
     // expect file at isntall directory
     expect(success).toBe(false);
   });

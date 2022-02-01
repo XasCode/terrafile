@@ -26,20 +26,16 @@ function getType(source: Path): ModulesKeyType {
         .join(``) as ModulesKeyType);
 }
 
-async function fetch({ params, dest, fetcher, cloner }: FetchParams): Promise<Status> {
+async function fetch({ params, dest, fetcher, cloner, fsHelpers }: FetchParams): Promise<Status> {
   const moduleType: ModulesKeyType = getType(params.source);
   console.log(chalk.blue(`    - Info - type: ${moduleType}`));
-  return modules[moduleType].fetch({ params, dest, fetcher, cloner });
+  return modules[moduleType].fetch({ params, dest, fetcher, cloner, fsHelpers });
 }
 
 function validate(params: Entry): boolean {
   let notFoundOrNotValid = false;
   const sourceType = getType(params.source);
-  if (sourceType === undefined) {
-    notFoundOrNotValid = true;
-  } else {
-    notFoundOrNotValid = notFoundOrNotValid || modules[sourceType].validate(params);
-  }
+  notFoundOrNotValid = notFoundOrNotValid || modules[sourceType].validate(params);
   return notFoundOrNotValid;
 }
 

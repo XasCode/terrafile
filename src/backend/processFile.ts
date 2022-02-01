@@ -1,12 +1,12 @@
 import path from 'path';
-import fsHelpers from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 import chalk from 'chalk';
 
 import { validOptions } from 'src/backend/utils';
-import { CliOptions, Option, Path, Status, Config, ExecResult, RetString } from 'src/shared/types';
+import { CliOptions, Option, Path, Status, Config, ExecResult, RetString, FsHelpers } from 'src/shared/types';
 import { validate, fetch } from 'src/backend/moduleSources';
 
 function Terrafile(options: CliOptions): Status {
+
   function validateOptions(): Status {
     if (!validOptions(this.options, `file` as Option)) {
       this.success = false;
@@ -18,8 +18,8 @@ function Terrafile(options: CliOptions): Status {
     return this;
   }
 
-  function verifyFile(): Status {
-    if (!fsHelpers.checkIfFileExists(fsHelpers.getAbsolutePath(this.options?.file).value).value) {
+  function verifyFile(opts: CliOptions): Status {
+    if (!opts.fsHelpers.checkIfFileExists(opts.fsHelpers.getAbsolutePath(this.options?.file).value).value) {
       this.success = false;
       this.contents = null;
       this.error = `Error: ${this.options?.file} does not exist`;
@@ -30,9 +30,9 @@ function Terrafile(options: CliOptions): Status {
     return this;
   }
 
-  function readFile(): Status {
+  function readFile(opts: CliOptions): Status {
     try {
-      this.json = JSON.parse(fsHelpers.readFile(this.options.file).value);
+      this.json = JSON.parse(opts.fsHelpers.readFile(this.options.file).value);
       console.log(chalk.green(`  + Success - read file: ${this.options?.file}`));
     } catch (err) {
       this.success = false;
@@ -67,14 +67,14 @@ function Terrafile(options: CliOptions): Status {
       return acc && result;
     }, this.success);
     this.success = valid;
-    this.contents = valid ? this.contents : null;
     if (valid) {
       this.error = null;
       console.log(chalk.green(`  + Success - validate json`));
     } else {
-      this.error = `Error: Not valid JSON format`;
+      this.error = `Error: Not valid JSON format\n${JSON.stringify(this.contents)}`;
       console.log(chalk.red(`  ! Failed - validate json`));
     }
+    this.contents = valid ? this.contents : null;
     return this;
   }
 
@@ -83,12 +83,13 @@ function Terrafile(options: CliOptions): Status {
     dir: Path,
     fetcher: (_: Config) => Promise<RetString>,
     cloner: (_: string[], __?: Path) => Promise<ExecResult>,
+    fsHelpers: FsHelpers,
   ): Promise<Status[]> {
     return Promise.all(
       contents.map(([key, val]) => {
         const dest = fsHelpers.getAbsolutePath(`${dir}${path.sep}${key}`).value;
         console.log(chalk.blue(`    - Info - fetch: ${key}`));
-        return fetch({ params: val, dest, fetcher, cloner });
+        return fetch({ params: val, dest, fetcher, cloner, fsHelpers });
       }),
     );
   }
@@ -96,7 +97,7 @@ function Terrafile(options: CliOptions): Status {
   async function process(): Promise<Status> {
     const retVal = { ...this };
     if (this.success) {
-      const fetchResults = await fetchModules(this.contents, options.directory, options.fetcher, options.cloner);
+      const fetchResults = await fetchModules(this.contents, options.directory, options.fetcher, options.cloner, options.fsHelpers);
       fetchResults.forEach((currentModuleRetVal) => {
         retVal.success = this.success && currentModuleRetVal.success;
         retVal.contents = currentModuleRetVal.contents;
@@ -131,7 +132,7 @@ function Terrafile(options: CliOptions): Status {
 }
 
 async function readFileContents(options: CliOptions): Promise<Status> {
-  return Terrafile(options).validateOptions().verifyFile().readFile().parse().validateJson().process();
+  return Terrafile(options).validateOptions().verifyFile(options).readFile(options).parse().validateJson().process();
 }
 
 export { readFileContents };

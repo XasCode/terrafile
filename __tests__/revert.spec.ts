@@ -1,39 +1,43 @@
 import { readFileSync } from 'fs-extra';
-import { rimrafDir, getAbsolutePath, checkIfFileExists } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 import { getPartsFromHttp } from 'src/backend/moduleSources/common/cloneRepo';
 import Git from 'src/backend/moduleSources/common/git';
-import { Path } from 'src/shared/types';
+import { Path, ExecResult } from 'src/shared/types';
 
 import { install } from 'src/backend';
 
-import fetcher from 'src/backend/extInterfaces/fetcher/axios';
-import cloner from 'src/backend/extInterfaces/cloner/git';
-import mockedFetcher from 'src/backend/extInterfaces/fetcher/axios/mock';
-import mockedCloner from 'src/backend/extInterfaces/cloner/git/mock';
+import fetcher from '@jestaubach/fetcher-axios';
+import cloner from '@jestaubach/cloner-git';
+
+import fsh from '@jestaubach/fs-helpers';
+const mockedFsHelpers = fsh.use(fsh.mock, [`terrafile.sample.json`, `./__tests__/modules/test-module/main.tf`]);
+const { 
+  getAbsolutePath,
+  rimrafDir,
+  checkIfFileExists,
+} = mockedFsHelpers;
 
 const { replacePathIfPathParam, replaceUrlVersionIfVersionParam } = Git();
-const useFetcher = fetcher.use(mockedFetcher.mock);
-const useCloner = cloner.use(mockedCloner.mock);
 
 describe(`test backend's ability to revert on error`, () => {
   beforeAll(() => {
-    rimrafDir(`vendor`);
+    rimrafDir(`revert`);
   });
 
   afterAll(() => {
-    rimrafDir(`vendor`);
+    rimrafDir(`revert`);
   });
 
   test(`1st install successfull, then 2nd install to same loc should fail processing file and revert dir`, async () => {
     const configFile = `terrafile.sample.json`;
-    const destination = `vendor/revert1`;
+    const destination = `revert/revert1`;
 
     // 1st install
     await install({
       file: configFile,
       directory: destination,
-      fetcher: useFetcher,
-      cloner: useCloner,
+      fetcher: fetcher.use(fetcher.mock),
+      cloner: cloner.use(cloner.mock(mockedFsHelpers) as (_:string[],__:string) => Promise<ExecResult>),
+      fsHelpers: mockedFsHelpers, 
     });
 
     // verify expected directories exist
@@ -47,8 +51,9 @@ describe(`test backend's ability to revert on error`, () => {
     await install({
       file: configFile,
       directory: destination,
-      fetcher: fetcher.use(mockedFetcher.mock),
-      cloner: cloner.use(mockedCloner.mockError),
+      fetcher: fetcher.use(fetcher.mock),
+      cloner: cloner.use(cloner.mockError() as (_:string[],__:string) => Promise<ExecResult>),
+      fsHelpers: mockedFsHelpers, 
     });
 
     // verify expected directories exist; re-use testJson
@@ -60,14 +65,15 @@ describe(`test backend's ability to revert on error`, () => {
 
   test(`should fail creating dir`, async () => {
     const configFile = `terrafile.sample.json`;
-    const destination = `vendor/revert2`;
+    const destination = `revert/revert2`;
 
     // install, err on createDir
     await install({
       file: configFile,
       directory: destination,
-      fetcher: fetcher.use(mockedFetcher.mock),
-      cloner: cloner.use(mockedCloner.mockError),
+      fetcher: fetcher.use(fetcher.mock),
+      cloner: cloner.use(cloner.mockError() as (_:string[],__:string) => Promise<ExecResult>),
+      fsHelpers: mockedFsHelpers,
       createDir: (_: Path) => {
         return null;
       },
@@ -88,14 +94,15 @@ describe(`test backend's ability to revert on error`, () => {
 
   test(`1st install successfull, then 2nd install to same location should fail creating dir and revert`, async () => {
     const configFile = `terrafile.sample.json`;
-    const destination = `vendor/revert3`;
+    const destination = `revert/revert3`;
 
     // 1st install
     await install({
       file: configFile,
       directory: destination,
-      fetcher: useFetcher,
-      cloner: useCloner,
+      fetcher: fetcher.use(fetcher.mock),
+      cloner: cloner.use(cloner.mock(mockedFsHelpers) as (_:string[],__:string) => Promise<ExecResult>),
+      fsHelpers: mockedFsHelpers,
     });
 
     // verify expected directories exist
@@ -109,8 +116,9 @@ describe(`test backend's ability to revert on error`, () => {
     await install({
       file: configFile,
       directory: destination,
-      fetcher: fetcher.use(mockedFetcher.mock),
-      cloner: cloner.use(mockedCloner.mockError),
+      fetcher: fetcher.use(fetcher.mock),
+      cloner: cloner.use(cloner.mockError() as (_:string[],__:string) => Promise<ExecResult>),
+      fsHelpers: mockedFsHelpers,
       createDir: (_: Path) => {
         return null;
       },

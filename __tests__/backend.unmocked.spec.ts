@@ -1,12 +1,20 @@
 import { readFileSync } from 'fs-extra';
 
 import { readFileContents } from 'src/backend/processFile';
-import { rimrafDirs, getAbsolutePath, checkIfFileExists } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+
+import fsHelpers from '@jestaubach/fs-helpers';
+const useFsHelpers = fsHelpers.use(fsHelpers.default);
+const { 
+  getAbsolutePath,
+  rimrafDirs,
+  checkIfFileExists,
+} = useFsHelpers;
+
 import { spy } from '__tests__/testUtils';
 import { CliOptions } from 'src/shared/types';
 
-import fetcher from 'src/backend/extInterfaces/fetcher/axios';
-import cloner from 'src/backend/extInterfaces/cloner/git';
+import fetcher from '@jestaubach/fetcher-axios';
+import cloner from '@jestaubach/cloner-git';
 
 const testDirs = [`be_vendor_tfregistry_error`, `be_vendor_empty`, `be_vendor_live`, `be_vendor_live2`];
 
@@ -35,6 +43,7 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
       fetcher: fetcher.use(fetcher.default),
       cloner: cloner.use(cloner.default),
+      fsHelpers: useFsHelpers,
     });
   });
 
@@ -46,6 +55,7 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
       fetcher: fetcher.use(fetcher.default),
       cloner: cloner.use(cloner.default),
+      fsHelpers: useFsHelpers,
     };
     await expectFileIssue(options);
   });
@@ -58,6 +68,7 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
       fetcher: fetcher.use(fetcher.default),
       cloner: cloner.use(cloner.default),
+      fsHelpers: useFsHelpers,
     };
     const retVals = await readFileContents(options);
     expect(retVals.error).toBe(null);
@@ -76,6 +87,7 @@ describe(`read file contents should read specified json file and validate its co
     const options = {
       directory: `be_vendor_live2/modules`,
       file: configFile,
+      fsHelpers: useFsHelpers,
     };
     const retVals = await readFileContents(options);
     expect(retVals.error).toBe(null);
@@ -96,6 +108,7 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
       fetcher: fetcher.use(fetcher.default),
       cloner: cloner.use(cloner.default),
+      fsHelpers: useFsHelpers,
     };
     const retVals = await readFileContents(options);
     expect(retVals.error).toBe(null);
@@ -116,6 +129,7 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
       fetcher: fetcher.use(fetcher.default),
       cloner: cloner.use(cloner.default),
+      fsHelpers: useFsHelpers,
     };
     const retVals = await readFileContents(options);
     expect(retVals.error).toBe(null);

@@ -2,8 +2,10 @@ import { startsWith } from 'src/backend/moduleSources/common/startsWith';
 import { Path, RetString, Status, Config, FetchParams } from 'src/shared/types';
 import { cloneRepoToDest } from 'src/backend/moduleSources/common/cloneRepo';
 import type { ModulesKeyType } from 'src/backend/moduleSources';
-import axiosFetcher from 'src/backend/extInterfaces/fetcher/axios';
+import axiosFetcher from '@jestaubach/fetcher-axios';
 import Validate from 'src/backend/moduleSources/common/validate';
+
+
 
 const defaultAxiosFetcher = axiosFetcher.use(axiosFetcher.default);
 
@@ -51,7 +53,7 @@ function getRegDownloadPointerUrl(source: Path, version: string): Path {
   return `${registryURL}/${namespace}/${name}/${system}/${version}/download`;
 }
 
-async function copyFromTerraformRegistry({ params, dest, fetcher, cloner }: FetchParams): Promise<Status> {
+async function copyFromTerraformRegistry({ params, dest, fetcher, cloner, fsHelpers }: FetchParams): Promise<Status> {
   if (params.source.length === 0) {
     return Promise.resolve({
       success: false,
@@ -62,7 +64,7 @@ async function copyFromTerraformRegistry({ params, dest, fetcher, cloner }: Fetc
   const downloadPointerUrl = getRegDownloadPointerUrl(params.source, params.version || ``);
   const regRepoUrl = await getRegRepoUrl(downloadPointerUrl, fetcher);
   if (regRepoUrl.success) {
-    return cloneRepoToDest(regRepoUrl.value, dest, cloner);
+    return cloneRepoToDest(regRepoUrl.value, dest, cloner, fsHelpers);
   }
   return {
     success: false,

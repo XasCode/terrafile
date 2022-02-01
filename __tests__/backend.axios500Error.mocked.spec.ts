@@ -1,14 +1,16 @@
 import { spy } from '__tests__/testUtils';
 
 import { readFileContents } from 'src/backend/processFile';
-import { rimrafDir, getAbsolutePath } from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
 
-import { CliOptions } from 'src/shared/types';
+import fsh from '@jestaubach/fs-helpers';
+const fsHelpers = fsh.use(fsh.default);
+const { rimrafDir, getAbsolutePath } = fsHelpers;
+const mockedFsHelpers = fsh.use(fsh.mock);
 
-import fetcher from 'src/backend/extInterfaces/fetcher/axios';
-import cloner from 'src/backend/extInterfaces/cloner/git';
-import mockedFetcher from 'src/backend/extInterfaces/fetcher/axios/mock';
-import mockedCloner from 'src/backend/extInterfaces/cloner/git/mock';
+import { CliOptions, ExecResult } from 'src/shared/types';
+
+import fetcher from '@jestaubach/fetcher-axios';
+import cloner from '@jestaubach/cloner-git';
 
 const testDirs = [`vendor_tfregistry_500Error`];
 
@@ -40,8 +42,9 @@ describe(`read file contents should read specified json file and validate its co
     await expectFileIssue({
       directory: `vendor_tfregistry_500Error/modules`,
       file: configFile,
-      fetcher: fetcher.use(mockedFetcher.mock),
-      cloner: cloner.use(mockedCloner.mock),
+      fetcher: fetcher.use(fetcher.mock),
+      cloner: cloner.use(cloner.mock(mockedFsHelpers) as (_:string[],__:string) => Promise<ExecResult>),
+      fsHelpers: mockedFsHelpers,
     });
   });
 });

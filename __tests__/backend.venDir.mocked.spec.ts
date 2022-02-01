@@ -2,13 +2,16 @@ import { resolve } from 'path';
 import { spy } from '__tests__/testUtils';
 
 import { createTargetDirectory } from 'src/backend/venDir';
-import {
-  checkIfDirExists,
+
+import fsHelpers from '@jestaubach/fs-helpers'; 
+const useFsHelpers = fsHelpers.use(fsHelpers.default);
+const { 
   getAbsolutePath,
   createDir,
   touchFile,
   rimrafDirs,
-} from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
+  checkIfDirExists,
+} = useFsHelpers;
 
 import { CliOptions } from 'src/shared/types';
 
@@ -44,6 +47,7 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
     const installDir = `ok_vendor_a/modules`;
     const retVals = createTargetDirectory({
       directory: installDir,
+      fsHelpers: useFsHelpers,
     });
     expect(checkIfDirExists(getAbsolutePath(installDir).value).value).toBe(true);
     expect(retVals.success).toBe(true);
@@ -55,6 +59,7 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
     const installDir = getAbsolutePath(`ok_vendor_b/modules`).value;
     const retVals = createTargetDirectory({
       directory: installDir,
+      fsHelpers: useFsHelpers,
     });
     expect(checkIfDirExists(installDir).value).toBe(true);
     expect(retVals.success).toBe(true);
@@ -68,6 +73,7 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
     createDir(absInstallDir);
     const retVals = createTargetDirectory({
       directory: installDir,
+      fsHelpers: useFsHelpers,
     });
     expect(checkIfDirExists(absInstallDir).value).toBe(true);
     expect(checkIfDirExists(resolve(absInstallDir, `..`, `.terrafile.save`)).value).toBe(true);
@@ -80,14 +86,17 @@ describe(`createTargetDirectory should create a directory for vendor modules`, (
     const installDir = `err_vendor/modules`;
     createDir(getAbsolutePath(`${installDir}/..`).value);
     touchFile(getAbsolutePath(installDir).value);
-    expectDirIssue({ directory: installDir });
+    expectDirIssue({
+      directory: installDir,
+      fsHelpers: useFsHelpers,
+    });
   });
 
   // try various bad inputs
   test.each([undefined, {}, { directory: `` }])(
     `should not create the target directory when provided a bad path %s`,
     (badDirOption) => {
-      expectDirIssue(badDirOption);
+      expectDirIssue({ ...badDirOption, fsHelpers: useFsHelpers });
     },
   );
 });

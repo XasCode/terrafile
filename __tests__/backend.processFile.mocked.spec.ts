@@ -2,23 +2,23 @@ import { readFileSync } from 'fs-extra';
 import { spy } from '__tests__/testUtils';
 
 import { readFileContents } from 'src/backend/processFile';
-import {
+
+import { CliOptions, ExecResult } from 'src/shared/types';
+
+import fetcher from '@jestaubach/fetcher-axios';
+import cloner from '@jestaubach/cloner-git';
+import fsHelpers from '@jestaubach/fs-helpers';
+
+const useFsHelpers = fsHelpers.use(fsHelpers.mock, [`__tests__/testFiles/terrafile.test.json`, `./__tests__/modules/test-module/main.tf`, `terrafile.sample.json`]);
+const useFetcher = fetcher.use(fetcher.mock);
+const useCloner = cloner.use(cloner.mock(useFsHelpers) as (_:string[],__:string) => Promise<ExecResult>);
+const { 
   getAbsolutePath,
   createDir,
   touchFile,
   rimrafDirs,
   checkIfFileExists,
-} from 'src/backend/extInterfaces/fs/fs-extra/fsHelpers';
-
-import { CliOptions } from 'src/shared/types';
-
-import fetcher from 'src/backend/extInterfaces/fetcher/axios';
-import cloner from 'src/backend/extInterfaces/cloner/git';
-import mockedFetcher from 'src/backend/extInterfaces/fetcher/axios/mock';
-import mockedCloner from 'src/backend/extInterfaces/cloner/git/mock';
-
-const useFetcher = fetcher.use(mockedFetcher.mock);
-const useCloner = cloner.use(mockedCloner.mock);
+} = useFsHelpers;
 
 const testDirs = [`err_vendor1`, `err_vendor2`, `err_vendor3`, `err_vendor4`, `err_vendor_lerror`, `err_vendor_2x`];
 
@@ -48,6 +48,7 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
       fetcher: useFetcher,
       cloner: useCloner,
+      fsHelpers: useFsHelpers,
     });
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
@@ -66,6 +67,7 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
       fetcher: useFetcher,
       cloner: useCloner,
+      fsHelpers: useFsHelpers,
     });
     expect(retVals.success).toBe(true);
     expect(retVals.contents).not.toBe(null);
@@ -84,6 +86,7 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
       fetcher: useFetcher,
       cloner: useCloner,
+      fsHelpers: useFsHelpers,
     });
     expect(retVals.error).toBe(null);
     expect(retVals.success).toBe(true);
@@ -99,7 +102,7 @@ describe(`read file contents should read specified json file and validate its co
     const configFile = `err_vendor4/no_access_file`;
     createDir(getAbsolutePath(`${configFile}/..`).value);
     touchFile(getAbsolutePath(configFile).value, 0);
-    await expectFileIssue({ file: configFile });
+    await expectFileIssue({ file: configFile, fsHelpers: useFsHelpers });
   });
 
   // test various bad paths and files
@@ -116,7 +119,7 @@ describe(`read file contents should read specified json file and validate its co
     { file: `__tests__/testFiles/invalid4.json` }, // terraform module definition includes invalid field
     { file: `__tests__/testFiles/invalid5.json` }, // gitSSH module definition includes invalid field
   ])(`should err when bad file provided: %s`, async (badFileOption) => {
-    await expectFileIssue(badFileOption);
+    await expectFileIssue({ ...badFileOption, fsHelpers: useFsHelpers});
   });
 
   // valid local module definition - but location of module does not exist
@@ -127,6 +130,7 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
       fetcher: useFetcher,
       cloner: useCloner,
+      fsHelpers: useFsHelpers,
     });
   });
 
@@ -138,6 +142,7 @@ describe(`read file contents should read specified json file and validate its co
       file: configFile,
       fetcher: useFetcher,
       cloner: useCloner,
+      fsHelpers: useFsHelpers,
     };
     await readFileContents(options); // 1st call to readFileContents
     await expectFileIssue(options); // 2nd call to readFileContents, tries to copy module to same location
