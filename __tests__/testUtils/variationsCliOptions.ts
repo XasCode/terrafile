@@ -22,8 +22,8 @@ const helpCommands = [``, `help`];
 const commands = [``, `install`, `foo`];
 const helps = [``, `-h`, `--help`];
 const versions = [``, `-V`, `--version`];
-const directories = [``, /*`-d bar`,*/ `--directory bar`];
-const files = [``, /*`-f foobar`,*/ `--file foobar`];
+const directories = [``, `--directory bar`];
+const files = [``, `--file foobar`];
 const badOptions = [``, `-b`, `--bar`];
 
 const { version } = JSON.parse(readFileSync(getAbsolutePath(`./package.json`).value, `utf-8`));
@@ -68,7 +68,7 @@ function noVerNoHelpNoCommandCheckOptions(args: CliArgs): ExecResult {
       stderr: `error: unknown option '--directory'`,
     };
   }
-  if (args.file != ``) {
+  if (args.file !== ``) {
     return {
       ...retVal,
       stderr: `error: unknown option '--file'`,
