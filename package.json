@@ -1,5 +1,5 @@
 {
-  "name": "terrafile",
+  "name": "@jestaubach/terrafile",
   "version": "0.1.28",
   "description": "",
   "main": "./dist/src/cli/terrafile.js",
@@ -25,9 +25,10 @@
   },
   "homepage": "https://github.com/XasCode/terrafile#readme",
   "dependencies": {
-    "@jestaubach/cloner-git": "^0.1.5",
-    "@jestaubach/fetcher-axios": "^0.1.4",
-    "@jestaubach/fs-helpers": "^0.2.8",
+    "@jestaubach/cloner-git": "^0.1.12",
+    "@jestaubach/fetcher-axios": "^0.1.7",
+    "@jestaubach/fs-helpers": "^0.2.14",
+    "@jestaubach/terrafile-backend-lib": "^0.1.3",
     "axios": "^0.27.2",
     "chalk": "^4.1.2",
     "commander": "^9.4.0",

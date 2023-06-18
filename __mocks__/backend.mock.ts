@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { CliOptions } from '../src/shared/types';
+import { CliOptions } from '@jestaubach/terrafile-backend-lib';
 
 function install(options: CliOptions): void {
   console.log(chalk.blue(`Plan: (${options.file}) --> (${options.directory})`));

@@ -8,7 +8,8 @@ const { getAbsolutePath } = useFsHelpers;
 
 import { cartesian } from '__tests__/testUtils/cartesian';
 
-import { CliArgs, CliOptions, ExecResult, TestDefinition } from 'src/shared/types';
+import { CliArgs, CliOptions, ExecResult } from '@jestaubach/terrafile-backend-lib';
+import { TestDefinition } from 'src/cli/types';
 
 import {
   helpContent,

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 import { Command, Option } from 'commander';
-import * as backend from 'src/backend';
 import { version } from 'package.json';
-import { Backend } from 'src/shared/types';
+import { install, Backend } from '@jestaubach/terrafile-backend-lib';
 import fsh from '@jestaubach/fs-helpers';
+
 const fsHelpers = fsh.use(fsh.default);
+const backend = { install };
 
 async function main(myargs: string[], be?: Backend): Promise<void> {
   const program = new Command();
@@ -14,7 +15,7 @@ async function main(myargs: string[], be?: Backend): Promise<void> {
     .command(`install`)
     .description(`Installs the files in your terrafile.json`)
     .action((options) => {
-      return be === undefined ? backend.install({...options, fsHelpers}) : be.install({...options, fsHelpers});
+      return be === undefined ? backend.install({ ...options, fsHelpers }) : be.install({ ...options, fsHelpers });
     })
     .addOption(new Option(`-d, --directory <string>`, `module directory`).default(`vendor/modules`))
     .addOption(new Option(`-f, --file <string>`, `config file`).default(`terrafile.json`));
