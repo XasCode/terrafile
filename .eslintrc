@@ -16,8 +16,7 @@
     "eslint:recommended",
     "airbnb-typescript/base",
     "plugin:@typescript-eslint/recommended",
-    "plugin:json/recommended",
-    "plugin:import/typescript"
+    "plugin:json/recommended"
   ],
   "rules": {
     "@typescript-eslint/max-len": "off",
