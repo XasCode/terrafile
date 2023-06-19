@@ -13,7 +13,8 @@
     "import"
   ],
   "extends": [
-    "airbnb-typescript/base"
+    "airbnb-typescript/base",
+    "plugin:json/recommended"
   ],
   "rules": {
     "@typescript-eslint/max-len": "off",
