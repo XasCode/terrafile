@@ -1,3 +1,4 @@
 #!/usr/bin/env node
 
-require('./terrafile.js').main(process.argv);
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require(`./terrafile`).main(process.argv);

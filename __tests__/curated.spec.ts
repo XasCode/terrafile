@@ -1,7 +1,6 @@
-import { beforeAll, afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
+import { afterEach, beforeEach, describe, it, expect } from 'vitest';
 import { ExecFileException } from 'child_process';
 import { resolve } from 'path';
-import chalk from 'chalk';
 
 import { cli } from './testUtils';
 

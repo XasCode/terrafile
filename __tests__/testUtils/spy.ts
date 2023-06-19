@@ -1,4 +1,4 @@
-import { beforeAll, afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
+import { vi } from 'vitest';
 import { populateGlobal } from 'vitest/environments';
 
 // setup(): spyOn/mock console messages, stderr, stdout, and process.exit

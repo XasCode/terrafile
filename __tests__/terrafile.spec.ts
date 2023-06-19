@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { beforeAll, afterEach, beforeEach, describe, it, expect, vi, Mock } from 'vitest';
+import { afterEach, beforeEach, describe, it, expect, Mock } from 'vitest';
 import { resolve } from 'path';
 import fsh from '@jestaubach/fs-helpers';
 const fsHelpers = fsh.use(fsh.default);
@@ -110,7 +110,7 @@ describe.each(variations)(
           { actual: result.stderr, expected: stdErr },
         ].forEach((cur) => {
           // note that actually execing node appears to strip colors
-          expect(cur.actual).toContain(`${cur.expected}`.replace('[34m', '').replace('[39m', ''));
+          expect(cur.actual).toContain(`${cur.expected}`.replace(`[34m`, ``).replace(`[39m`, ``));
         });
         expect(result.error === null || result.error === undefined ? result.error : result.error.code).toBe(
           error === null ? error : error.code,

@@ -1,4 +1,4 @@
-import { beforeAll, afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { cartesian } from './testUtils';
 
 describe(`should take arrays and generate combinations of the elements`, () => {

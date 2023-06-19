@@ -12,7 +12,11 @@ const { escapeRegExp } = lodash;
 
 const externals = [
   ...builtinModules,
-  ...Object.keys(pkg.dependencies).map((name) => new RegExp('^' + escapeRegExp(name) + '(\\/.+)?$')),
+  ...Object.keys(pkg.dependencies).map(
+    (name) => {
+      return new RegExp(`^` + escapeRegExp(name) + `(\\/.+)?$`);
+    },
+  ),
 ];
 
 export default defineConfig({
@@ -21,19 +25,19 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/cli/terrafile.ts'),
+      entry: resolve(__dirname, `src/cli/terrafile.ts`),
     },
     rollupOptions: {
       output: [
         {
-          format: 'umd',
-          name: 'terrafile',
-          entryFileNames: (chunk) => {
-            return '[name].js';
+          format: `umd`,
+          name: `terrafile`,
+          entryFileNames: (_chunk) => {
+            return `[name].js`;
           },
         },
         {
-          format: 'es',
+          format: `es`,
         },
       ],
     },
@@ -48,12 +52,12 @@ export default defineConfig({
     }),
   ],
   test: {
-    setupFiles: './__tests__/testUtils/testSetupFile.ts',
+    setupFiles: `./__tests__/testUtils/testSetupFile.ts`,
     coverage: {
-      provider: 'istanbul',
+      provider: `istanbul`,
     },
-    environment: 'node',
+    environment: `node`,
     testTimeout: 20000,
-    include: ['**/__tests__/**/*.spec.ts'],
+    include: [`**/__tests__/**/*.spec.ts`],
   },
 });

@@ -1,4 +1,4 @@
-import { beforeAll, afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { randomizeOrder } from './testUtils';
 
 function expectRearranged(inputArray: unknown[], outputArray: unknown[]) {
