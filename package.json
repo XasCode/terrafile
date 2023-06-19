@@ -1,5 +1,5 @@
 {
-  "name": "@jestaubach/terrafile",
+  "name": "terrafile",
   "version": "0.1.29",
   "description": "",
   "type": "commonjs",
@@ -10,10 +10,10 @@
     "dist"
   ],
   "bin": {
-    "terrafile": "./dist/terrafile.js"
+    "terrafile": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && cp src/cli.js dist/cli.js",
     "test": "vitest run --coverage --reporter dot",
     "lint": "eslint src"
   },

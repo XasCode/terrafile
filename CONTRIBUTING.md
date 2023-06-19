@@ -7,23 +7,25 @@ Adapted from "Standard" Release Process described [here](https://cloudfour.com/t
 1. git pull
 2. git status
 3. npm ci
-4. npm test
-
-## Prepare the release
-
-5. npm run build
+4. npm run build
+5. npm test
 
 ## Update the version number
 
 6. npm version [patch|minor|major]
 
+## Prepare the release
+
+7. npm run build
+8. npm test
+
 ## Publish to npm
 
-7. npm publish --access=public
+9. npm publish --access=public
 
 ## git push
 
-8. git push -u origin --tags
+10. git push -u origin --tags
 
 # Debugging
 
