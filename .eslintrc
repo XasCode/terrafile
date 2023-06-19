@@ -30,8 +30,6 @@
     "function-paren-newline": ["error", "multiline-arguments"],
     "@typescript-eslint/operator-linebreak": "off",
     "operator-linebreak": ["error", "after", { "overrides": { "?": "before", ":": "before" } }],
-    "@typescript-eslint/indent": "off",
-    "indent": ["error", 2, { "offsetTernaryExpressions": true, "SwitchCase": 1}],
     "@typescript-eslint/implicit-arrow-linebreak": "off",
     "implicit-arrow-linebreak": ["error", "below"],
     "@typescript-eslint/arrow-body-style": "off",
