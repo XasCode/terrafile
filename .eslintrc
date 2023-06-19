@@ -4,21 +4,37 @@
     "ecmaVersion": 2020,
     "project": "./tsconfig.eslint.json"
   },
+  "root": true,
+  "env": {
+    "node": true
+  },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "import"
   ],
   "extends": [
+    "eslint:recommended",
     "airbnb-typescript/base",
     "plugin:@typescript-eslint/recommended",
-    "plugin:json/recommended"
+    "plugin:json/recommended",
+    "plugin:import/typescript"
   ],
   "rules": {
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "": "never",
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
     "@typescript-eslint/max-len": "off",
     "max-len": ["error", { "code": 120 }],
     "@typescript-eslint/quotes": "off",
     "quotes": ["error", "backtick"],
-    "@typescript-eslint/no-multi-spaces": "off",
-    "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
     "@typescript-eslint/comma-dangle": "off",
     "comma-dangle": ["error", "always-multiline"],
     "@typescript-eslint/function-paren-newline": "off",
@@ -42,26 +58,5 @@
     "@typescript-eslint/newline-per-chained-call": "off",
     "newline-per-chained-call": "off",
     "import/prefer-default-export": "off"
-  },
-  "overrides": [
-    {
-      "files": ["**/*.mocked.spec.ts"],
-      "rules": {
-        "import/first": "off"
-      }
-    },
-    {
-      "files": ["__tests__/testUtils/mock.ts"],
-      "rules": {
-        "global-require": "off"
-      }
-    },
-    {
-      "files": ["**/mock.ts"],
-      "rules": {
-        "@typescript-eslint/global-require": "off",
-        "global-require": "off"
-      }
-    }
-  ]
+  }
 }
