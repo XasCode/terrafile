@@ -20,17 +20,6 @@
     "plugin:import/typescript"
   ],
   "rules": {
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "": "never",
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
     "@typescript-eslint/max-len": "off",
     "max-len": ["error", { "code": 120 }],
     "@typescript-eslint/quotes": "off",
