@@ -1,8 +1,9 @@
+import { beforeAll, afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 import { ExecFileException } from 'child_process';
 import { resolve } from 'path';
 import chalk from 'chalk';
 
-import { cli } from '__tests__/testUtils';
+import { cli } from './testUtils';
 
 import fsHelpers from '@jestaubach/fs-helpers';
 const { rimrafDir } = fsHelpers.use(fsHelpers.default);
@@ -13,9 +14,9 @@ import {
   unknownCommand,
   unknownOptionLong,
   unknownOptionShort,
-} from 'src/cli/strings';
+} from '../src/cli/strings';
 
-import { version } from 'package.json';
+import { version } from '../package.json';
 
 const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
 
@@ -42,10 +43,10 @@ describe(`should execute 'terrafile' with a set of commands/options and verify t
     rimrafDir(resolve(`.`, `dist/src/vendor`));
   });
 
-  test(`test currated set of cli commands synchronously`, async () => {
+  it(`test currated set of cli commands synchronously`, async () => {
     /* eslint-disable no-await-in-loop */
     for (const cliCommand of Object.keys(curatedCliCommands)) {
-      const result = await cli(cliCommand.split(` `), `./dist/src`);
+      const result = await cli(cliCommand.split(` `), `./dist`);
       expect(result.stdout).toMatch(curatedCliCommands[cliCommand][0]);
       expect(result.stderr).toMatch(curatedCliCommands[cliCommand][1]);
       expect(result.error === null ? result.error : result.error.code).toBe(

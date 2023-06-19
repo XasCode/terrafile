@@ -6,10 +6,10 @@ import fsHelpers from '@jestaubach/fs-helpers';
 const useFsHelpers = fsHelpers.use(fsHelpers.default);
 const { getAbsolutePath } = useFsHelpers;
 
-import { cartesian } from '__tests__/testUtils/cartesian';
+import { cartesian } from './cartesian';
 
 import { CliArgs, CliOptions, ExecResult } from '@jestaubach/terrafile-backend-lib';
-import { TestDefinition } from 'src/cli/types';
+import { TestDefinition } from '../../src/cli/types';
 
 import {
   helpContent,
@@ -17,7 +17,7 @@ import {
   unknownCommand,
   unknownOptionLong,
   unknownOptionShort,
-} from 'src/cli/strings';
+} from '../../src/cli/strings';
 
 const helpCommands = [``, `help`];
 const commands = [``, `install`, `foo`];

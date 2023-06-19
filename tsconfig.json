@@ -1,32 +1,26 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "pretty": true,
-    "sourceMap": true,
-    "target": "es6",
-    "outDir": "./dist",
-    "noImplicitAny": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
-    "baseUrl": "./",
-    "paths": {
-      "src/*": ["./src/*"],
-      "__tests__/*": ["./__tests__/*"],
-      "__mocks__/*": ["__mocks__/*"],
-      "package.json": ["./package.json"]
-    }
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true
   },
   "include": [
-    "**/*.ts", "__tests__/**/*ts", "node_modules/@types"
+    "src/**/*.ts", "node_modules/@types"
   ],
   "exclude": [
-    "node_modules", "__mocks__/**/*.ts", "dist"
+    "node_modules", "__mocks__/**/*.ts", "dist", "__tests__/**/*.ts"
   ],
   "typeRoots": [
     "node_modules/@types", "src"
-  ],
-  "types": [
-    "jest"
   ]
 }

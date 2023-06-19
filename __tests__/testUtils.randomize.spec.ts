@@ -1,4 +1,5 @@
-import { randomizeOrder } from '__tests__/testUtils';
+import { beforeAll, afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
+import { randomizeOrder } from './testUtils';
 
 function expectRearranged(inputArray: unknown[], outputArray: unknown[]) {
   expect(inputArray.length).toBe(outputArray.length);
@@ -15,19 +16,19 @@ describe(`should take an array and rearrange the elements randomly`, () => {
   const inputArray: number[] = [];
   for (let arraylen = 0; arraylen < 10; arraylen += 1) {
     inputArray.push(arraylen);
-    test(`check random values`, () => {
+    it(`check random values`, () => {
       const outputArray = randomizeOrder(inputArray);
       expectRearranged(inputArray, outputArray);
     });
   }
 
-  test(`edge case - empty array`, () => {
+  it(`edge case - empty array`, () => {
     const input: number[] = [];
     const output: number[] = [];
     expect(randomizeOrder(input)).toStrictEqual(output);
   });
 
-  test(`edge case - duplicates`, () => {
+  it(`edge case - duplicates`, () => {
     const input = [1, 1, 2];
     const possibleOutputs = [
       [1, 1, 2],

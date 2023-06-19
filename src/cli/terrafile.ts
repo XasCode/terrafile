@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import { Command, Option } from 'commander';
-import { version } from 'package.json';
+//import { version } from 'package.json';
 import { install, Backend } from '@jestaubach/terrafile-backend-lib';
 import fsh from '@jestaubach/fs-helpers';
+
+const version = configversion;
 
 const fsHelpers = fsh.use(fsh.default);
 const backend = { install };

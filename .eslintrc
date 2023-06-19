@@ -4,9 +4,6 @@
     "ecmaVersion": 2020,
     "project": "./tsconfig.eslint.json"
   },
-  "env": {
-    "jest": true
-  },
   "plugins": [
     "@typescript-eslint"
   ],

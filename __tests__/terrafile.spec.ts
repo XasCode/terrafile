@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
+import { beforeAll, afterEach, beforeEach, describe, it, expect, vi, Mock } from 'vitest';
 import { resolve } from 'path';
 import fsh from '@jestaubach/fs-helpers';
 const fsHelpers = fsh.use(fsh.default);
 const { rimrafDir } = fsHelpers;
-import { main } from 'src/cli/terrafile';
-import { getRandomInt, cli, spy, variations, backendVersions } from '__tests__/testUtils';
+import { main } from '../src/cli/terrafile';
+import { getRandomInt, cli, spy, variations, backendVersions } from './testUtils';
 
-import { TestDefinition } from 'src/cli/types';
+import { TestDefinition } from '../src/cli/types';
 
 const backends = Object.keys(backendVersions);
 
@@ -50,7 +51,7 @@ describe.each(variations)(
     //      the frontend without actually running the backend. We run the tests against
     //      the default and mocked with the same inputs and expect the same outputs to make
     //      sure that our mock successfully simulates the actual implementation
-    test.each(backends)(`Check BE output (BE="%s", args="${args}")`, (backend) => {
+    it.each(backends)(`Check BE output (BE="%s", args="${args}")`, (backend) => {
       const { install } = backendVersions[backend];
       switch (command) {
         case `install`: {
@@ -68,7 +69,7 @@ describe.each(variations)(
     // the frontend cli interface to ensure that it processes the
     // cli arguments, executes the commands with the given options,
     // and produces the same results as the backend tests.
-    test.each(backends)(`Check CLI as module (BE="%s", args="${args}")`, (backend) => {
+    it.each(backends)(`Check CLI as module (BE="%s", args="${args}")`, (backend) => {
       const myargs = [process.argv[0], resolve(`./dist/terrafile`), ...(args ? args.split(` `) : [])];
       if (backend.length > 0) {
         main(myargs, backendVersions[backend]);
@@ -89,12 +90,12 @@ describe.each(variations)(
           if (cur !== ``) {
             expect(
               cur === stdOut
-                ? (process.stdout.write as jest.Mock).mock.calls[0][0]
-                : (process.stderr.write as jest.Mock).mock.calls[0][0],
+                ? (process.stdout.write as Mock).mock.calls[0][0]
+                : (process.stderr.write as Mock).mock.calls[0][0],
             ).toBe(`${cur}${cur.length > 0 ? `\n` : ``}`);
           }
         });
-        const exitCode = (process.exit as unknown as jest.Mock).mock.calls[0][0];
+        const exitCode = (process.exit as unknown as Mock).mock.calls[0][0];
         expect(exitCode).toBe(error === null ? 0 : error.code); // no error (null) --> exit(0)
       }
     });
@@ -102,7 +103,7 @@ describe.each(variations)(
     // Actually executing the CLI commands is time consuming. So we only
     // execute a small sample of the tests.
     if (getRandomInt(0) === 0) {
-      test(`Sample CLI (BE="%s", args="${args}")`, async () => {
+      it(`Sample CLI (BE="%s", args="${args}")`, async () => {
         const result = await cli(args ? args.split(` `) : []);
         [
           { actual: result.stdout, expected: stdOut },
@@ -111,7 +112,9 @@ describe.each(variations)(
           // note that actually execing node appears to strip colors
           expect(cur.actual).toContain(`${cur.expected}`.replace('[34m', '').replace('[39m', ''));
         });
-        expect(result.error === null ? result.error : result.error.code).toBe(error === null ? error : error.code);
+        expect(result.error === null || result.error === undefined ? result.error : result.error.code).toBe(
+          error === null ? error : error.code,
+        );
       });
     }
   },

@@ -1,8 +1,8 @@
-import * as spy from '__tests__/testUtils/spy';
-import { cartesian } from '__tests__/testUtils/cartesian';
-import { cli } from '__tests__/testUtils/cli';
-import { getRandomInt, randomizeOrder } from '__tests__/testUtils/randomFunctions';
-import { variations } from '__tests__/testUtils/variationsCliOptions';
-import { backendVersions } from '__tests__/testUtils/variationsBackends';
+import * as spy from './spy';
+import { cartesian } from './cartesian';
+import { cli } from './cli';
+import { getRandomInt, randomizeOrder } from './randomFunctions';
+import { variations } from './variationsCliOptions';
+import { backendVersions } from './variationsBackends';
 
 export { backendVersions, cartesian, cli, getRandomInt, randomizeOrder, spy, variations };

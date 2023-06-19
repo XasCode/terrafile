@@ -10,4 +10,4 @@ type TestDefinition = {
   stdErr: string;
 };
 
-export { TestDefinition };
+export type { TestDefinition };
