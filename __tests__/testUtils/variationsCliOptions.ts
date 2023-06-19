@@ -142,10 +142,10 @@ function noVerCheckHelp(args: CliArgs): ExecResult {
 function getResults(args: CliArgs): ExecResult {
   return args.ver !== ``
     ? {
-        error: null,
-        stdout: version,
-        stderr: ``,
-      }
+      error: null,
+      stdout: version,
+      stderr: ``,
+    }
     : noVerCheckHelp(args);
 }
 
