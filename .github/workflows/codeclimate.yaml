@@ -16,6 +16,7 @@ jobs:
       with:
         node-version: ${{ matrix.node }}
     - run: npm install
+    - run: npm run build
     - uses: paambaati/codeclimate-action@v2.7.5
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
