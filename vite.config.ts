@@ -56,6 +56,7 @@ export default defineConfig({
     coverage: {
       provider: `istanbul`,
       reporter: [`text`, `json`, `html`, `lcov`],
+      include: [`src/**`,'**/__tests__/**','**/__mocks__/**'],
     },
     environment: `node`,
     testTimeout: 20000,
