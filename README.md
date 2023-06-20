@@ -133,7 +133,7 @@ The sub-directory within a specified source repository where module sources are 
 
 ### Example Usage
 
-```shell
+```
 Usage: terrafile --help
 
 Manage vendored modules using a JSON file.
@@ -147,7 +147,7 @@ Commands:
   help [command]     display help for command
 ```
 
-```shell
+```
 Usage: terrafile install --help
 
 Installs the files in your terrafile.json
