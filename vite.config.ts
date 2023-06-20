@@ -55,6 +55,7 @@ export default defineConfig({
     setupFiles: `./__tests__/testUtils/testSetupFile.ts`,
     coverage: {
       provider: `istanbul`,
+      reporter: [`text`, `json`, `html`, `lcov`],
     },
     environment: `node`,
     testTimeout: 20000,
