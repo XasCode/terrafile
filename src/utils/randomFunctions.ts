@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 // Generate a random integer: max > getRandomInt() >= 0
 function getRandomInt(max: number): number {
