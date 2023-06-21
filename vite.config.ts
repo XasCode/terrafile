@@ -59,5 +59,6 @@ export default defineConfig({
     },
     environment: `node`,
     testTimeout: 20000,
+    include: [`**/*.spec.ts`],
   },
 });

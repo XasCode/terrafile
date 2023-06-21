@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { randomizeOrder } from '../';
+import { randomizeOrder } from '..';
 
 function expectRearranged(inputArray: unknown[], outputArray: unknown[]) {
   expect(inputArray.length).toBe(outputArray.length);

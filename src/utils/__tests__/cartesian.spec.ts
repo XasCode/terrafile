@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { cartesian } from '../';
+import { cartesian } from '..';
 
 describe(`should take arrays and generate combinations of the elements`, () => {
   it(`take and array of arrays and verify outout`, () => {
