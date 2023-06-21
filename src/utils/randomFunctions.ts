@@ -1,6 +1,8 @@
+const crypto = require('crypto');
+
 // Generate a random integer: max > getRandomInt() >= 0
 function getRandomInt(max: number): number {
-  return Math.floor(Math.random() * max);
+  return Math.floor((crypto.randomBytes(4).readUInt32LE() / 0xffffffff) * max);
 }
 
 // randomizeOrder() takes an array and mixes up the order of the elements
