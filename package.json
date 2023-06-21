@@ -34,7 +34,7 @@
     "@jestaubach/terrafile-backend-lib": "^0.1.4",
     "axios": "^0.27.2",
     "builtin-modules": "^3.3.0",
-    "chalk": "^4.1.2",
+    "chalk": "^5.2.0",
     "commander": "^9.4.0",
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.1.0",
