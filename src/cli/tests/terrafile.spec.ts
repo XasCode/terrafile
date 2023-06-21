@@ -4,10 +4,12 @@ import { resolve } from 'path';
 import fsh from '@jestaubach/fs-helpers';
 const fsHelpers = fsh.use(fsh.default);
 const { rimrafDir } = fsHelpers;
-import { main } from '../src/cli/terrafile';
-import { getRandomInt, cli, spy, variations, backendVersions } from './testUtils';
+import { main } from '../terrafile';
+import { getRandomInt, cli, spy, } from '../../utils';
+import { variations } from './variationsCliOptions';
+import { backendVersions } from './variationsBackends';
 
-import { TestDefinition } from '../src/cli/types';
+import { TestDefinition } from '../types';
 
 const backends = Object.keys(backendVersions);
 
@@ -104,7 +106,7 @@ describe.each(variations)(
     // execute a small sample of the tests.
     if (getRandomInt(0) === 0) {
       it(`Sample CLI (BE="%s", args="${args}")`, async () => {
-        const result = await cli(args ? args.split(` `) : []);
+        const result = await cli(`./dist/terrafile`, args ? args.split(` `) : []);
         [
           { actual: result.stdout, expected: stdOut },
           { actual: result.stderr, expected: stdErr },

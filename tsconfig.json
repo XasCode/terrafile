@@ -15,8 +15,8 @@
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*.ts", "node_modules/@types"
-  ],
+    "__tests__/**/*.ts", "src/**/*.ts", "node_modules/@types"
+, "__tests__/testSetupFile.ts"  ],
   "exclude": [
     "node_modules", "__mocks__/**/*.ts", "dist", "__tests__/**/*.ts"
   ],

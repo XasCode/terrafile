@@ -5,7 +5,7 @@
   "type": "commonjs",
   "main": "./dist/terrafile.js",
   "module": "./dist/terrafile.mjs",
-  "types": "./dist/cli/index.d.ts",
+  "types": "./dist/cli/terrafile.d.ts",
   "files": [
     "dist"
   ],
@@ -13,7 +13,7 @@
     "terrafile": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc && vite build && cp src/cli.js dist/cli.js",
+    "build": "tsc && vite build && cp src/cli/cli.js dist/cli.js",
     "test": "vitest run --coverage --reporter dot",
     "lint": "eslint src"
   },
@@ -56,6 +56,7 @@
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
     "@vitest/coverage-istanbul": "^0.32.2",
+    "codecov": "^3.8.3",
     "eslint": "^8.43.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
