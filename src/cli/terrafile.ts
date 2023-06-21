@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { Command, Option } from 'commander';
-//import { version } from 'package.json';
 import { install, Backend } from '@jestaubach/terrafile-backend-lib';
 import fsh from '@jestaubach/fs-helpers';
 
