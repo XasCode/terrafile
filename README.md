@@ -19,13 +19,13 @@ It is possible to publish modules for others to use, and to use modules that oth
 ### Problems Addressed
 
 1. [DRY](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1001745#s5): Everywhere that a module is used the source is specified, even if already used elsewhere.
-2. Change management: Managing changes to potentially very many modules throughout the code base can be labor intensive and error prone.
+1. Change management: Managing changes to potentially very many modules throughout the code base can be labor intensive and error prone.
 
 ### Solution Approach
 
 1. Define module dependencies in a single place, a `.json` file.
-2. Use `terrafile` to retrieve modules and save them locally where they are committed into the codebase under your version control.
-3. Reference the local versions under version control as the source of modules used in your codebase.
+1. Use `terrafile` to retrieve modules and save them locally where they are committed into the codebase under your version control.
+1. Reference the local versions under version control as the source of modules used in your codebase.
 
 ## Installation
 

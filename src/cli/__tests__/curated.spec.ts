@@ -7,17 +7,15 @@ import { cli } from '../../utils';
 import fsHelpers from '@jestaubach/fs-helpers';
 const { rimrafDir } = fsHelpers.use(fsHelpers.default);
 
-import {
-  helpContent,
-  helpInstallContent,
-  unknownCommand,
-  unknownOptionLong,
-  unknownOptionShort,
-} from '../strings';
+import { helpContent, helpInstallContent, unknownCommand, unknownOptionLong, unknownOptionShort } from '../strings';
 
 import { version } from '../../../package.json';
 
 const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
+
+function errorOutputs(errorMessage): [string, string, ExecFileException] {
+  return [``, `${errorMessage}\n`, { name: ``, message: ``, code: 1 } as ExecFileException];
+}
 
 // each of these commands will be execed to test cli output
 const curatedCliCommands: Record<string, [string | RegExp, string | RegExp, ExecFileException]> = {
@@ -25,10 +23,10 @@ const curatedCliCommands: Record<string, [string | RegExp, string | RegExp, Exec
   '--version': [`${version}\n`, ``, null],
   //install: [`${chalk.blue(`Plan: (${defaultOpts.file}) --> (${defaultOpts.directory})`)}\n`, ``, null],
   install: [`${`Plan: (${defaultOpts.file}) --> (${defaultOpts.directory})`}`, ``, null],
-  foo: [``, `${unknownCommand}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
-  '--bar': [``, `${unknownOptionLong}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
-  'install --bar': [``, `${unknownOptionLong}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
-  'install -b': [``, `${unknownOptionShort}\n`, { name: ``, message: ``, code: 1 } as ExecFileException],
+  foo: errorOutputs(unknownCommand),
+  '--bar': errorOutputs(unknownOptionLong),
+  'install --bar': errorOutputs(unknownOptionLong),
+  'install -b': errorOutputs(unknownOptionShort),
   'help install': [`${helpInstallContent}\n`, ``, null],
   'install -d <abc': [/Plan: \(terrafile.json\) --> \(<abc\)/, /Error resolving path: <abc\n/, null],
 };

@@ -27,6 +27,14 @@ const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
 
 const combinations = cartesian(helpCommands, commands, helps, versions, directories, files, badOptions);
 
+function errorMessage(message) {
+  return {
+    error: { name: ``, message: ``, code: 1 } as ExecFileException,
+    stdout: ``,
+    stderr: message,
+  };
+}
+
 // Specify the options that should be passed to the install command
 function getOptions({ directory, file }: CliOptions): CliOptions {
   return {
@@ -38,11 +46,7 @@ function getOptions({ directory, file }: CliOptions): CliOptions {
 
 function noVerNoHelpValidCommandCheckOptions(args: CliArgs): ExecResult {
   if (args.badOption !== ``) {
-    return {
-      error: { name: ``, message: ``, code: 1 } as ExecFileException,
-      stdout: ``,
-      stderr: args.badOption[1] === `-` ? unknownOptionLong : unknownOptionShort,
-    };
+    return errorMessage(args.badOption[1] === `-` ? unknownOptionLong : unknownOptionShort);
   }
   const options = getOptions({ directory: args.directory, file: args.file });
   return {
@@ -86,22 +90,14 @@ function noVerNoHelpCheckCommand(args: CliArgs): ExecResult {
     return noVerNoHelpNoCommandCheckOptions(args);
   }
   if (args.command !== `install`) {
-    return {
-      error: { name: ``, message: ``, code: 1 } as ExecFileException,
-      stdout: ``,
-      stderr: unknownCommand,
-    };
+    return errorMessage(unknownCommand);
   }
   return noVerNoHelpValidCommandCheckOptions(args);
 }
 
 function noVerYesHelpInvalidCommand(args: CliArgs): ExecResult {
   if (args.helpCommand !== ``) {
-    return {
-      error: { name: ``, message: ``, code: 1 } as ExecFileException,
-      stdout: ``,
-      stderr: helpContent,
-    };
+    return errorMessage(helpContent);
   }
   return {
     error: null,
