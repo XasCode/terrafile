@@ -177,7 +177,6 @@ This project was inspired by [Terraform Design Patterns: the Terrafile](http://b
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=coverage)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
