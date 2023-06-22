@@ -57,32 +57,10 @@ function noVerNoHelpValidCommandCheckOptions(args: CliArgs): ExecResult {
 }
 
 function noVerNoHelpNoCommandCheckOptions(args: CliArgs): ExecResult {
-  const retVal = {
-    error: { name: ``, message: ``, code: 1 } as ExecFileException,
-    stdout: ``,
-  };
-  if (args.directory !== ``) {
-    return {
-      ...retVal,
-      stderr: `error: unknown option '--directory'`,
-    };
-  }
-  if (args.file !== ``) {
-    return {
-      ...retVal,
-      stderr: `error: unknown option '--file'`,
-    };
-  }
-  if (args.badOption !== ``) {
-    return {
-      ...retVal,
-      stderr: args.badOption[1] === `-` ? unknownOptionLong : unknownOptionShort,
-    };
-  }
-  return {
-    ...retVal,
-    stderr: helpContent,
-  };
+  if (args.directory !== ``) return errorMessage(`error: unknown option '--directory'`);
+  if (args.file !== ``) return errorMessage(`error: unknown option '--file'`);
+  if (args.badOption !== ``) return errorMessage(args.badOption[1] === `-` ? unknownOptionLong : unknownOptionShort);
+  return errorMessage(helpContent);
 }
 
 function noVerNoHelpCheckCommand(args: CliArgs): ExecResult {
