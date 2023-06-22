@@ -11,13 +11,7 @@ import { cartesian } from '../../utils/cartesian';
 import { CliArgs, CliOptions, ExecResult } from '@jestaubach/terrafile-backend-lib';
 import { TestDefinition } from '../types';
 
-import {
-  helpContent,
-  helpInstallContent,
-  unknownCommand,
-  unknownOptionLong,
-  unknownOptionShort,
-} from '../strings';
+import { helpContent, helpInstallContent, unknownCommand, unknownOptionLong, unknownOptionShort } from '../strings';
 
 const helpCommands = [``, `help`];
 const commands = [``, `install`, `foo`];
@@ -142,10 +136,10 @@ function noVerCheckHelp(args: CliArgs): ExecResult {
 function getResults(args: CliArgs): ExecResult {
   return args.ver !== ``
     ? {
-      error: null,
-      stdout: version,
-      stderr: ``,
-    }
+        error: null,
+        stdout: version,
+        stderr: ``,
+      }
     : noVerCheckHelp(args);
 }
 
