@@ -3,4 +3,9 @@ engines:
   duplication:
     enabled: true
     exclude_paths:
-      - '**.spec.ts'
+      - "**.spec.ts"
+  markdownlint:
+    enabled: true
+    config:
+      default:
+        MD013: false
