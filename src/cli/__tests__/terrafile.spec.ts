@@ -30,7 +30,7 @@ describe.each(variations)(
     options,
     error,
     stdOut,
-    stdErr
+    stdErr,
   }: TestDefinition) => {
     //NOSONAR
     beforeEach(() => {
