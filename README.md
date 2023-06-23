@@ -182,3 +182,6 @@ This project was inspired by [Terraform Design Patterns: the Terrafile](http://b
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
+[![codecov](https://codecov.io/gh/XasCode/terrafile/branch/main/graph/badge.svg?token=6B0W8HE8GX)](https://codecov.io/gh/XasCode/terrafile)
+## CodeCov Coverage Map
+![CodeCov](https://codecov.io/gh/XasCode/terrafile/branch/main/graphs/sunburst.svg?token=6B0W8HE8GX)
