@@ -133,29 +133,30 @@ The sub-directory within a specified source repository where module sources are 
 
 ### Example Usage
 
-    Usage: terrafile --help
+```text
+Usage: terrafile --help
 
-    Manage vendored modules using a JSON file.
+Manage vendored modules using a JSON file.
 
-    Options:
-      -V, --version      Show version information for terrafile
-      -h, --help         display help for command
+Options:
+  -V, --version      Show version information for terrafile
+  -h, --help         display help for command
 
-    Commands:
-      install [options]  Installs the files in your terrafile.json
-      help [command]     display help for command
+Commands:
+  install [options]  Installs the files in your terrafile.json
+  help [command]     display help for command
+```
 
-    ------------------------------------------------------------------------
+```text
+Usage: terrafile install --help
 
-    Usage: terrafile install --help
+Installs the files in your terrafile.json
 
-    Installs the files in your terrafile.json
-
-    Options:
-      -d, --directory <string>  module directory (default: "vendor/modules")
-      -f, --file <string>       config file (default: "terrafile.json")
-      -h, --help                display help for command
-
+Options:
+  -d, --directory <string>  module directory (default: "vendor/modules")
+  -f, --file <string>       config file (default: "terrafile.json")
+  -h, --help                display help for command
+```
 ## Acknowledgements
 
 This project was inspired by [Terraform Design Patterns: the Terrafile](http://bensnape.com/2016/01/14/terraform-design-patterns-the-terrafile/).
