@@ -5,7 +5,7 @@ import fsh from '@jestaubach/fs-helpers';
 const fsHelpers = fsh.use(fsh.default);
 const { rimrafDir } = fsHelpers;
 import { main } from '../terrafile';
-import { getRandomInt, cli, spy, } from '../../utils';
+import { getRandomInt, cli, spy } from '../../utils';
 import { variations } from './variationsCliOptions';
 import { backendVersions } from './variationsBackends';
 
@@ -30,7 +30,7 @@ describe.each(variations)(
     options,
     error,
     stdOut,
-    stdErr,
+    stdErr
   }: TestDefinition) => {
     //NOSONAR
     beforeEach(() => {
