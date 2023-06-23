@@ -157,6 +157,7 @@ Options:
   -f, --file <string>       config file (default: "terrafile.json")
   -h, --help                display help for command
 ```
+
 ## Acknowledgements
 
 This project was inspired by [Terraform Design Patterns: the Terrafile](http://bensnape.com/2016/01/14/terraform-design-patterns-the-terrafile/).
