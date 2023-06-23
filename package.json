@@ -34,7 +34,7 @@
     "@jestaubach/terrafile-backend-lib": "^0.1.4",
     "builtin-modules": "^3.3.0",
     "chalk": "^4.1.2",
-    "commander": "^9.4.0",
+    "commander": "^11.0.0",
     "crypto": "^1.0.1",
     "fast-glob": "^3.2.11",
     "lodash": "^4.17.21",
