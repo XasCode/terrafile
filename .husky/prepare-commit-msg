@@ -4,12 +4,21 @@
 # Check if detect-secrets is installed
 if ! command -v detect-secrets &> /dev/null
 then
-    echo "detect-secrets is not installed."
-    exit 1
+    echo "Warning: detect-secrets is not installed."
+    echo "!!! detect-secrets will not be run."
+    exit 0
+fi
+# Check if pyahocorasick is installed (word-list)
+if ! python -c "import ahocorasick" &> /dev/null
+then
+    echo "Warning: pyahocorasick is not installed."
+    echo "!!! detect-secrets will not be run."
+    exit 0
 fi
 
 # if there is no baseline, create one
 if [ ! -e .secrets.baseline ]; then
+    echo "Creating baseline..."
     detect-secrets scan --no-verify --word-list wordlist.txt > .secrets.baseline
 fi
 

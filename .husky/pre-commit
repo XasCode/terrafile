@@ -4,18 +4,28 @@
 # Check if detect-secrets is installed
 if ! command -v detect-secrets &> /dev/null
 then
-    echo "detect-secrets is not installed."
-    exit 1
+    echo "Warning: detect-secrets is not installed."
+    echo "!!! detect-secrets will not be run."
+    exit 0
+fi
+# Check if pyahocorasick is installed (word-list)
+if ! python -c "import ahocorasick" &> /dev/null
+then
+    echo "Warning: pyahocorasick is not installed."
+    echo "!!! detect-secrets will not be run."
+    exit 0
 fi
 # Check if jq is installed
 if ! command -v jq &> /dev/null
 then
-    echo "jq is not installed."
-    exit 1
+    echo "Warning: jq is not installed."
+    echo "!!! detect-secrets will not be run."
+    exit 0
 fi
 
 # if there is no baseline, create one
 if [ ! -e .secrets.baseline ]; then
+    echo "Creating baseline..."
     detect-secrets scan --no-verify --word-list wordlist.txt > .secrets.baseline
 fi
 
@@ -29,15 +39,21 @@ detect-secrets scan --no-verify --word-list wordlist.txt --baseline .secrets.new
 # if there is any difference between the known and newly detected secrets, break the build
 list_secrets() { jq -r '.results | keys[] as $key | "\($key),\(.[$key] | .[] | .hashed_secret)"' "$1" | sort; }
 
+# create named pipes
 mkfifo base.fifo
 mkfifo new.fifo
+
+# run the list_secrets command
 list_secrets .secrets.baseline >base.fifo &
 list_secrets .secrets.new >new.fifo &
 
+# compare the two lists
 if ! diff new.fifo base.fifo >&2 ; then
   rm -f base.fifo new.fifo
   echo "Detected new secrets in the repo" >&2
   exit 1
 fi
 
+# clean up
 rm -f base.fifo new.fifo
+rm -f .secrets.new
