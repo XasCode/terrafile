@@ -13,6 +13,6 @@ if [ ! -e .secrets.baseline ]; then
     detect-secrets scan --no-verify --word-list wordlist.txt > .secrets.baseline
 fi
 
-echo "Running detect-secrets..."
+echo "Running detect-secrets on commit-msg..."
 # Scans the commit message.
 detect-secrets scan --no-verify --word-list wordlist.txt --string "$@" > /dev/null
