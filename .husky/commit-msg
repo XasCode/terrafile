@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Section for git-secrets
+# Check if detect-secrets is installed
 if ! command -v detect-secrets &> /dev/null
 then
     echo "detect-secrets is not installed."
