@@ -15,7 +15,8 @@
   "scripts": {
     "build": "tsc && vite build && cp src/cli/cli.js dist/cli.js",
     "test": "vitest run --coverage --reporter dot",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -56,7 +57,7 @@
     "eslint-plugin-import-typescript": "^0.0.4",
     "eslint-plugin-json": "^3.1.0",
     "fs-extra": "^11.1.1",
-    "husky": "^8.0.1",
+    "husky": "^8.0.3",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "prettier-eslint": "^15.0.1",
@@ -66,8 +67,9 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "yarn check-eslint-config && yarn check-code"
+      "pre-commit": ".husky/pre-commit",
+      "commit-msg": ".husky/commit-msg",
+      "prepare-commit-msg": ".husky/prepare-commit-msg"
     }
   },
   "lint-staged": {

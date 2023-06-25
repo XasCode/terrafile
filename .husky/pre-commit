@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Section for detect-secrets
+if ! command -v detect-secrets &> /dev/null
+then
+    echo "detect-secrets is not installed."
+    exit 1
+fi
+
+if [ ! -e .secrets.baseline ]; then
+    detect-secrets scan --no-verify > .secrets.baseline
+fi
+
+# backup the list of known secrets
+cp .secrets.baseline .secrets.new
+
+# find all the secrets in the repository
+detect-secrets scan --no-verify --baseline .secrets.new $(find . -type f ! -name '.secrets.*' ! -path '*/.git*' ! -path '*/node_modules/*')
+
+# if there is any difference between the known and newly detected secrets, break the build
+list_secrets() { jq -r '.results | keys[] as $key | "\($key),\(.[$key] | .[] | .hashed_secret)"' "$1" | sort; }
+
+if ! diff <(list_secrets .secrets.baseline) <(list_secrets .secrets.new) >&2; then
+  echo "Detected new secrets in the repo" >&2
+  exit 1
+fi
