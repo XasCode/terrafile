@@ -23,7 +23,7 @@ fi
 cp .secrets.baseline .secrets.new
 
 # find all the secrets in the repository
-detect-secrets scan --no-verify --baseline .secrets.new $(find . -type f ! -name '.secrets.*' ! -path '*/.git*' ! -path '*/node_modules/*')
+detect-secrets scan --no-verify --baseline .secrets.new $(find . -type f ! -name '.secrets.*' ! -path '*/.git*' ! -path '*/node_modules/*') > /dev/null
 
 # if there is any difference between the known and newly detected secrets, break the build
 list_secrets() { jq -r '.results | keys[] as $key | "\($key),\(.[$key] | .[] | .hashed_secret)"' "$1" | sort; }

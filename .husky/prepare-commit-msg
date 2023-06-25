@@ -10,4 +10,4 @@ fi
 
 echo "Running detect-secrets..."
 # Scans the commit message.
-detect-secrets scan --no-verify --string "$@"
+detect-secrets scan --no-verify --string "$@" > /dev/null
