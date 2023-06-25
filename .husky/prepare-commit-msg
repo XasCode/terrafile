@@ -8,6 +8,11 @@ then
     exit 1
 fi
 
+# if there is no baseline, create one
+if [ ! -e .secrets.baseline ]; then
+    detect-secrets scan --no-verify --word-list wordlist.txt > .secrets.baseline
+fi
+
 echo "Running detect-secrets..."
 # Scans the commit message.
 detect-secrets scan --no-verify --word-list wordlist.txt --string "$@" > /dev/null
