@@ -1,9 +1,13 @@
 {
   "extends": "./tsconfig.json",
   "include": [
-    "**/*.ts", "src/cli.js", "node_modules/@types"
+    "**/*.ts",
+    "src/cli/cli.js",
+    "node_modules/@types"
   ],
   "exclude": [
-    "node_modules", "dist", "coverage"
+    "node_modules",
+    "dist",
+    "coverage"
   ]
 }

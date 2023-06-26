@@ -29,22 +29,18 @@
   },
   "homepage": "https://github.com/XasCode/terrafile#readme",
   "dependencies": {
-    "@jestaubach/cloner-git": "^0.1.12",
-    "@jestaubach/fetcher-axios": "^0.1.7",
     "@jestaubach/fs-helpers": "^0.2.14",
     "@jestaubach/terrafile-backend-lib": "^0.1.4",
     "builtin-modules": "^3.3.0",
     "chalk": "^4.1.2",
     "commander": "^11.0.0",
-    "crypto": "^1.0.1",
-    "fast-glob": "^3.2.11",
     "lodash": "^4.17.21",
     "vite": "^4.3.9",
     "vite-plugin-commonjs-externals": "^0.1.3",
-    "vite-plugin-dts": "^2.3.0"
+    "vite-plugin-dts": "^2.3.0",
+    "vitest": "^0.32.2"
   },
   "devDependencies": {
-    "@jestaubach/eslint-config": "^0.1.13",
     "@types/lodash": "^4.14.195",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
@@ -59,11 +55,7 @@
     "fs-extra": "^11.1.1",
     "husky": "^8.0.0",
     "lint-staged": "^13.0.3",
-    "prettier": "^2.7.1",
-    "prettier-eslint": "^15.0.1",
-    "strip-ansi": "^7.0.1",
-    "typescript": "^5.1.3",
-    "vitest": "^0.32.2"
+    "typescript": "^5.1.3"
   },
   "husky": {
     "hooks": {
@@ -71,11 +63,5 @@
       "commit-msg": ".husky/commit-msg",
       "prepare-commit-msg": ".husky/prepare-commit-msg"
     }
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ]
   }
 }

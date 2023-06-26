@@ -16,23 +16,64 @@
     "eslint:recommended",
     "airbnb-typescript/base"
   ],
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "lint-staged.config.js"
+  ],
   "rules": {
     "@typescript-eslint/max-len": "off",
-    "max-len": ["error", { "code": 120 }],
+    "max-len": [
+      "error",
+      {
+        "code": 120
+      }
+    ],
     "@typescript-eslint/quotes": "off",
-    "quotes": ["error", "backtick"],
+    "quotes": [
+      "error",
+      "backtick"
+    ],
     "@typescript-eslint/comma-dangle": "off",
-    "comma-dangle": ["error", "always-multiline"],
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
     "@typescript-eslint/function-paren-newline": "off",
-    "function-paren-newline": ["error", "multiline-arguments"],
+    "function-paren-newline": [
+      "error",
+      "multiline-arguments"
+    ],
     "@typescript-eslint/operator-linebreak": "off",
-    "operator-linebreak": ["error", "after", { "overrides": { "?": "before", ":": "before" } }],
+    "operator-linebreak": [
+      "error",
+      "after",
+      {
+        "overrides": {
+          "?": "before",
+          ":": "before"
+        }
+      }
+    ],
     "@typescript-eslint/implicit-arrow-linebreak": "off",
-    "implicit-arrow-linebreak": ["error", "below"],
+    "implicit-arrow-linebreak": [
+      "error",
+      "below"
+    ],
     "@typescript-eslint/arrow-body-style": "off",
-    "arrow-body-style": ["error", "always"],
+    "arrow-body-style": [
+      "error",
+      "always"
+    ],
     "@typescript-eslint/no-unused-vars": "off",
-    "no-unused-vars": ["error", { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }],
+    "no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_"
+      }
+    ],
     "@typescript-eslint/no-console": "off",
     "no-console": "off",
     "@typescript-eslint/no-restricted-syntax": "off",
