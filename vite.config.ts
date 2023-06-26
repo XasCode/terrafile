@@ -12,11 +12,13 @@ const { escapeRegExp } = lodash;
 
 const externals = [
   ...builtinModules,
-  ...Object.keys(pkg.dependencies).map(
-    (name) => {
+  ...Object.keys(pkg.dependencies)
+    .map((name) => {
       return new RegExp(`^` + escapeRegExp(name) + `(\\/.+)?$`);
-    },
-  ),
+    })
+    .filter((name) => {
+      return name.test(`^vitest`);
+    }),
 ];
 
 export default defineConfig({
