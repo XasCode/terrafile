@@ -185,4 +185,5 @@ This project was inspired by [Terraform Design Patterns: the Terrafile](http://b
 [![codecov](https://codecov.io/gh/XasCode/terrafile/branch/main/graph/badge.svg?token=6B0W8HE8GX)](https://codecov.io/gh/XasCode/terrafile)
 
 ## CodeCov Coverage Map
+
 ![CodeCov](https://codecov.io/gh/XasCode/terrafile/branch/main/graphs/sunburst.svg?token=6B0W8HE8GX)
