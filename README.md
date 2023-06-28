@@ -170,6 +170,7 @@ This project was inspired by [Terraform Design Patterns: the Terrafile](http://b
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/519d8d6060754c078cadace24b194986)](https://www.codacy.com/gh/XasCode/terrafile/dashboard?utm_source=github.com&utm_medium=referral&utm_content=XasCode/terrafile&utm_campaign=Badge_Grade)
 [![Known Vulnerabilities](https://snyk.io/test/github/xascode/terrafile/badge.svg)](https://snyk.io/test/github/xascode/terrafile)
 [![CodeQL](https://github.com/XasCode/terrafile/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/XasCode/terrafile/actions/workflows/codeql-analysis.yml)
+[![codecov](https://codecov.io/gh/XasCode/terrafile/branch/main/graph/badge.svg?token=6B0W8HE8GX)](https://codecov.io/gh/XasCode/terrafile)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
@@ -182,7 +183,6 @@ This project was inspired by [Terraform Design Patterns: the Terrafile](http://b
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=XasCode_terrafile&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=XasCode_terrafile)
-[![codecov](https://codecov.io/gh/XasCode/terrafile/branch/main/graph/badge.svg?token=6B0W8HE8GX)](https://codecov.io/gh/XasCode/terrafile)
 
 ## CodeCov Coverage Map
 
