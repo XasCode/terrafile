@@ -3,7 +3,10 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -15,12 +18,19 @@
     "skipLibCheck": true
   },
   "include": [
-    "__tests__/**/*.ts", "src/**/*.ts", "node_modules/@types"
-, "__tests__/testSetupFile.ts"  ],
+    "__tests__/**/*.ts",
+    "src/**/*.ts",
+    "node_modules/@types",
+    "__tests__/testSetupFile.ts"
+  ],
   "exclude": [
-    "node_modules", "__mocks__/**/*.ts", "dist", "__tests__/**/*.ts"
+    "node_modules",
+    "__mocks__/**/*.ts",
+    "dist",
+    "__tests__/**/*.ts"
   ],
   "typeRoots": [
-    "node_modules/@types", "src"
+    "node_modules/@types",
+    "src"
   ]
 }
