@@ -6,20 +6,20 @@ jobs:
   coverage:
     strategy:
       matrix:
-        platform: [ ubuntu-latest ]
-        node: [ 14.x ]
+        platform: [ubuntu-latest]
+        node: [16.x, 18.x]
     name: test/node ${{ matrix.node }}/${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
     steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-node@master
-      with:
-        node-version: ${{ matrix.node }}
-    - run: npm install
-    - run: npm run build
-    - uses: paambaati/codeclimate-action@v2.7.5
-      env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-      with:
-        coverageCommand: npm test
-        coverageLocations: ${{github.workspace}}/coverage/lcov.info:lcov
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install
+      - run: npm run build
+      - uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: npm test
+          coverageLocations: ${{github.workspace}}/coverage/lcov.info:lcov
