@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import chalk from '@xascode/chalk';
 import { CliOptions } from '@jestaubach/terrafile-backend-lib';
 
 function install(options: CliOptions): void {

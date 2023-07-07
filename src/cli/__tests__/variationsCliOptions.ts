@@ -1,6 +1,6 @@
 import { ExecFileException } from 'child_process';
 import { readFileSync } from 'fs-extra';
-import chalk from 'chalk';
+import chalk from '@xascode/chalk';
 
 import fsHelpers from '@jestaubach/fs-helpers';
 const useFsHelpers = fsHelpers.use(fsHelpers.default);
