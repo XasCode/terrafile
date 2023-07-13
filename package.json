@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.195",
-    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^5.60.0",
     "@vitest/coverage-istanbul": "^0.33.0",
     "@xascode/detect-secrets": "^0.1.0",
