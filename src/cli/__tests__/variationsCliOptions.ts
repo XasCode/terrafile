@@ -1,10 +1,9 @@
 import { ExecFileException } from 'child_process';
-import { readFileSync } from 'fs-extra';
 import chalk from '@xascode/chalk';
 
 import fsHelpers from '@jestaubach/fs-helpers';
 const useFsHelpers = fsHelpers.use(fsHelpers.default);
-const { getAbsolutePath } = useFsHelpers;
+const { getAbsolutePath, readFileSync } = useFsHelpers;
 
 import { cartesian } from '../../utils/cartesian';
 
