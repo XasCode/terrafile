@@ -3,6 +3,7 @@ import { Command, Option } from 'commander';
 import { install, Backend } from '@jestaubach/terrafile-backend-lib';
 import fsh from '@jestaubach/fs-helpers';
 
+// eslint-disable-next-line
 const version = configversion;
 
 const fsHelpers = fsh.use(fsh.default);
