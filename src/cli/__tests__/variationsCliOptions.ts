@@ -3,7 +3,8 @@ import chalk from '@xascode/chalk';
 
 import fsHelpers from '@jestaubach/fs-helpers';
 const useFsHelpers = fsHelpers.use(fsHelpers.default);
-const { getAbsolutePath, readFileSync } = useFsHelpers;
+const { getAbsolutePath } = useFsHelpers;
+const readFileSync = (filePath, opts) => useFsHelpers.readFile(filePath, opts).value;
 
 import { cartesian } from '../../utils/cartesian';
 
