@@ -10,7 +10,6 @@ module.exports = {
   },
   "plugins": [
     "@typescript-eslint",
-    //    "import"
   ],
   "extends": [
     "eslint:recommended",
