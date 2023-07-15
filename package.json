@@ -35,7 +35,7 @@
     "builtin-modules": "^3.3.0",
     "commander": "^11.0.0",
     "lodash": "^4.17.21",
-    "vite": "^4.3.9",
+    "vite": "^4.4.4",
     "vite-plugin-commonjs-externals": "^0.1.3",
     "vite-plugin-dts": "^3.0.3"
   },
@@ -44,7 +44,7 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitest/coverage-istanbul": "^0.33.0",
-    "@xascode/detect-secrets": "^0.1.0",
+    "@xascode/detect-secrets": "^0.1.1",
     "eslint": "^8.43.0",
     "husky": "^8.0.0",
     "lint-staged": "^13.0.3",

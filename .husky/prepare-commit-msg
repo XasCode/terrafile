@@ -19,9 +19,9 @@ fi
 # if there is no baseline, create one
 if [ ! -e .secrets.baseline ]; then
     echo "Creating baseline..."
-    detect-secrets scan --no-verify --word-list wordlist.txt > .secrets.baseline
+    detect-secrets scan --no-verify > .secrets.baseline
 fi
 
 echo "Running detect-secrets on prepare-commit-msg..."
 # Scans the commit message.
-detect-secrets scan --no-verify --word-list wordlist.txt --string "$@" > /dev/null
+detect-secrets scan --no-verify --string "$@" > /dev/null

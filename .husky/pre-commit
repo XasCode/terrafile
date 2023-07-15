@@ -26,7 +26,7 @@ fi
 # if there is no baseline, create one
 if [ ! -e .secrets.baseline ]; then
     echo "Creating baseline..."
-    detect-secrets scan --no-verify --word-list wordlist.txt > .secrets.baseline
+    detect-secrets scan --no-verify > .secrets.baseline
 fi
 
 # backup the list of known secrets
