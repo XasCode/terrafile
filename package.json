@@ -1,6 +1,6 @@
 {
   "name": "terrafile",
-  "version": "0.1.35",
+  "version": "0.1.36",
   "description": "",
   "type": "commonjs",
   "main": "./dist/terrafile.js",
