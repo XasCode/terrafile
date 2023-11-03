@@ -33,7 +33,7 @@
     "@jestaubach/terrafile-backend-lib": "^0.1.8",
     "@xascode/chalk": "^0.1.1",
     "builtin-modules": "^3.3.0",
-    "commander": "^11.0.0",
+    "commander": "^11.1.0",
     "lodash": "^4.17.21",
     "vite": "^4.4.4",
     "vite-plugin-commonjs-externals": "^0.1.3",
