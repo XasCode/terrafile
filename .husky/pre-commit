@@ -26,7 +26,7 @@ fi
 # if there is no baseline, create one
 if [ ! -e .secrets.baseline ]; then
     echo "Creating baseline..."
-    detect-secrets scan --no-verify > .secrets.baseline
+    detect-secrets scan --no-verify --word-list wordlist.txt > .secrets.baseline
 fi
 
 # backup the list of known secrets
@@ -49,7 +49,7 @@ list_secrets .secrets.new >new.fifo &
 
 # compare the two lists
 if ! diff new.fifo base.fifo >&2 ; then
-  rm -f base.fifo new.fifo
+  rm -f base.fifo new.fifo .secrets.new
   echo "Detected new secrets in the repo" >&2
   exit 1
 fi
