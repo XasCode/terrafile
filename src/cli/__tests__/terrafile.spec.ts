@@ -8,6 +8,7 @@ import fsh from '@jestaubach/fs-helpers';
 const fsHelpers = fsh.use(fsh.default);
 const { rimrafDir } = fsHelpers;
 import { main, runIfMain } from '../terrafile';
+import type { Backend } from '@jestaubach/terrafile-backend-lib';
 import { getRandomInt, cli, spy } from '../../utils';
 import { variations } from './variationsCliOptions';
 import { backendVersions } from './variationsBackends';
@@ -35,7 +36,7 @@ it(`uses the supplied backend install function`, () => {
   const installSpy = vi.fn();
   const backend = { install: installSpy };
 
-  main([`node`, `terrafile`, `install`, `--file`, `custom.json`, `--directory`, `custom/modules`], backend as any);
+  main([`node`, `terrafile`, `install`, `--file`, `custom.json`, `--directory`, `custom/modules`], backend as Backend);
 
   expect(installSpy).toHaveBeenCalledTimes(1);
   expect(installSpy).toHaveBeenCalledWith(

@@ -27,7 +27,7 @@ async function main(myargs: string[], be?: Backend): Promise<void> {
     .addOption(new Option(`-f, --file <string>`, `config file`).default(`terrafile.json`));
   try {
     program.parse(myargs);
-  } catch (err) {
+  } catch {
     // swallow the error
   }
 }
