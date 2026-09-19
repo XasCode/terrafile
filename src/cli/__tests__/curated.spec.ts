@@ -13,12 +13,14 @@ import { version } from '../../../package.json';
 
 const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
 
-function errorOutputs(errorMessage): [string, string, ExecFileException] {
+type CliCommandExpectation = [string | RegExp, string | RegExp, ExecFileException | null];
+
+function errorOutputs(errorMessage: string): [string, string, ExecFileException] {
   return [``, `${errorMessage}\n`, { name: ``, message: ``, code: 1 } as ExecFileException];
 }
 
 // each of these commands will be execed to test cli output
-const curatedCliCommands: Record<string, [string | RegExp, string | RegExp, ExecFileException]> = {
+const curatedCliCommands: Record<string, CliCommandExpectation> = {
   help: [`${helpContent}\n`, ``, null],
   '--version': [`${version}\n`, ``, null],
   //install: [`${chalk.blue(`Plan: (${defaultOpts.file}) --> (${defaultOpts.directory})`)}\n`, ``, null],
@@ -46,7 +48,7 @@ describe(`should execute 'terrafile' with a set of commands/options and verify t
       const result = await cli(`./dist/terrafile`, cliCommand.split(` `), `./dist`);
       expect(result.stdout).toMatch(curatedCliCommands[cliCommand][0]);
       expect(result.stderr).toMatch(curatedCliCommands[cliCommand][1]);
-      expect(result.error === null ? result.error : result.error.code).toBe(
+      expect(result.error === null || result.error === undefined ? result.error : result.error.code).toBe(
         curatedCliCommands[cliCommand][2] === null
           ? curatedCliCommands[cliCommand][2]
           : curatedCliCommands[cliCommand][2].code,
