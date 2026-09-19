@@ -16,8 +16,12 @@ async function main(myargs: string[], be?: Backend): Promise<void> {
     .description(`Manage vendored modules using a JSON file.`)
     .command(`install`)
     .description(`Installs the files in your terrafile.json`)
-    .action((options) => {
-      return be === undefined ? backend.install({ ...options, fsHelpers }) : be.install({ ...options, fsHelpers });
+    .action((options): void => {
+      if (be === undefined) {
+        backend.install({ ...options, fsHelpers });
+        return;
+      }
+      be.install({ ...options, fsHelpers });
     })
     .addOption(new Option(`-d, --directory <string>`, `module directory`).default(`vendor/modules`))
     .addOption(new Option(`-f, --file <string>`, `config file`).default(`terrafile.json`));
