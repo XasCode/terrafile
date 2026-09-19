@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { randomizeOrder } from '..';
+import { mkdtempSync, writeFileSync, rmSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import { cli, randomizeOrder } from '..';
 
 function expectRearranged(inputArray: unknown[], outputArray: unknown[]) {
   expect(inputArray.length).toBe(outputArray.length);
@@ -45,5 +48,20 @@ describe(`should take an array and rearrange the elements randomly`, () => {
         return truthy;
       }).length;
     expect(numberOfMatchingPossibleOutputs).toBe(1);
+  });
+
+  it(`executes a node script in the supplied working directory`, async () => {
+    const tempDir = mkdtempSync(join(tmpdir(), `terrafile-cli-`));
+    const scriptPath = join(tempDir, `script.js`);
+    writeFileSync(scriptPath, `console.log(process.cwd());`);
+
+    try {
+      const result = await cli(scriptPath, [], tempDir);
+      expect(result.error).toBeNull();
+      expect(result.stdout.trim()).toBe(tempDir);
+      expect(result.stderr).toBe(``);
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
   });
 });

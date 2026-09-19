@@ -28,11 +28,18 @@ async function main(myargs: string[], be?: Backend): Promise<void> {
   }
 }
 
-(async () => {
-  /* istanbul ignore if */
-  if (require.main === module) {
-    main(process.argv);
+function runIfMain(
+  currentModule = module,
+  runner: (args: string[]) => Promise<void> = main,
+  mainModule = require.main,
+): void {
+  if (mainModule === currentModule) {
+    void runner(process.argv);
   }
+}
+
+(async () => {
+  runIfMain();
 })();
 
-export { main };
+export { main, runIfMain };

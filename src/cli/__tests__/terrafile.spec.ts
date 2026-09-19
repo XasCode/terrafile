@@ -1,10 +1,13 @@
 /* eslint-disable no-console */
-import { afterEach, beforeEach, describe, it, expect, Mock } from 'vitest';
+import { afterEach, beforeEach, describe, it, expect, Mock, vi } from 'vitest';
+import { execFileSync } from 'child_process';
+import { existsSync } from 'fs';
+import { Command } from 'commander';
 import { resolve } from 'path';
 import fsh from '@jestaubach/fs-helpers';
 const fsHelpers = fsh.use(fsh.default);
 const { rimrafDir } = fsHelpers;
-import { main } from '../terrafile';
+import { main, runIfMain } from '../terrafile';
 import { getRandomInt, cli, spy } from '../../utils';
 import { variations } from './variationsCliOptions';
 import { backendVersions } from './variationsBackends';
@@ -12,6 +15,59 @@ import { backendVersions } from './variationsBackends';
 import { TestDefinition } from '../types';
 
 const backends = Object.keys(backendVersions);
+
+// spies on Command.prototype.parse
+// forces it to throw
+// calls main(...)
+// asserts the function does not rethrow
+it(`swallows commander parse errors`, () => {
+  const parseSpy = vi.spyOn(Command.prototype, 'parse').mockImplementation(() => {
+    throw new Error(`parse failed`);
+  });
+
+  expect(() => main([`node`, `terrafile`])).not.toThrow();
+  expect(parseSpy).toHaveBeenCalled();
+
+  parseSpy.mockRestore();
+});
+
+it(`uses the supplied backend install function`, () => {
+  const installSpy = vi.fn();
+  const backend = { install: installSpy };
+
+  main([`node`, `terrafile`, `install`, `--file`, `custom.json`, `--directory`, `custom/modules`], backend as any);
+
+  expect(installSpy).toHaveBeenCalledTimes(1);
+  expect(installSpy).toHaveBeenCalledWith(
+    expect.objectContaining({
+      file: `custom.json`,
+      directory: `custom/modules`,
+      fsHelpers: expect.any(Object),
+    }),
+  );
+});
+
+it(`runs main when the module is the entry point`, () => {
+  const runner = vi.fn().mockResolvedValue(undefined);
+  const fakeModule = { id: `fake-main-module` } as NodeModule;
+
+  runIfMain(fakeModule, runner, fakeModule);
+
+  expect(runner).toHaveBeenCalledWith(process.argv);
+});
+
+it(`runs the built CLI as the main script`, () => {
+  const scriptPath = resolve(`./dist/terrafile.js`);
+
+  expect(existsSync(scriptPath)).toBe(true);
+
+  const output = execFileSync(process.execPath, [scriptPath, `--version`], {
+    cwd: resolve(`.`),
+    encoding: `utf8`,
+  });
+
+  expect(output).toMatch(/\d+\.\d+\.\d+/);
+});
 
 // Iterate over many different combinations of valid and invalid cli args.
 //   'args' - the combination of args that is being tested.
