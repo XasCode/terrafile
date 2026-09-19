@@ -5,7 +5,7 @@ export interface TestDefinition {
   args: string;
   command: string;
   options: CliOptions;
-  error: ExecFileException;
+  error: ExecFileException | null;
   stdOut: string;
   stdErr: string;
 }

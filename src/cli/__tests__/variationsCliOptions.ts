@@ -4,7 +4,7 @@ import chalk from '@xascode/chalk';
 import fsHelpers from '@jestaubach/fs-helpers';
 const useFsHelpers = fsHelpers.use(fsHelpers.default);
 const { getAbsolutePath } = useFsHelpers;
-const readFileSync = (filePath, opts) => useFsHelpers.readFile(filePath, opts).value;
+const readFileSync = (filePath: string, opts: string) => useFsHelpers.readFile(filePath, opts).value;
 
 import { cartesian } from '../../utils/cartesian';
 
@@ -24,10 +24,11 @@ const badOptions = [``, `-b`, `--bar`];
 const { version } = JSON.parse(readFileSync(getAbsolutePath(`./package.json`).value, `utf-8`));
 
 const defaultOpts = { directory: `vendor/modules`, file: `terrafile.json` };
+type CliOptionPaths = Pick<Required<CliOptions>, `directory` | `file`>;
 
 const combinations = cartesian(helpCommands, commands, helps, versions, directories, files, badOptions);
 
-function errorMessage(message) {
+function errorMessage(message: string): ExecResult {
   return {
     error: { name: ``, message: ``, code: 1 } as ExecFileException,
     stdout: ``,
@@ -36,7 +37,7 @@ function errorMessage(message) {
 }
 
 // Specify the options that should be passed to the install command
-function getOptions({ directory, file }: CliOptions): CliOptions {
+function getOptions({ directory, file }: CliOptionPaths): CliOptions {
   return {
     ...defaultOpts,
     ...(directory !== `` ? { directory: directory.split(` `)[1] } : {}),
@@ -44,7 +45,7 @@ function getOptions({ directory, file }: CliOptions): CliOptions {
   };
 }
 
-function noVerNoHelpValidCommandCheckOptions(args: CliArgs): ExecResult {
+function noVerNoHelpValidCommandCheckOptions(args: Required<CliArgs>): ExecResult {
   if (args.badOption !== ``) {
     return errorMessage(args.badOption[1] === `-` ? unknownOptionLong : unknownOptionShort);
   }
@@ -56,14 +57,14 @@ function noVerNoHelpValidCommandCheckOptions(args: CliArgs): ExecResult {
   };
 }
 
-function noVerNoHelpNoCommandCheckOptions(args: CliArgs): ExecResult {
+function noVerNoHelpNoCommandCheckOptions(args: Required<CliArgs>): ExecResult {
   if (args.directory !== ``) return errorMessage(`error: unknown option '--directory'`);
   if (args.file !== ``) return errorMessage(`error: unknown option '--file'`);
   if (args.badOption !== ``) return errorMessage(args.badOption[1] === `-` ? unknownOptionLong : unknownOptionShort);
   return errorMessage(helpContent);
 }
 
-function noVerNoHelpCheckCommand(args: CliArgs): ExecResult {
+function noVerNoHelpCheckCommand(args: Required<CliArgs>): ExecResult {
   if (args.command === ``) {
     return noVerNoHelpNoCommandCheckOptions(args);
   }
@@ -73,7 +74,7 @@ function noVerNoHelpCheckCommand(args: CliArgs): ExecResult {
   return noVerNoHelpValidCommandCheckOptions(args);
 }
 
-function noVerYesHelpInvalidCommand(args: CliArgs): ExecResult {
+function noVerYesHelpInvalidCommand(args: Required<CliArgs>): ExecResult {
   if (args.helpCommand !== ``) {
     return errorMessage(helpContent);
   }
@@ -84,7 +85,7 @@ function noVerYesHelpInvalidCommand(args: CliArgs): ExecResult {
   };
 }
 
-function noVerYesHelpCheckCommand(args: CliArgs): ExecResult {
+function noVerYesHelpCheckCommand(args: Required<CliArgs>): ExecResult {
   if (args.command === `install`) {
     return {
       error: null,
@@ -102,12 +103,12 @@ function noVerYesHelpCheckCommand(args: CliArgs): ExecResult {
   return noVerYesHelpInvalidCommand(args);
 }
 
-function noVerCheckHelp(args: CliArgs): ExecResult {
+function noVerCheckHelp(args: Required<CliArgs>): ExecResult {
   return args.helpCommand !== `` || args.help !== `` ? noVerYesHelpCheckCommand(args) : noVerNoHelpCheckCommand(args);
 }
 
 // Specify the results for the CLI
-function getResults(args: CliArgs): ExecResult {
+function getResults(args: Required<CliArgs>): ExecResult {
   return args.ver !== ``
     ? {
       error: null,
@@ -118,12 +119,12 @@ function getResults(args: CliArgs): ExecResult {
 }
 
 // Determines if the install command will be run
-function getCommand({ command, helpCommand, ver, help, badOption }: CliArgs): string {
+function getCommand({ command, helpCommand, ver, help, badOption }: Required<CliArgs>): string {
   return command === `install` && helpCommand === `` && ver === `` && help === `` && badOption === `` ? `install` : ``;
 }
 
 // Assembles the various options into a command
-function getArgs({ helpCommand, command, help, ver, directory, file, badOption }: CliArgs): string {
+function getArgs({ helpCommand, command, help, ver, directory, file, badOption }: Required<CliArgs>): string {
   return `${helpCommand} ${command} ${help} ${ver} ${directory} ${file} ${badOption}`
     .split(` `)
     .filter((cur) => {
@@ -142,7 +143,7 @@ const variations = combinations.map(
       directory,
       file,
       badOption,
-    } as CliArgs;
+    } as Required<CliArgs>;
 
     const results = getResults(allArgs);
 
@@ -151,9 +152,9 @@ const variations = combinations.map(
       args: getArgs(allArgs), // the test command
       command: getCommand(allArgs), // api command to run or ""
       options: getOptions(allArgs),
-      error: results.error,
-      stdOut: results.stdout,
-      stdErr: results.stderr,
+      error: results.error ?? null,
+      stdOut: results.stdout ?? ``,
+      stdErr: results.stderr ?? ``,
     };
   },
 );
