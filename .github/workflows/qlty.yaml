@@ -1,13 +1,17 @@
-name: CodeClimate Coverage
+name: QLTY Code Coverage
 
 on: [push, pull_request]
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   coverage:
     strategy:
       matrix:
         platform: [ubuntu-latest]
-        node: [16.x, 18.x]
+        node: [22.x, 24.x, 26.x]
     name: test/node ${{ matrix.node }}/${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
     steps:
@@ -17,9 +21,8 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm install
       - run: npm run build
-      - uses: paambaati/codeclimate-action@v2.7.5
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      - run: npm test
+      - uses: qltysh/qlty-action/coverage@v2
         with:
-          coverageCommand: npm test
-          coverageLocations: ${{github.workspace}}/coverage/lcov.info:lcov
+          oidc: true
+          files: coverage/lcov.info
