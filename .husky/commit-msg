@@ -26,7 +26,6 @@ echo "Running detect-secrets on commit-msg..."
 # Scans the commit message.
 COMMIT_MSG_FILE="$1"
 COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
-echo "Commit message: $COMMIT_MSG"
 if detect-secrets scan --no-verify --string "$COMMIT_MSG" | grep -q "True"; then
     echo "Detected potential secrets in commit message"
     exit 1
