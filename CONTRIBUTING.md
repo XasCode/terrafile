@@ -2,7 +2,7 @@
 
 ## Release Process
 
-Adapted from "Standard" Release Process described [here](https://cloudfour.com/thinks/how-to-publish-an-updated-version-of-an-npm-package/).
+Adapted from the [Standard Release Process article](https://cloudfour.com/thinks/how-to-publish-an-updated-version-of-an-npm-package/).
 
 ### Safety Checks
 
