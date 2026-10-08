@@ -1,5 +1,5 @@
-import { resolve } from 'path';
-import { execFile } from 'child_process';
+import { resolve } from 'node:path';
+import { execFile } from 'node:child_process';
 import { ExecResult, Path } from '@jestaubach/terrafile-backend-lib';
 
 // cli() is used by tests to execute the terrafile application

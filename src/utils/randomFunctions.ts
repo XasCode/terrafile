@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 // Generate a random integer: max > getRandomInt() >= 0
 function getRandomInt(max: number): number {

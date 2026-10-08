@@ -1,4 +1,4 @@
-import { ExecFileException } from 'child_process';
+import { ExecFileException } from 'node:child_process';
 import { CliOptions } from '@jestaubach/terrafile-backend-lib';
 
 export interface TestDefinition {

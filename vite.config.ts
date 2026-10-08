@@ -1,20 +1,19 @@
 /// <reference types="vitest" />
 
-import { resolve } from 'path';
-import { builtinModules } from 'module';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { builtinModules } from 'node:module';
 import { defineConfig } from 'vite';
-import lodash from 'lodash';
+import escapeRegExp from 'lodash/escapeRegExp';
 import dts from 'vite-plugin-dts';
 import pkg from './package.json';
 import commonjsExternals from 'vite-plugin-commonjs-externals';
-
-const { escapeRegExp } = lodash;
 
 const externals = [
   ...builtinModules,
   ...Object.keys(pkg.dependencies).map(
     (name) => {
-      return new RegExp(`^` + escapeRegExp(name) + `(\\/.+)?$`);
+      return new RegExp(`^${escapeRegExp(name)}(/.+)?$`);
     },
   ),
 ];
@@ -53,6 +52,16 @@ export default defineConfig({
   ],
   test: {
     setupFiles: `./__tests__/testSetupFile.ts`,
+    onConsoleLog(log, type) {
+      const directoryErrorPrefix = `Error deleting dir: `;
+      if (
+        type === `stderr` &&
+        log.startsWith(directoryErrorPrefix) &&
+        !existsSync(log.slice(directoryErrorPrefix.length))
+      ) {
+        return false;
+      }
+    },
     coverage: {
       provider: `istanbul`,
       reporter: [`text`, `json`, `html`, `lcov`],

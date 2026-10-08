@@ -5,7 +5,7 @@ import { join } from 'path';
 import { cli, randomizeOrder } from '..';
 
 function expectRearranged(inputArray: unknown[], outputArray: unknown[]) {
-  expect(inputArray.length).toBe(outputArray.length);
+  expect(inputArray).toHaveLength(outputArray.length);
   if (inputArray.length === outputArray.length) {
     for (let i = 0; i < outputArray.length; i += 1) {
       expect(outputArray.includes(inputArray[i])).toBe(true);

@@ -3,13 +3,13 @@ import { Command, Option } from 'commander';
 import { install, Backend } from '@jestaubach/terrafile-backend-lib';
 import fsh from '@jestaubach/fs-helpers';
 
-// eslint-disable-next-line
+// eslint-disable-next-line no-undef
 const version = configversion;
 
 const fsHelpers = fsh.use(fsh.default);
 const backend = { install };
 
-async function main(myargs: string[], be?: Backend): Promise<void> {
+function main(myargs: string[], be?: Backend): void {
   const program = new Command();
   program
     .version(version, `-V, --version`, `Show version information for terrafile`)
@@ -34,7 +34,7 @@ async function main(myargs: string[], be?: Backend): Promise<void> {
 
 function runIfMain(
   currentModule = module,
-  runner: (args: string[]) => Promise<void> = main,
+  runner: (args: string[]) => void | Promise<void> = main,
   mainModule = require.main,
 ): void {
   if (mainModule === currentModule) {
@@ -42,8 +42,6 @@ function runIfMain(
   }
 }
 
-(async () => {
-  runIfMain();
-})();
+runIfMain();
 
 export { main, runIfMain };

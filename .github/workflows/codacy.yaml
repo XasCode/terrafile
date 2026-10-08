@@ -8,12 +8,12 @@ jobs:
     name: codacy-coverage-reporter
     steps:
       - name: Checkout repository
-        uses: actions/checkout@master
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 2
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci --ignore-scripts
 
       - name: Build ${{ matrix.test_number }}s
         run: npm run build
@@ -22,7 +22,7 @@ jobs:
         run: npm test
 
       - name: Run codacy-coverage-reporter
-        uses: codacy/codacy-coverage-reporter-action@master
+        uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage/lcov.info
