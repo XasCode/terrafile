@@ -1,6 +1,0 @@
-plugins:
-  markdownlint:
-    enabled: true
-    checks:
-      MD013: # Line length
-        enabled: false
