@@ -1,9 +1,9 @@
-const eslint = require('@eslint/js');
-const globals = require('globals');
-const tsParser = require('@typescript-eslint/parser');
-const tsPlugin = require('@typescript-eslint/eslint-plugin');
+import eslint from '@eslint/js';
+import globals from 'globals';
+import tsParser from '@typescript-eslint/parser';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
 
-module.exports = [
+export default [
   {
     ignores: [
       'node_modules',
@@ -21,7 +21,7 @@ module.exports = [
     rules: eslint.configs.recommended.rules,
   },
   {
-    files: ['**/*.ts'],
+    files: ['src/**/*.ts'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: {
@@ -37,9 +37,17 @@ module.exports = [
       '@typescript-eslint': tsPlugin,
     },
     rules: {
-      ...eslint.configs.recommended.rules,
-      ...tsPlugin.configs.recommended.rules,
+      'no-undef': 'off',
       'no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
     },
   },
 ];

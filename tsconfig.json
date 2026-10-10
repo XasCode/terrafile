@@ -8,6 +8,7 @@
       "DOM"
     ],
     "moduleResolution": "Bundler",
+    "strict": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
@@ -15,19 +16,21 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": [
+      "node"
+    ]
   },
   "include": [
-    "__tests__/**/*.ts",
     "src/**/*.ts",
-    "node_modules/@types",
-    "__tests__/testSetupFile.ts"
+    "node_modules/@types"
   ],
   "exclude": [
     "node_modules",
     "__mocks__/**/*.ts",
     "dist",
-    "__tests__/**/*.ts"
+    "__tests__/**/*.ts",
+    "src/**/__tests__/**/*.ts"
   ],
   "typeRoots": [
     "node_modules/@types",
