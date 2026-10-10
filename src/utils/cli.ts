@@ -3,7 +3,7 @@ import { execFile } from 'node:child_process';
 import { ExecResult, Path } from '@jestaubach/terrafile-backend-lib';
 
 // cli() is used by tests to execute the terrafile application
-async function cli(script, args: string[], cwd?: Path): Promise<ExecResult> {
+async function cli(script: string, args: string[], cwd?: Path): Promise<ExecResult> {
   return new Promise((resolvePromise) => {
     execFile(
       `node`,

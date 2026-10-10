@@ -2,8 +2,9 @@
 import { Command, Option } from 'commander';
 import { install, Backend } from '@jestaubach/terrafile-backend-lib';
 import fsh from '@jestaubach/fs-helpers';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-// eslint-disable-next-line no-undef
 const version = configversion;
 
 const fsHelpers = fsh.use(fsh.default);
@@ -33,11 +34,11 @@ function main(myargs: string[], be?: Backend): void {
 }
 
 function runIfMain(
-  currentModule = module,
+  currentPath = fileURLToPath(import.meta.url),
   runner: (args: string[]) => void | Promise<void> = main,
-  mainModule = require.main,
+  mainPath = process.argv[1],
 ): void {
-  if (mainModule === currentModule) {
+  if (mainPath !== undefined && resolve(mainPath) === resolve(currentPath)) {
     void runner(process.argv);
   }
 }
