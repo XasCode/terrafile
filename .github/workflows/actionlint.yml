@@ -1,0 +1,28 @@
+name: Workflow Lint
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install actionlint
+        env:
+          ACTIONLINT_VERSION: 1.7.7
+        run: |
+          release_url="https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}"
+          curl --proto '=https' --proto-redir '=https' -fsSL "$release_url/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" -o "$RUNNER_TEMP/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          curl --proto '=https' --proto-redir '=https' -fsSL "$release_url/actionlint_${ACTIONLINT_VERSION}_checksums.txt" -o "$RUNNER_TEMP/actionlint-checksums.txt"
+          grep -F " actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" "$RUNNER_TEMP/actionlint-checksums.txt" > "$RUNNER_TEMP/actionlint.sha256"
+          (cd "$RUNNER_TEMP" && sha256sum --check actionlint.sha256)
+          tar -xzf "$RUNNER_TEMP/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" -C "$RUNNER_TEMP" actionlint
+      - name: Lint workflows
+        run: |
+          "$RUNNER_TEMP/actionlint" -color
