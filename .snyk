@@ -3,4 +3,4 @@ ignore:
   'SNYK-JS-SEMVER-3247795':
     - '* > semver':
         reason: 'Build-time dependency. No untrusted user input.'
-        expires: '2999-12-31T23:59:99.999Z'
+        expires: '2999-12-31T23:59:59.999Z'

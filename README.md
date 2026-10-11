@@ -4,6 +4,8 @@
 
 Specify Terraform module locations within a `.json` file and retrieve the modules to a local directory.
 
+See the [changelog](CHANGELOG.md) and [migration guide](MIGRATION.md).
+
 ## About The Project
 
 ### Terraform Modules
@@ -162,10 +164,13 @@ Options:
 
 This project was inspired by [Terraform Design Patterns: the Terrafile](http://bensnape.com/2016/01/14/terraform-design-patterns-the-terrafile/).
 
+[![npm version](https://img.shields.io/npm/v/terrafile)](https://www.npmjs.com/package/terrafile)
+[![npm downloads](https://img.shields.io/npm/dm/terrafile)](https://www.npmjs.com/package/terrafile)
+
 ## Badges
 
-[![Code Coverage](https://qlty.sh/gh/XasCode/projects/terrafile/coverage.svg)](https://qlty.sh/gh/XasCode/projects/terrafile)
 [![Maintainability](https://qlty.sh/gh/XasCode/projects/terrafile/maintainability.svg)](https://qlty.sh/gh/XasCode/projects/terrafile)
+[![Code Coverage](https://qlty.sh/gh/XasCode/projects/terrafile/coverage.svg)](https://qlty.sh/gh/XasCode/projects/terrafile)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/519d8d6060754c078cadace24b194986)](https://www.codacy.com/gh/XasCode/terrafile/dashboard?utm_source=github.com&utm_medium=referral&utm_content=XasCode/terrafile&utm_campaign=Badge_Coverage)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/519d8d6060754c078cadace24b194986)](https://www.codacy.com/gh/XasCode/terrafile/dashboard?utm_source=github.com&utm_medium=referral&utm_content=XasCode/terrafile&utm_campaign=Badge_Grade)
 [![Known Vulnerabilities](https://snyk.io/test/github/xascode/terrafile/badge.svg)](https://snyk.io/test/github/xascode/terrafile)

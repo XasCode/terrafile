@@ -1,22 +1,22 @@
-# Check if detect-secrets is installed
-if ! command -v detect-secrets >/dev/null 2>&1
-then
-    echo "Warning: detect-secrets is not installed."
-    echo "!!! detect-secrets will not be run."
-    exit 0
+set -eu
+
+if ! command -v detect-secrets >/dev/null 2>&1; then
+    echo "Error: required system command 'detect-secrets' is not installed." >&2
+    exit 1
 fi
-# Check if jq is installed
-if ! command -v jq >/dev/null 2>&1
-then
-    echo "Warning: jq is not installed."
-    echo "!!! detect-secrets will not be run."
-    exit 0
+if ! command -v jq >/dev/null 2>&1; then
+    echo "Error: required system command 'jq' is not installed." >&2
+    exit 1
 fi
 
-# This wrapper does not support --word-list; discard baselines made with it.
-if grep -Eq '"file_name": "wordlist\.txt"|"filename": "\.secrets\.new"' .secrets.baseline 2>/dev/null; then
-    echo "Rebuilding stale secret baseline..."
-    rm -f .secrets.baseline
+WORDLIST_ARG=""
+if [ -f wordlist.txt ] && [ -s wordlist.txt ]; then
+    if ! command -v python >/dev/null 2>&1 || ! python -c "import ahocorasick" >/dev/null 2>&1; then
+        echo "Error: wordlist.txt requires Python and pyahocorasick." >&2
+        echo "Install it with: python -m pip install pyahocorasick" >&2
+        exit 1
+    fi
+    WORDLIST_ARG="--word-list wordlist.txt"
 fi
 
 cleanup() {
@@ -29,7 +29,7 @@ rm -f base.fifo new.fifo .secrets.new
 # Create a baseline when one is missing or empty.
 if [ ! -s .secrets.baseline ]; then
     echo "Creating baseline..."
-    detect-secrets scan --no-verify --exclude-files 'node_modules|\.secrets\.' --all-files . > .secrets.baseline
+    detect-secrets scan --no-verify $WORDLIST_ARG --exclude-files 'node_modules|coverage|\.secrets\.' --all-files . > .secrets.baseline
 fi
 
 # backup the list of known secrets
@@ -37,7 +37,7 @@ cp .secrets.baseline .secrets.new
 
 # find all the secrets in the repository
 echo "Running detect-secrets on repo..."
-detect-secrets scan --no-verify --exclude-files 'node_modules|\.secrets\.' --baseline .secrets.new $(find . -type f ! -name '.secrets.*' ! -path '*/.git*' ! -path '*/node_modules/*') > /dev/null
+detect-secrets scan --no-verify $WORDLIST_ARG --exclude-files 'node_modules|coverage|\.secrets\.' --baseline .secrets.new $(find . -type f ! -name '.secrets.*' ! -path '*/.git*' ! -path '*/node_modules/*') > /dev/null
 
 # if there is any difference between the known and newly detected secrets, break the build
 list_secrets() { jq -r '.results | keys[] as $key | "\($key | gsub("\\\\"; "/")),\(.[$key] | .[] | .hashed_secret)"' "$1" | sort; }

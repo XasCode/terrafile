@@ -1,3 +1,5 @@
 #!/usr/bin/env node
 
-require(`./terrafile`).main(process.argv);
+import { main } from './terrafile.js';
+
+main(process.argv);

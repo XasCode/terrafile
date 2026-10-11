@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "c4b085a7d86698c3a574c0f9129e7aa883ddb6cc",
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "terrafile",
+      "bump-minor-pre-major": true
+    }
+  }
+}

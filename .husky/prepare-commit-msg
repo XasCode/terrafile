@@ -1,21 +1,30 @@
-# Check if detect-secrets is installed
-if ! command -v detect-secrets >/dev/null 2>&1
-then
-    echo "Warning: detect-secrets is not installed."
-    echo "!!! detect-secrets will not be run."
-    exit 0
-fi
-# if there is no baseline, create one
-if [ ! -s .secrets.baseline ]; then
-    echo "Creating baseline..."
-    detect-secrets scan --no-verify --exclude-files 'node_modules' --all-files . > .secrets.baseline
+#!/usr/bin/env sh
+set -eu
+
+if ! command -v detect-secrets >/dev/null 2>&1; then
+    echo "Error: required system command 'detect-secrets' is not installed." >&2
+    exit 1
 fi
 
-echo "Running detect-secrets on prepare-commit-msg..."
-# Scans the commit message.
-COMMIT_MSG_FILE="$1"
-COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
-if detect-secrets scan --no-verify --string "$COMMIT_MSG" | grep -q "True"; then
-    echo "Detected potential secrets in commit message"
+WORDLIST_ARG=""
+if [ -f wordlist.txt ] && [ -s wordlist.txt ]; then
+    if ! command -v python >/dev/null 2>&1 || ! python -c "import ahocorasick" >/dev/null 2>&1; then
+        echo "Error: wordlist.txt requires Python and pyahocorasick." >&2
+        echo "Install it with: python -m pip install pyahocorasick" >&2
+        exit 1
+    fi
+    WORDLIST_ARG="--word-list wordlist.txt"
+fi
+
+if [ -n "$WORDLIST_ARG" ]; then
+    scan_output=$(detect-secrets scan --no-verify $WORDLIST_ARG --string "$(cat "$1")")
+else
+    scan_output=$(detect-secrets scan --no-verify --string "$(cat "$1")")
+fi
+
+matches=$(printf '%s\n' "$scan_output" | grep -E ':[[:space:]]*True([[:space:]]+\([^)]*\))?[[:space:]]*$' || true)
+if [ -n "$matches" ]; then
+    echo "Suspected secret in commit message:" >&2
+    printf '%s\n' "$matches" >&2
     exit 1
 fi

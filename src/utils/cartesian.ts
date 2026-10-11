@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-len
 // from: https://stackoverflow.com/questions/15298912/javascript-generating-combinations-from-n-arrays-with-m-elements
 function calcCartesian(...args: unknown[][]): unknown[][] {
   const r: unknown[][] = [];

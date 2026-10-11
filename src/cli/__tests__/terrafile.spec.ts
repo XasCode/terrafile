@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { afterEach, beforeEach, describe, it, expect, Mock, vi } from 'vitest';
 import { execFileSync } from 'child_process';
 import { existsSync } from 'fs';
@@ -50,9 +49,9 @@ it(`uses the supplied backend install function`, () => {
 
 it(`runs main when the module is the entry point`, () => {
   const runner = vi.fn().mockResolvedValue(undefined);
-  const fakeModule = { id: `fake-main-module` } as NodeModule;
+  const fakePath = resolve(`fake-main-module.js`);
 
-  runIfMain(fakeModule, runner, fakeModule);
+  runIfMain(fakePath, runner, fakePath);
 
   expect(runner).toHaveBeenCalledWith(process.argv);
 });
@@ -129,7 +128,7 @@ describe.each(variations)(
     // cli arguments, executes the commands with the given options,
     // and produces the same results as the backend tests.
     it.each(backends)(`Check CLI as module (BE="%s", args="${args}")`, (backend) => {
-      const myargs = [process.argv[0], resolve(`./dist/terrafile`), ...(args ? args.split(` `) : [])];
+      const myargs = [process.argv[0], resolve(`./dist/terrafile.js`), ...(args ? args.split(` `) : [])];
       if (backend.length > 0) {
         main(myargs, backendVersions[backend]);
       } else {
@@ -163,7 +162,7 @@ describe.each(variations)(
     // execute a small sample of the tests.
     if (getRandomInt(0) === 0) {
       it(`Sample CLI (BE="%s", args="${args}")`, async () => {
-        const result = await cli(`./dist/terrafile`, args ? args.split(` `) : []);
+        const result = await cli(`./dist/terrafile.js`, args ? args.split(` `) : []);
         [
           { actual: result.stdout, expected: stdOut },
           { actual: result.stderr, expected: stdErr },
