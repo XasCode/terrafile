@@ -40,7 +40,7 @@
   "homepage": "https://github.com/XasCode/terrafile#readme",
   "dependencies": {
     "@jestaubach/fs-helpers": "^0.2.31",
-    "@jestaubach/terrafile-backend-lib": "^0.1.11",
+    "@jestaubach/terrafile-backend-lib": "^0.2.1",
     "commander": "^15.0.0"
   },
   "devDependencies": {
@@ -52,7 +52,7 @@
     "@types/node": "^22.20.5",
     "@typescript-eslint/eslint-plugin": "^8.71.1",
     "@typescript-eslint/parser": "^8.71.1",
-    "@vitest/coverage-istanbul": "^5.0.3",
+    "@vitest/coverage-v8": "^5.0.3",
     "@vue/language-core": "^3.3.12",
     "@xascode/chalk": "^0.1.4",
     "eslint": "^10.12.0",
