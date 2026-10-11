@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/XasCode/terrafile/compare/terrafile-v0.2.0...terrafile-v0.2.1) (2026-10-11)
+
+
+### Bug Fixes
+
+* **deps:** support chalk 0.2 ([#359](https://github.com/XasCode/terrafile/issues/359)) ([101b872](https://github.com/XasCode/terrafile/commit/101b872d22f0799958a503934885c64efad6619a))
+
 ## [0.2.0](https://github.com/XasCode/terrafile/compare/terrafile-v0.1.36...terrafile-v0.2.0) (2026-10-11)
 
 
