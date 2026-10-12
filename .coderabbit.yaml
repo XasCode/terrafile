@@ -15,7 +15,7 @@ reviews:
       instructions: |
         Focus on correctness, error handling, and compatibility with the package's
         existing ESM and TypeScript conventions.
-    - path: "__tests__/**"
+    - path: "**/__tests__/**"
       instructions: |
         Check meaningful behavior, edge cases, and failure paths. Preserve the
         distinction between unit tests and built-package smoke tests.
