@@ -1,0 +1,27 @@
+language: en-US
+
+reviews:
+  profile: chill
+  path_filters:
+    - "!dist/**"
+    - "!coverage/**"
+  path_instructions:
+    - path: "package.json"
+      instructions: |
+        Treat exports, entry points, types, files, dependencies, and the Node engine
+        as part of the public package contract. Flag incompatible API or packaging
+        changes and dependency-version mismatches.
+    - path: "src/**"
+      instructions: |
+        Focus on correctness, error handling, and compatibility with the package's
+        existing ESM and TypeScript conventions.
+    - path: "__tests__/**"
+      instructions: |
+        Check meaningful behavior, edge cases, and failure paths. Preserve the
+        distinction between unit tests and built-package smoke tests.
+    - path: "MIGRATION.md"
+      instructions: |
+        Public API or CLI breaking changes should have a migration entry.
+
+knowledge_base:
+  linked_repositories: []
