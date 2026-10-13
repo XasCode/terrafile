@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/XasCode/terrafile/compare/terrafile-v0.2.1...terrafile-v0.2.2) (2026-10-13)
+
+
+### Continuous Integration
+
+* **release-please:** auto-merge ([#365](https://github.com/XasCode/terrafile/issues/365)) ([a862108](https://github.com/XasCode/terrafile/commit/a862108b80b32eb574b882ddb9fd2b412c9cfe68))
+
 ## [0.2.1](https://github.com/XasCode/terrafile/compare/terrafile-v0.2.0...terrafile-v0.2.1) (2026-10-11)
 
 
