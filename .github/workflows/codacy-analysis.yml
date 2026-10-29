@@ -33,7 +33,7 @@ jobs:
 
       - name: Run Codacy ESLint analysis
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-        uses: codacy/codacy-analysis-cli-action@d43360362776a6789b47b99ae8973510854e2d3d # pinned Codacy Analysis CLI action
+        uses: codacy/codacy-analysis-cli-action@6f415a0d3790c227a9cff580098545188e0f4e5a # pinned Codacy Analysis CLI action
         with:
           tool: eslint-9
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
